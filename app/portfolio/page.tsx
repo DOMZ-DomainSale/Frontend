@@ -1,12 +1,11 @@
 import QuickConectCard from '@/components/cards/QuickConectCard'
 import Footer from '@/components/Footer'
 import NavbarComponenet from '@/components/NavbarComponenet'
-import React from 'react'
 
 const page = () => {
     return (
         <div className='lg:pl-[10%] lg:pr-[10%] lg:pt-9'>
-            <NavbarComponenet colorText='My ' plainText='Portfolio' paraText='Browse a commission-free catalog and connect directly with domain owners.' />
+            <NavbarComponenet colorText='My ' plainText='Portfolio' paraText={true} />
             <div className="w-full max-w-5xl mx-auto mt-8">
                 <div className="flex justify-between mb-2">
                     <button className="rounded-full border border-gray-300 px-4 py-1 bg-white text-gray-700 shadow hover:bg-gray-100">

@@ -5,7 +5,7 @@ import Link from "next/link";
 export interface NavbarTextProp {
   colorText: string;
   plainText: string;
-  paraText:string;
+  paraText:Boolean;
 }
 
 const NavbarComponenet = (props: NavbarTextProp) => {
@@ -78,7 +78,7 @@ const NavbarComponenet = (props: NavbarTextProp) => {
         {props?.paraText &&
         <div className="w-full flex flex-col items-center py-6">
           <div className="mb-3 text-center text-black">
-            {props.paraText}
+            Browse a commission-free catalog and connect directly with domain owners.
           </div>
           <div className="flex items-center w-full max-w-xl rounded-full bg-white shadow-lg px-4 py-2">
             <input
