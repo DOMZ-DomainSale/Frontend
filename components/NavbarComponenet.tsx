@@ -11,7 +11,7 @@ const NavbarComponenet = (props:NavbarTextProp) => {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <div className="bg-linear-to-b from-white to-blue-50 w-full lg:pb-16">
+    <div className="bg-linear-to-b from-white to-blue-50 w-full lg:pb-16 sticky top-0 z-40 ">
       {/* Navbar */}
       <nav className="max-w-7xl mx-auto flex items-center h-20 px-6 lg:px-20 relative z-50" style={{display: 'grid', gridTemplateColumns: '1fr 2fr 1fr'}}>
         {/* Logo - Left */}

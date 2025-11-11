@@ -23,7 +23,7 @@ const Hero = () => (
         </div>
         <div className="flex gap-8 mt-8">
           <div className="flex items-center gap-2">
-            <span className="inline-block bg-white rounded-full p-2">
+            <span className="inline-block bg-white lg:rounded-full p-2">
               <Image
                 src="/assets/icons/shake-hands.webp"
                 alt="Handshake icon"
