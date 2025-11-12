@@ -1,8 +1,37 @@
-import QuickConectCard from '@/components/cards/QuickConectCard'
-import Footer from '@/components/Footer'
-import NavbarComponenet from '@/components/NavbarComponenet'
+'use client'
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import QuickConectCard from '@/components/cards/QuickConectCard';
+import Footer from '@/components/Footer';
+import NavbarComponenet from '@/components/NavbarComponenet';
+import Loader from '@/components/Loader';
 
-const page = () => {
+const Page = () => {
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                // ✅ Send POST request with credentials (cookie)
+                await axios.get(`${process.env.NEXT_PUBLIC_apiLink}auth/authenticate`, {
+                    withCredentials: true,
+                });
+
+                setLoading(false);
+            } catch (err) {
+                console.error("Auth error:", err);
+                router.push("/login");
+            }
+        };
+
+        checkAuth();
+    }, [router]);
+
+    console.log(process.env.NEXT_PUBLIC_apiLink, "process.env.NEXT_PUBLIC_apiLinkprocess.env.NEXT_PUBLIC_apiLink")
+    if (loading) return <Loader />;
+
     return (
         <div className='lg:pl-[10%] lg:pr-[10%] lg:pt-9'>
             <NavbarComponenet colorText="MY " plainText="Portfolio" IsParaText={true} ParaText="Browse a commission-free catalog and connect directly with domain owners." />
@@ -73,15 +102,18 @@ const page = () => {
                     <button className="mx-1 px-2 py-1 rounded bg-white border border-gray-200 hover:bg-gray-50">&gt;</button>
                 </div>
             </div>
+
             <QuickConectCard
-                title="Stay Updated" 
-                description="Get news, announcements, and highlighted names when our newsletter lunches"
+                title="Stay Updated"
+                description="Get news, announcements, and highlighted names when our newsletter launches"
                 mainButton="Subscribe Now"
                 subButton={false}
             />
-            <Footer/>
+            <Footer />
         </div>
-    )
-}
+    );
+};
 
-export default page
+export default Page;
+
+

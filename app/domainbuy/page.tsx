@@ -88,7 +88,7 @@ const page = () => {
                 </div>
             </div>
             <Footer/>
-            {/* <FilterDashboard/> */}
+            <FilterDashboard/>
         </div>
     )
 }

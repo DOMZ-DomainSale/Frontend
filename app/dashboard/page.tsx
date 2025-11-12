@@ -9,7 +9,6 @@ const sidebarLinks = [
     { label: "Subscription", icon: "💳" },
     { label: "Billing", icon: "🧾" },
 ];
-
 const page = () => {
     return (
         <div className="min-h-screen bg-white lg:pl-[10%] lg:pr-[10%] lg:pt-9">
