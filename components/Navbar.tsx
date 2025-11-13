@@ -47,7 +47,7 @@ const Navbar = () => {
 
       {/* Right Button (Desktop) */}
       <div className="hidden md:block">
-        <button className="bg-linear-to-r from-blue-500 to-blue-600 text-white font-semibold px-5 py-2 rounded-full shadow hover:from-blue-600 hover:to-blue-700 transition"
+        <button className="bg-linear-to-r from-blue-500 to-blue-600 text-white font-semibold px-5 py-2 rounded-full shadow hover:from-blue-600 hover:to-blue-700 transition cursor-pointer"
         onClick={checkAuth}
         >
           My Domz
