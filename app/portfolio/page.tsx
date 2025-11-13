@@ -20,7 +20,7 @@ const Page = () => {
         );
         if (isMounted) setLoading(false);
       } catch (err) {
-        if (isMounted) router.push("/login");
+        if (isMounted) router.push("/signup");
       }
     };
     checkAuth();

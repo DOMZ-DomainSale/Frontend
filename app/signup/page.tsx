@@ -7,6 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import Loader from '@/components/Loader';
 import Footer from '@/components/Footer';
 import NavbarComponenet from '@/components/NavbarComponenet';
+import Link from 'next/link';
 
 interface UserData {
   name: string;
@@ -149,6 +150,7 @@ const Page = () => {
                   </button>
                 </div>
               </form>
+               <p className="text-slate-600 text-sm mt-6 text-center">Already have an account? <Link href="/login" className="text-blue-600 font-medium hover:underline ml-1">Login here</Link></p>
             </div>
           </div>
         </div>

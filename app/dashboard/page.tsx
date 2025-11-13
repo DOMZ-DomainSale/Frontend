@@ -31,7 +31,7 @@ const Page = () => {
         );
         if (isMounted) setLoading(false);
       } catch {
-        if (isMounted) router.push("/login");
+        if (isMounted) router.push("/signup");
       }
     };
     checkAuth();
