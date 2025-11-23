@@ -1,6 +1,6 @@
 
 "use client";
-import { backendUserData } from './page';
+import { backendUserData } from "./profile";
 const ProfileInfo = (props: backendUserData) => {
     return (
         <>
