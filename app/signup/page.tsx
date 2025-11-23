@@ -44,7 +44,6 @@ const Page = () => {
       return;
     }
     setLoaderStatus(true);
-
     try {
       const res = await axios.post(`${process.env.NEXT_PUBLIC_apiLink}auth/register`, {
         name: userData.name,
@@ -52,7 +51,6 @@ const Page = () => {
         password: userData.password,
         terms: userData.terms,
       });
-
       toast.success(res?.data.message);
       router.push("/login");
     } catch (err: any) {

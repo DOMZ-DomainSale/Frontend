@@ -1,36 +1,87 @@
+'use client'
+import axios from 'axios';
+import { ChangeEvent, useState } from 'react';
 import Footer from '@/components/Footer'
+import { ToastContainer, toast } from 'react-toastify';
 import NavbarComponenet from '@/components/NavbarComponenet'
-import React from 'react'
+import Loader from '@/components/Loader';
+
+interface UserMessageInterface {
+  name: string;
+  email: string;
+  message: string;
+  subject: string;
+}
 
 const page = () => {
+  const [userData, setUserData] = useState<UserMessageInterface>({
+    name: '',
+    email: '',
+    message: '',
+    subject: 'This is from contact me section'
+  });
+  const [loaderStatus, setLoaderStatus] = useState(false);
+
+  const onChangeHandler = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setUserData(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoaderStatus(true);
+    try {
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_apiLink}email/sendemail`, {
+        name: userData.name,
+        email: userData.email,
+        message: userData.message,
+        subject: userData.subject,
+      });
+      console.log(res?.data?.message);
+
+      toast.success(res?.data.message);
+    } catch (err: any) {
+      toast.error(err?.response?.data.message || "An unexpected error occurred", {
+        position: 'top-right',
+      });
+    } finally {
+      setLoaderStatus(false);
+    }
+  }
+  if (loaderStatus) return <Loader />
   return (
     <div className='lg:pl-[10%] lg:pr-[10%] lg:pt-9'>
-      <NavbarComponenet colorText="S" plainText="ignUp" IsParaText={true} ParaText="As a user-centric platfrom, we value your feedback.
+      <NavbarComponenet colorText="Let's Star" plainText="t the conversation" IsParaText={true} ParaText="As a user-centric platfrom, we value your feedback.
         Reach out via the form or email us at info@domz.com - We'll respond promptly" searchbarStatus={false} />
-
-      <form className="max-w-[680px] mx-auto pt-6 px-4 md:px-0">
+      <form onSubmit={onSubmitHandler} className="max-w-[680px] mx-auto pt-6 px-4 md:px-0">
         <h2 className="text-center text-[2rem] font-bold mb-3 leading-tight select-none">
           <span className="text-blue-600 font-bold">Your questions</span> and feedback matter.
         </h2>
-
         <div className="mb-8">
-          <label htmlFor="name" className="block mb-3 text-[1rem] font-semibold text-black select-none ml-2">
+          <label className="block mb-3 text-[1rem] font-semibold text-black select-none ml-2">
             Name<span className="text-blue-600">*</span>
           </label>
           <input
             type="text"
+            name='name'
             className="bg-blue-100 border-none text-[1.15rem] rounded-2xl block w-full px-8 py-5 shadow-none placeholder:text-gray-500 focus:ring-2 focus:ring-blue-400"
             required
+            onChange={onChangeHandler}
           />
         </div>
         <div className="mb-8">
-          <label htmlFor="email" className="block mb-3 text-[1rem] font-semibold text-black select-none ml-2">
+          <label className="block mb-3 text-[1rem] font-semibold text-black select-none ml-2">
             Email<span className="text-blue-600">*</span>
           </label>
           <input
             type="email"
             className="bg-blue-100 border-none text-[1.15rem] rounded-2xl block w-full px-8 py-5 shadow-none placeholder:text-gray-500 focus:ring-2 focus:ring-blue-400"
             required
+            name='email'
+            onChange={onChangeHandler}
           />
         </div>
         <div className="mb-6">
@@ -40,6 +91,8 @@ const page = () => {
           <textarea
             className="bg-blue-100 border-none text-[1.15rem] rounded-2xl block w-full px-8 py-5 shadow-none placeholder:text-gray-500 focus:ring-2 focus:ring-blue-400"
             required
+            name='message'
+            onChange={onChangeHandler}
           />
         </div>
         <div className="flex justify-center">
@@ -85,6 +138,7 @@ const page = () => {
       </div>
 
       <Footer />
+      <ToastContainer />
     </div>
   )
 }
