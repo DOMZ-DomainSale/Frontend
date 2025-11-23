@@ -68,7 +68,7 @@ const Footer = () => {
 
               <ul className="mt-6 space-y-4 text-sm">
                 <li>
-                  <a href="1" className="text-gray-700 transition hover:opacity-75"> Home </a>
+                  <Link href="/" className="text-gray-700 transition hover:opacity-75"> Home </Link>
                 </li>
 
                 <li>
@@ -82,7 +82,7 @@ const Footer = () => {
                 </li>
 
                 <li>
-                  <a href="1" className="text-gray-700 transition hover:opacity-75"> Plan </a>
+                  <Link href="/plan" className="text-gray-700 transition hover:opacity-75"> Plan </Link>
                 </li>
               </ul>
             </div>
@@ -135,7 +135,6 @@ const Footer = () => {
                 <li>
                   <a href="1" className="text-gray-700 transition hover:opacity-75"> Buy </a>
                 </li>
-
                 <li>
                   <a href="1" className="text-gray-700 transition hover:opacity-75"> Sell </a>
                 </li>
