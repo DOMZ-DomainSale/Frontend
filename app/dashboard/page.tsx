@@ -66,8 +66,6 @@ const Page = () => {
   return (
     <div className="min-h-screen bg-white">
       <NavbarComponenet colorText="P" plainText="rofile" IsParaText={false} />
-
-      {/* ⭐ Mobile Menu Toggle */}
       <div className="flex sm:hidden justify-between items-center px-4 py-3 border-b">
         <h2 className="text-lg font-semibold">Dashboard</h2>
         <button
@@ -79,7 +77,6 @@ const Page = () => {
       </div>
 
       <div className="flex flex-col sm:flex-row">
-        {/* ⭐ FIXED SIDEBAR (same position as before, just fixed) */}
         <aside
           className={`
       bg-white border-r border-gray-200 px-4 py-6 
@@ -98,7 +95,7 @@ const Page = () => {
                     item.onClick();
                     setSidebarOpen(false);
                   }}
-                  className="flex items-center gap-3 w-full text-left text-gray-700 hover:text-blue-600 font-medium"
+                  className="flex items-center gap-3 w-full text-left text-gray-700 hover:text-blue-600 font-medium cursor-pointer"
                 >
                   <Image src={item.icon} alt={item.label} width={20} height={20} />
                   <span>{item.label}</span>
@@ -107,8 +104,6 @@ const Page = () => {
             ))}
           </ul>
         </aside>
-
-        {/* ⭐ MAIN CONTENT — SAME POSITION AS BEFORE */}
         <main
           className="
       flex-1 
@@ -123,8 +118,6 @@ const Page = () => {
           {activeSection === "myPortfolio" && <Subscription />}
         </main>
       </div>
-
-
       <Footer />
       <ToastContainer />
     </div>
