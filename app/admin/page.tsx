@@ -1,10 +1,67 @@
-// Updated React dashboard layout matching the design shown
-'use client'
-import React, { useState } from 'react';
-import Content from './content';
+'use client';
 
-const Page=()=> {
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { ToastContainer, toast } from "react-toastify";
+
+import Content from './content';
+import Loader from '@/components/Loader';
+
+interface User {
+  _id: string;
+  email: string;
+  name?: string;        // optional
+  phoneNumber?: string; // optional
+}
+
+
+const Page = () => {
+  const router = useRouter();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const checkAdminAuth = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_apiLink}auth/me`,
+          { withCredentials: true }
+        );
+        if (res.data?.user?.role !== 'admin') {
+          router.replace('/login');
+          return;
+        }
+        setLoading(false);
+      } catch {
+        router.replace('/login');
+      }
+    };
+
+    checkAdminAuth();
+  }, [router]);
+  
+useEffect(()=>{
+    const fetchAllUser=async ()=>{
+      try {
+        const res=await axios.get(
+          `${process.env.NEXT_PUBLIC_apiLink}user/allusers`,
+          {withCredentials:true}
+        )
+        .then((res:any)=>setAllUsers(res.data.users)
+        )
+      } catch (error) {
+        toast.error('Error Fetching Users')
+      }
+    }
+    fetchAllUser();
+},[router])
+
+console.log(allUsers);
+
+  if (loading) return <Loader />;
 
   return (
     <div className="relative h-screen bg-[#F5F7FB]">
@@ -15,12 +72,17 @@ const Page=()=> {
         onClick={() => setSidebarOpen(true)}
         className="sm:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-md"
       >
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
           <path strokeLinecap="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
 
-      {/* Mobile Sidebar Overlay */}
+      {/* Mobile Overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-40 z-40 sm:hidden"
@@ -30,7 +92,9 @@ const Page=()=> {
 
       {/* Mobile Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-50 w-64 h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out sm:hidden ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed top-0 left-0 z-50 w-64 h-full bg-white shadow-lg transform transition-transform duration-300 sm:hidden ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
       >
         <div className="flex justify-end p-4">
           <button onClick={() => setSidebarOpen(false)} aria-label="Close sidebar">
@@ -47,79 +111,58 @@ const Page=()=> {
         <Content />
       </aside>
 
-      {/* Main Dashboard Content */}
+      {/* Main Content */}
       <main className="sm:ml-64 h-screen overflow-y-auto p-6">
-        {/* TOP GRID CARDS */}
+        {/* TOP STATS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <div className="bg-white shadow-md rounded-xl p-5 flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500">Total Users</p>
-              <h2 className="text-2xl font-bold">45</h2>
-              <p className="text-green-500 text-sm">↑ 12%</p>
+          {[
+            { label: 'Total Users', value: allUsers?.length, change: '↑ 12%', color: 'bg-blue-500' },
+            { label: 'Domains Registered', value: '0', change: '↑ 20%', color: 'bg-teal-500' },
+            { label: 'Query', value: '50', change: '↓ 10%', color: 'bg-orange-500' },
+            { label: 'Requests', value: '£10,000', change: '↑ 10%', color: 'bg-red-500' },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className="bg-white shadow-md rounded-xl p-5 flex items-center justify-between"
+            >
+              <div>
+                <p className="text-sm text-gray-500">{item.label}</p>
+                <h2 className="text-2xl font-bold">{item.value}</h2>
+                <p className="text-sm text-green-500">{item.change}</p>
+              </div>
+              <div
+                className={`${item.color} text-white w-12 h-12 flex items-center justify-center rounded-lg`}
+              >
+                ★
+              </div>
             </div>
-            <div className="bg-blue-500 text-white w-12 h-12 flex items-center justify-center rounded-lg">★</div>
-          </div>
-
-          <div className="bg-white shadow-md rounded-xl p-5 flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500">Domains Registered</p>
-              <h2 className="text-2xl font-bold">0</h2>
-              <p className="text-green-500 text-sm">↑ 20%</p>
-            </div>
-            <div className="bg-teal-500 text-white w-12 h-12 flex items-center justify-center rounded-lg">⬤</div>
-          </div>
-
-          <div className="bg-white shadow-md rounded-xl p-5 flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500">Query</p>
-              <h2 className="text-2xl font-bold">50</h2>
-              <p className="text-red-500 text-sm">↓ 10%</p>
-            </div>
-            <div className="bg-orange-500 text-white w-12 h-12 flex items-center justify-center rounded-lg">👤</div>
-          </div>
-
-          <div className="bg-white shadow-md rounded-xl p-5 flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500">Requests</p>
-              <h2 className="text-2xl font-bold">£10,000</h2>
-              <p className="text-green-500 text-sm">↑ 10%</p>
-            </div>
-            <div className="bg-red-500 text-white w-12 h-12 flex items-center justify-center rounded-lg">💼</div>
-          </div>
+          ))}
         </div>
 
-        {/* CHARTS SECTION */}
+        {/* CHARTS */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          {/* Bar Chart Placeholder */}
           <div className="col-span-2 bg-white shadow-md rounded-xl p-6 h-[380px] flex items-center justify-center">
             <p className="text-gray-400">[ Bar Chart ]</p>
           </div>
 
-          {/* Donut Chart */}
           <div className="bg-white shadow-md rounded-xl p-6 flex flex-col items-center justify-center">
-            <h3 className="text-lg font-semibold mb-4">Average Automation Cost</h3>
-            <div className="relative w-48 h-48">
-              <div className="absolute inset-0 rounded-full border-22 border-green-400"></div>
-              <div className="absolute inset-4 rounded-full border-22 border-orange-300"></div>
-              <div className="absolute inset-8 rounded-full border-22 border-red-400"></div>
-              <div className="absolute inset-12 bg-white rounded-full flex items-center justify-center text-xl font-semibold">£143,000</div>
-            </div>
-
-            <div className="flex gap-4 mt-4 text-sm">
-              <span className="flex items-center gap-1"><span className="w-3 h-3 bg-green-400 rounded-sm"></span> Easy 55%</span>
-              <span className="flex items-center gap-1"><span className="w-3 h-3 bg-orange-300 rounded-sm"></span> Moderate 35%</span>
-              <span className="flex items-center gap-1"><span className="w-3 h-3 bg-red-400 rounded-sm"></span> Difficult 10%</span>
+            <h3 className="text-lg font-semibold mb-4">
+              Average Automation Cost
+            </h3>
+            <div className="relative w-48 h-48 flex items-center justify-center font-semibold">
+              £143,000
             </div>
           </div>
         </div>
 
-        {/* TABLE PLACEHOLDER */}
+        {/* TABLE */}
         <div className="bg-white shadow-md rounded-xl p-6 h-64 flex items-center justify-center mb-10">
           <p className="text-gray-400">[ Table Data ]</p>
         </div>
-        
       </main>
+      <ToastContainer/>
     </div>
   );
-}
-export default Page
+};
+
+export default Page;

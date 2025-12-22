@@ -1,5 +1,9 @@
 import React from "react";
 import Link from "next/link";
+import { logoutHandler } from "@/utils/auth";
+import { useRouter } from "next/navigation";
+
+
 
 const menu = [
   {
@@ -141,6 +145,7 @@ const menu = [
 ];
 
 export default function Content() {
+  const router = useRouter();
   return (
     <div className="h-full px-6 py-6 overflow-y-auto bg-white border-r border-gray-200">
       {/* LOGO */}
@@ -164,7 +169,7 @@ export default function Content() {
 
       {/* SIGN OUT */}
       <div className="mt-6 border-t pt-4">
-        <button className="flex items-center gap-3 text-red-500 font-medium hover:bg-red-50 w-full p-2 rounded-lg transition">
+        <button onClick={() => logoutHandler(router)} className="flex items-center gap-3 text-red-500 font-medium hover:bg-red-50 w-full p-2 rounded-lg transition">
           <span className="text-xl">↩</span> Sign Out
         </button>
       </div>

@@ -11,6 +11,7 @@ import SubscriptionManagementCard from "@/app/dashboard/SubscriptionManagementCa
 import Loader from "@/components/Loader";
 import Profile from "./profile";
 import Subscription from "./subscription";
+import { logoutHandler } from "@/utils/auth";
 
 const Page = () => {
   const router = useRouter();
@@ -33,32 +34,14 @@ const Page = () => {
     };
     checkAuth();
   }, [router]);
-
-  const logoutHandler = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_apiLink}auth/logout`,
-        { withCredentials: true }
-      );
-
-      if (response.status === 200 && response.data.status) {
-        toast.success(response.data.message || "Logged Out successfully!");
-        router.push("/");
-      } else {
-        toast.error(response.data.message || "Logout failed");
-      }
-    } catch {
-      toast.error("Logout failed");
-    }
-  };
-
+  
   const sidebarLinks = [
     { label: "Profile", icon: "/assets/icons/user.webp", onClick: () => setActiveSection("Profile") },
     { label: "Plans", icon: "/assets/icons/padlock.webp", onClick: () => router.push("/plan") },
     { label: "My Portfolio", icon: "/assets/icons/padlock.webp", onClick: () => setActiveSection("myPortfolio") },
     { label: "Subscription", icon: "/assets/icons/credit-card.webp", onClick: () => setActiveSection("Subscription") },
     { label: "Billing", icon: "/assets/icons/bill.webp", onClick: () => setActiveSection("billing") },
-    { label: "Logout", icon: "/assets/icons/logout.png", onClick: logoutHandler },
+    { label: "Logout", icon: "/assets/icons/logout.png", onClick:()=> logoutHandler(router) },
   ];
 
   if (loading) return <Loader />;

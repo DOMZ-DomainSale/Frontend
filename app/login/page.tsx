@@ -59,7 +59,7 @@ const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
       { withCredentials: true }
     );
     toast.success("Login successful");
-    router.push(me.data.user.role === "admin" ? "/admin" : "/");
+    router.push(me.data.user.role === "admin" ? "/admin" : "/dashboard");
 
   } catch (error: any) {
     // 🔒 FORCED PASSWORD CHANGE (403)
