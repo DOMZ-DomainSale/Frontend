@@ -1,5 +1,4 @@
-"use client";
-
+// "use client";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { stripePromise } from "@/utils/stripe";
 import axios from "axios";
