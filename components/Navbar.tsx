@@ -95,7 +95,7 @@ const Navbar = () => {
         <div className="absolute top-full left-0 w-full bg-white shadow-md border-t md:hidden animate-slide-down">
           <ul className="flex flex-col items-start p-4 space-y-4 text-gray-800 font-medium">
             <li className="hover:text-blue-600 w-full" onClick={() => setMenuOpen(false)}>Home</li>
-            <li className="hover:text-blue-600 w-full" onClick={() => setMenuOpen(false)}>Buy</li>
+            <Link href={'/domainbuy'} className="hover:text-blue-600 w-full" onClick={() => setMenuOpen(false)}>Buy</Link>
             <li className="hover:text-blue-600 w-full" onClick={() => setMenuOpen(false)}>Sell</li>
             <li className="hover:text-blue-600 w-full" onClick={() => setMenuOpen(false)}>Contact</li>
             <button className="bg-linear-to-r from-blue-500 to-blue-600 text-white font-semibold px-5 py-2 rounded-full shadow hover:from-blue-600 hover:to-blue-700 transition w-full">

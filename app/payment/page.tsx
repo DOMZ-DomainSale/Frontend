@@ -6,12 +6,9 @@ import { Suspense } from "react";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { stripePromise } from "@/utils/stripe";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useRouter, useSearchParams } from "next/navigation";
 
-/* ---------------------------------- */
-/* 🔹 CHILD (uses useSearchParams) */
-/* ---------------------------------- */
 const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
@@ -58,7 +55,7 @@ const CheckoutForm = () => {
           { paymentIntentId: result.paymentIntent.id },
           { withCredentials: true }
         );
-
+        
         toast.success("Payment successful & plan activated!");
         router.push("/dashboard");
       }
@@ -97,7 +94,6 @@ export default function PaymentPage() {
           <CheckoutForm />
         </Suspense>
       </Elements>
-      <ToastContainer />
     </>
   );
 }

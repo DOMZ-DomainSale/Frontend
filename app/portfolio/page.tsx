@@ -7,7 +7,7 @@ import Footer from '@/components/Footer';
 import NavbarComponenet from '@/components/NavbarComponenet';
 import Loader from '@/components/Loader';
 
-const Page = () => {
+const Portfolio = () => {
     const [loading, setLoading] = useState(true);
     const router = useRouter();
     useEffect(() => {
@@ -112,6 +112,6 @@ const Page = () => {
     );
 };
 
-export default Page;
+export default Portfolio;
 
 

@@ -2,11 +2,12 @@
 
 import NavbarComponenet from "@/components/NavbarComponenet";
 import Footer from "@/components/Footer";
-import { ToastContainer ,toast} from "react-toastify";
+import {toast} from "react-toastify";
 import { ChangeEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Loader from "@/components/Loader";
+import Link from "next/link";
 
 interface UserDataLogin{
   email:string,
@@ -30,8 +31,7 @@ const  Page =()=> {
       [name]: type === 'checkbox' ? checked : value,
     }));
   };
-
-  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
   setLoaderStatus(true);
 
@@ -46,14 +46,14 @@ const  Page =()=> {
       { withCredentials: true }
     );
 
-    // 🔐 ADMIN → OTP REQUIRED (200)
+    // 🔐 Admin OTP
     if (res.data?.code === "ADMIN_OTP_REQUIRED") {
       toast.info("OTP sent to your email");
+     
       router.push("/verify");
       return;
     }
 
-    // ✅ NORMAL USER → SESSION EXISTS
     const me = await axios.get(
       `${process.env.NEXT_PUBLIC_apiLink}auth/me`,
       { withCredentials: true }
@@ -63,27 +63,32 @@ const  Page =()=> {
     router.push(me.data.user.role === "admin" ? "/admin" : "/dashboard");
 
   } catch (error: any) {
-    // 🔒 FORCED PASSWORD CHANGE (403)
-    if (
-      error?.response?.status === 403 &&
-      error?.response?.data?.code === "PASSWORD_CHANGE_REQUIRED"
-    ) {
+    const data = error?.response?.data;
+    const status = error?.response?.status;
+    if (status === 403 && data?.code === "EMAIL_NOT_VERIFIED") {
+      sessionStorage.setItem('verify_email_user_domz',userData?.email)
+      toast(data.message || "EMAIL_NOT_VERIFIED");
+      router.push('/verify')
+      return;
+    }
+    if (status === 403 && data?.code === "PASSWORD_CHANGE_REQUIRED") {
+      toast.error("Please change your password");
       router.push("/changepassword");
       return;
     }
-
-    toast.error(
-      error?.response?.data?.message || "Login failed"
-    );
+    if (status === 401) {
+      toast.error("Invalid credentials");
+      return;
+    }
+    toast.error(data?.message || "Login failed");
   } finally {
     setLoaderStatus(false);
   }
 };
+
 if(loaderStatus) return <Loader/>
   return (
     <div className="min-h-screen bg-white flex flex-col">
-
-      {/* HERO + NAVBAR */}
       <NavbarComponenet
         colorText="S"
         plainText="ign In"
@@ -156,9 +161,9 @@ if(loaderStatus) return <Loader/>
             <div className="flex flex-col sm:flex-row sm:justify-between gap-3 text-sm">
               <p>
                 Don’t have an account?{" "}
-                <span className="text-blue-600 font-semibold cursor-pointer">
+                <Link href={'/signup'} className="text-blue-600 font-semibold cursor-pointer">
                   Sign Up
-                </span>
+                </Link>
               </p>
               <span className="text-blue-600 cursor-pointer">
                 Forgot password?
@@ -169,7 +174,6 @@ if(loaderStatus) return <Loader/>
       </main>
 
       <Footer />
-      <ToastContainer />
     </div>
   );
 }

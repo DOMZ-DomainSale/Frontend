@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Content from './content';
 import Loader from '@/components/Loader';
 import Table from '@/utils/Table';
@@ -31,6 +31,7 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [domainsData, setDomainsData] = useState<DomainsResponse | null>(null);
+  const [isauthenciated, setisAuthenciated] = useState(false);
 
   useEffect(() => {
     const checkAdminAuth = async () => {
@@ -39,50 +40,58 @@ const Page = () => {
           `${process.env.NEXT_PUBLIC_apiLink}auth/me`,
           { withCredentials: true }
         );
-        if (res.data?.user?.role !== 'admin') {
-          router.replace('/login');
+        if (res.data?.user?.role !== "admin") {
+          router.replace("/login");
           return;
         }
-        setLoading(false);
+        setisAuthenciated(true);
       } catch {
-        router.replace('/login');
+        router.replace("/login");
+      } finally {
+        setLoading(false);
       }
     };
-
     checkAdminAuth();
   }, [router]);
-  
-useEffect(()=>{
-    const fetchAllUser=async ()=>{
-      try {
-        const res=await axios.get(
-          `${process.env.NEXT_PUBLIC_apiLink}user/allusers`,
-          {withCredentials:true}
-        )
-        .then((res:any)=>setAllUsers(res.data.users)
-        )
-      } catch (error) {
-        toast.error('Error Fetching Users')
-      }
-    }
-    fetchAllUser();
-},[router])
 
-useEffect(()=>{
-    const fetchAlldomain=async ()=>{
+  useEffect(() => {
+    if (isauthenciated) {
+      const fetchAllUser = async () => {
+        try {
+          const res = await axios.get(
+            `${process.env.NEXT_PUBLIC_apiLink}user/allusers`,
+            { withCredentials: true }
+          );
+
+          setAllUsers(res?.data?.users);
+        } catch (error) {
+          console.log(error);
+          
+          toast.error('Error Fetching Users');
+        }
+      };
+      fetchAllUser();
+    }
+    else return;
+
+  }, [isauthenciated]); // ✅ correct dependency
+
+
+  useEffect(() => {
+    const fetchAlldomain = async () => {
       try {
-        const res=await axios.get(
+        const res = await axios.get(
           `${process.env.NEXT_PUBLIC_apiLink}domain/getalldomains`,
-          {withCredentials:true}
+          { withCredentials: true }
         )
-        .then((res:any)=>setDomainsData(res.data)
-        )
+          .then((res: any) => setDomainsData(res.data)
+          )
       } catch (error) {
         toast.error('Error Fetching Domains')
       }
     }
     fetchAlldomain();
-},[router])
+  }, [router])
 
   if (loading) return <Loader />;
   return (
@@ -114,9 +123,8 @@ useEffect(()=>{
 
       {/* Mobile Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-50 w-64 h-full bg-white shadow-lg transform transition-transform duration-300 sm:hidden ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed top-0 left-0 z-50 w-64 h-full bg-white shadow-lg transform transition-transform duration-300 sm:hidden ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         <div className="flex justify-end p-4">
           <button onClick={() => setSidebarOpen(false)} aria-label="Close sidebar">
@@ -160,14 +168,13 @@ useEffect(()=>{
             </div>
           ))}
         </div>
-        <Table/>
+        <Table />
 
         {/* TABLE */}
         <div className="bg-white shadow-md rounded-xl p-6 h-64 flex items-center justify-center mb-10">
           <p className="text-gray-400">[ Table Data ]</p>
         </div>
       </main>
-      <ToastContainer/>
     </div>
   );
 };

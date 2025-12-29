@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import axios from 'axios';
 import { ChangeEvent, useState } from 'react';
@@ -10,7 +10,6 @@ import NavbarComponenet from '@/components/NavbarComponenet';
 import Link from 'next/link';
 
 interface UserData {
-  name: string;
   email: string;
   password: string;
   cnfpassword: string;
@@ -19,140 +18,156 @@ interface UserData {
 
 const Page = () => {
   const [userData, setUserData] = useState<UserData>({
-    name: '',
     email: '',
     password: '',
     cnfpassword: '',
     terms: false,
   });
 
-  const [loaderStatus, setLoaderStatus] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setUserData((prevState) => ({
-      ...prevState,
-      [name]: type === 'checkbox' ? checked : value,
+    setUserData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // 🔐 Client-side safety checks
+    if (!userData.terms) {
+      toast.error("You must accept the Terms & Privacy Policy");
+      return;
+    }
+
     if (userData.password !== userData.cnfpassword) {
       toast.error("Passwords do not match");
       return;
     }
-    setLoaderStatus(true);
+    setLoading(true);
+
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_apiLink}auth/register`, {
-        name: userData.name,
-        email: userData.email,
-        password: userData.password,
-        terms: userData.terms,
-      });
-      toast.success(res?.data.message);
-      router.push("/login");
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_apiLink}auth/register`,
+        {
+          email: userData.email,
+          password: userData.password,
+          terms: userData.terms,
+        }
+      );
+
+      // ✅ OTP flow ONLY
+      if (res.data?.code === "EMAIL_OTP_SENT") {
+        sessionStorage.setItem('verify_email_user_domz',userData?.email)
+        toast.success("OTP sent to your email");
+        router.push("/verify?type=email");
+        return;
+      }
+
+      // Fallback (should not happen)
+      toast.success(res.data?.message || "Registration successful");
+
     } catch (err: any) {
-      toast.error(err?.response?.data.message || "An unexpected error occurred", {
-        position: 'top-right',
-      });
+      toast.error(
+        err?.response?.data?.message || "Registration failed"
+      );
     } finally {
-      setLoaderStatus(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="bg-white lg:pl-[10%] lg:pr-[10%] lg:pt-9">
+    <div className="bg-white lg:px-[10%] lg:pt-9">
       <NavbarComponenet colorText="S" plainText="ignUp" IsParaText={false} />
-      {loaderStatus ? (
+
+      {loading ? (
         <Loader />
       ) : (
         <div className="lg:px-[10%] lg:pt-16">
           <div className="max-w-2xl mx-auto">
-            <div className="bg-white">
-              <h2 className="text-2xl font-bold text-center mb-8">
-                <span className="text-blue-600">Create</span> an Account
-              </h2>
-              <form className="space-y-6" onSubmit={onSubmitHandler} noValidate>
-                <div className="w-full">
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    Email*
-                  </label>
-                  <input
-                    name="email"
-                    type="email"
-                    required
-                    className="block w-full rounded-lg bg-blue-50 px-4 py-2 text-base border border-transparent focus:border-blue-500"
-                    onChange={onChangeHandler}
-                  />
-                </div>
-                <div className="w-full">
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                    Password*
-                  </label>
-                  <input
-                    name="password"
-                    type="text"
-                    required
-                    className="block w-full rounded-lg bg-blue-50 px-4 py-2 text-base border border-transparent focus:border-blue-500"
-                    onChange={onChangeHandler}
-                  />
-                </div>
-                <div className="w-full">
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                    Confirm Password*
-                  </label>
-                  <input
-                    name="cnfpassword"
-                    type="password"
-                    required
-                    className="block w-full rounded-lg bg-blue-50 px-4 py-2 text-base border border-transparent focus:border-blue-500"
-                    onChange={onChangeHandler}
-                  />
-                </div>
+            <h2 className="text-2xl font-bold text-center mb-8">
+              <span className="text-blue-600">Create</span> an Account
+            </h2>
 
-                <div className="flex items-center">
-                  <input
-                    id="terms"
-                    name="terms"
-                    type="checkbox"
-                    required
-                    className="h-4 w-4 text-blue-600 rounded border-gray-300"
-                    onChange={onChangeHandler}
-                  />
-                  <label htmlFor="terms" className="ml-2 block text-sm text-gray-600">
-                    I agree to the Terms of Service and Privacy Policy
-                  </label>
-                </div>
+            <form className="space-y-6" onSubmit={onSubmitHandler} noValidate>
+              {/* EMAIL */}
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Email*
+                </label>
+                <input
+                  name="email"
+                  type="email"
+                  required
+                  className="w-full rounded-lg bg-blue-50 px-4 py-2"
+                  onChange={onChangeHandler}
+                />
+              </div>
 
-                <div className="pt-2 w-full flex justify-start">
-                  <button
-                    type="submit"
-                    className="
-                      cursor-pointer
-                      rounded-full
-                      px-8
-                      py-2
-                      bg-linear-to-r from-blue-600 to-blue-400
-                      text-white
-                      font-semibold
-                      shadow-md
-                      focus:outline-none
-                      transition
-                      w-55 
-                      text-center
-                    "
-                  >
-                    SIGN UP
-                  </button>
-                </div>
-              </form>
-               <p className="text-slate-600 text-sm mt-6 text-center">Already have an account? <Link href="/login" className="text-blue-600 font-medium hover:underline ml-1">Login here</Link></p>
-            </div>
+              {/* PASSWORD */}
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Password*
+                </label>
+                <input
+                  name="password"
+                  type="password"
+                  required
+                  className="w-full rounded-lg bg-blue-50 px-4 py-2"
+                  onChange={onChangeHandler}
+                />
+              </div>
+
+              {/* CONFIRM PASSWORD */}
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Confirm Password*
+                </label>
+                <input
+                  name="cnfpassword"
+                  type="password"
+                  required
+                  className="w-full rounded-lg bg-blue-50 px-4 py-2"
+                  onChange={onChangeHandler}
+                />
+              </div>
+
+              {/* TERMS */}
+              <div className="flex items-center">
+                <input
+                  name="terms"
+                  type="checkbox"
+                  className="h-4 w-4"
+                  onChange={onChangeHandler}
+                />
+                <label className="ml-2 text-sm">
+                  I agree to the Terms & Privacy Policy
+                </label>
+              </div>
+
+              {/* SUBMIT */}
+              <button
+                type="submit"
+                className="w-full rounded-full bg-blue-600 text-white py-2 font-semibold"
+              >
+                Sign Up
+              </button>
+            </form>
+
+            <p className="text-sm mt-6 text-center">
+              Already have an account?
+              <Link href="/login" className="text-blue-600 ml-1">
+                Login
+              </Link>
+            </p>
           </div>
         </div>
       )}
+
       <Footer />
       <ToastContainer />
     </div>

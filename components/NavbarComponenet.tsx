@@ -44,7 +44,7 @@ const NavbarComponenet = (props: NavbarTextProp) => {
           <div className="hidden md:flex">
             <ul className="flex items-center gap-8 bg-white px-8 py-3 rounded-full shadow-sm text-gray-900 text-[15px]">
               <Link href="/" className="hover:text-blue-600">Home</Link>
-              <li className="hover:text-blue-600 cursor-pointer">Buy</li>
+              <Link href={'/domainbuy'} className="hover:text-blue-600 cursor-pointer">Buy</Link>
               <li className="hover:text-blue-600 cursor-pointer">Sell</li>
               <Link href={'/contact'} className="hover:text-blue-600 cursor-pointer">Contact</Link>
             </ul>
@@ -77,7 +77,7 @@ const NavbarComponenet = (props: NavbarTextProp) => {
           <div className="md:hidden bg-white rounded-xl mx-4 mt-2 shadow-lg p-4">
             <ul className="space-y-4 text-gray-800">
               <Link href={'/'}>Home</Link>
-              <li>Buy</li>
+              <Link href={'/domainbuy'}>Buy</Link>
               <li>Sell</li>
               <Link href={'/contact'}>Contact</Link>
               <Link href="/portfolio">

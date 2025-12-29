@@ -38,12 +38,6 @@ const ProfileInfo = (props: backendUserData) => {
                         Send Verification Link
                     </button>
                 </div>
-                {/* <button
-                    type="submit"
-                    className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-semibold"
-                >
-                    Save Changes
-                </button> */}
             </form>
         </>
     )

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { ToastContainer } from "react-toastify";
+import '../node_modules/react-toastify/dist/ReactToastify.css'
 import "./globals.css";
 
 const inter = Inter({
@@ -21,6 +23,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.variable}>
         {children}
+         <ToastContainer
+          position="top-right"
+          autoClose={4000}
+          pauseOnHover
+        />
       </body>
     </html>
   );

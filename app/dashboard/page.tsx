@@ -2,23 +2,21 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ToastContainer, toast } from "react-toastify";
 import Image from "next/image";
 import Footer from "@/components/Footer";
 import NavbarComponenet from "@/components/NavbarComponenet";
 import PaymentSettingCard from "@/components/cards/profile/PaymentSettingCard";
 import SubscriptionManagementCard from "@/app/dashboard/SubscriptionManagementCard";
 import Loader from "@/components/Loader";
-import Profile from "./profile";
-import Subscription from "./subscription";
 import { logoutHandler } from "@/utils/auth";
+import Myportfolio from "./myportfolio";
+import Profile from "./profile";
 
 const Page = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-
   const [activeSection, setActiveSection] = useState("Profile");
-  const [sidebarOpen, setSidebarOpen] = useState(false); // ⭐ mobile toggle
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -34,19 +32,19 @@ const Page = () => {
     };
     checkAuth();
   }, [router]);
-  
+
   const sidebarLinks = [
     { label: "Profile", icon: "/assets/icons/user.webp", onClick: () => setActiveSection("Profile") },
     { label: "Plans", icon: "/assets/icons/padlock.webp", onClick: () => router.push("/plan") },
     { label: "My Portfolio", icon: "/assets/icons/padlock.webp", onClick: () => setActiveSection("myPortfolio") },
     { label: "Subscription", icon: "/assets/icons/credit-card.webp", onClick: () => setActiveSection("Subscription") },
-    { label: "Logout", icon: "/assets/icons/logout.png", onClick:()=> logoutHandler(router) },
+    { label: "Logout", icon: "/assets/icons/logout.png", onClick: () => logoutHandler(router) },
   ];
 
   if (loading) return <Loader />;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-dvh flex flex-col bg-white">
       <NavbarComponenet colorText="P" plainText="rofile" IsParaText={false} />
       <div className="flex sm:hidden justify-between items-center px-4 py-3 border-b">
         <h2 className="text-lg font-semibold">Dashboard</h2>
@@ -58,18 +56,22 @@ const Page = () => {
         </button>
       </div>
 
-      <div className="flex flex-col sm:flex-row">
+      <div className="relative flex flex-1">
         <aside
           className={`
-      bg-white border-r border-gray-200 px-4 py-6 
-      w-full sm:w-64 shrink-0 
-      h-screen fixed left-0 top-[255px]   /* ⭐ 100px = your Navbar height */
-      overflow-y-auto z-40
-      transition-all duration-300
-      ${sidebarOpen ? "block" : "hidden sm:block"}
-    `}
+    fixed sm:sticky
+    top-0 sm:top-22
+    left-0
+    h-screen sm:h-[calc(100vh-88px)]
+    w-64
+    bg-white
+    border-r border-gray-200
+    z-40
+    transform transition-transform duration-300 ease-in-out
+    ${sidebarOpen ? "translate-x-0" : "-translate-x-full sm:translate-x-0"}
+  `}
         >
-          <ul className="space-y-6">
+          <ul className="space-y-6 px-4 py-6">
             {sidebarLinks.map((item) => (
               <li key={item.label}>
                 <button
@@ -77,7 +79,7 @@ const Page = () => {
                     item.onClick();
                     setSidebarOpen(false);
                   }}
-                  className="flex items-center gap-3 w-full text-left text-gray-700 hover:text-blue-600 font-medium cursor-pointer"
+                  className="flex items-center gap-3 w-full text-left text-gray-700 hover:text-blue-600 font-medium"
                 >
                   <Image src={item.icon} alt={item.label} width={20} height={20} />
                   <span>{item.label}</span>
@@ -86,22 +88,20 @@ const Page = () => {
             ))}
           </ul>
         </aside>
-        <main
-          className="
-      flex-1 
-      px-4 sm:px-8 py-8 
-      mt-4
-      sm:ml-64             /* ⭐ This keeps content exactly where it was */
-    "
-        >
+        {sidebarOpen && (
+          <div
+            onClick={() => setSidebarOpen(false)}
+            className="fixed inset-0 bg-black/30 z-30 sm:hidden"
+          />
+        )}
+        <main className="flex-1 px-4 sm:px-8 py-6 mt-2 sm:mt-0">
           {activeSection === "Profile" && <Profile />}
           {activeSection === "Subscription" && <SubscriptionManagementCard />}
           {activeSection === "billing" && <PaymentSettingCard />}
-          {activeSection === "myPortfolio" && <Subscription />}
+          {activeSection === "myPortfolio" && <Myportfolio />}
         </main>
       </div>
       <Footer />
-      <ToastContainer />
     </div>
   );
 };

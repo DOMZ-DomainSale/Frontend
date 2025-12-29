@@ -9,7 +9,7 @@ import GetStarted from '@/components/GetStarted'
 import Footer from '@/components/Footer'
 import DiscoveryPartner from '@/components/DiscoveryPartner'
 import DemoVideo from '@/components/DemoVideo'
-import '../node_modules/react-toastify/dist/ReactToastify.css'
+
 
 const page = () => {
   return (

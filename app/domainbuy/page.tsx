@@ -2,7 +2,6 @@ import DomainTable from '@/components/DomainTable'
 import FilterDashboard from '@/components/FilterDashboard'
 import Footer from '@/components/Footer'
 import NavbarComponenet from '@/components/NavbarComponenet'
-
 const page = () => {
     return (
         <div className='lg:pl-[10%] lg:pr-[10%] lg:pt-9'>
