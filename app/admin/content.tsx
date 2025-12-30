@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { logoutHandler } from "@/utils/auth";
 
 /* 🔑 SHARED TYPE */
-export type AdminView = "dashboard" | "domains" | "Plans" | "domains";
+export type AdminView = "dashboard" | "domains" | "Plans" | "Faq";
 
 /* ✅ PROPS TYPE */
 interface SidebarProps {
@@ -80,8 +80,8 @@ const menu: Menu = [
         ),
       },
       {
-        label: "Domains",
-        view: "domains",
+        label: "Faq",
+        view: "Faq",
         iconBg: "bg-[#F4EBFF]",
         iconColor: "text-[#7F56D9]",
         svg: (

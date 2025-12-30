@@ -9,8 +9,9 @@ import Loader from '@/components/Loader';
 import Table from '@/utils/Table';
 import DomainTable from '../../utils/DomainTable';
 import PlanTable, { PlansResponse } from './PlanTable';
+import Faq from './Faq';
 
-type AdminView = "dashboard" | "domains" | "Plans" | "domains";
+type AdminView = "dashboard" | "domains" | "Plans" | "Faq";
 
 interface User {
   _id: string;
@@ -182,6 +183,12 @@ const Page = () => {
         {activeView === "Plans" && allPlans?.plans && (  
           <div className="bg-white p-6 rounded-xl shadow">
             <PlanTable data={allPlans.plans} />  
+          </div>
+        )}
+        
+         {activeView === "Faq" && (  
+          <div className="bg-white p-6 rounded-xl shadow">
+            <Faq />  
           </div>
         )}
       </main>
