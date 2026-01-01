@@ -12,7 +12,7 @@ import PlanTable, { PlansResponse } from './PlanTable';
 import Faq from './Faq';
 import UserTable from './UserTable';
 
-type AdminView = "dashboard" | "domains" | "Plans" | "Faq";
+type AdminView = "dashboard" | "Users" | "domains" | "Plans" | "Faq";
 
 
 export interface UserPlan {
@@ -52,7 +52,6 @@ const Page = () => {
   const [refreshUsers, setRefreshUsers] = useState(0);
   const [domainsData, setDomainsData] = useState<DomainsResponse | null>(null);
   const [allPlans, setallPlans] = useState<PlansResponse>()
-  
 
 
   // 🔐 AUTH CHECK
@@ -85,14 +84,14 @@ const Page = () => {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_apiLink}user/allusers`,
           { withCredentials: true }
-        );        
+        );
         setAllUsers(res.data.users);
       } catch {
         toast.error("Error fetching users");
       }
     };
     fetchUsers();
-  }, [isauthenciated,refreshUsers]);
+  }, [isauthenciated, refreshUsers]);
 
   // 🌐 DOMAINS
   useEffect(() => {
@@ -186,9 +185,9 @@ const Page = () => {
         )}
 
         {/* IDEAS */}
-        {/* {activeView === "dashboard" && <Table />} */}
-        {activeView === "dashboard" && <UserTable data={allUsers} 
-        onRefresh={() => setRefreshUsers(prev => prev + 1)}
+        {activeView === "dashboard" && <Table />}
+        {activeView === "Users" && <UserTable data={allUsers}
+          onRefresh={() => setRefreshUsers(prev => prev + 1)}
         />}
         {/* DOMAINS */}
         {activeView === "domains" && domainsData?.domains && (

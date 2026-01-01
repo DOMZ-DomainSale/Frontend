@@ -13,7 +13,6 @@ interface UserTableProps {
     data: UserInterface[];
     onRefresh: () => void;
 }
-
 export interface SelectedUser {
   userId: string;
   email:string
@@ -88,10 +87,9 @@ const UserTable = ({ data, onRefresh }: UserTableProps) => {
             bookType: "xlsx",
             type: "array",
         });
-
         saveAs(
             new Blob([excelBuffer], { type: "application/octet-stream" }),
-            "domains.xlsx"
+            "user.xlsx"
         );
     };
     return (

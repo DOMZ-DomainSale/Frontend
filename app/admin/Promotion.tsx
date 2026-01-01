@@ -14,7 +14,6 @@ const Promotion = ({ domainPromotion, onClose }: PromotionProps) => {
     const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Validate required data
         if (!domainPromotion?.domain_id || priority === undefined) {
             toast.error("Domain ID and priority are required");
             return;
@@ -41,7 +40,6 @@ const Promotion = ({ domainPromotion, onClose }: PromotionProps) => {
             onClose()
         }
     };
-
     return (
         <>
         <form onSubmit={onSubmitHandler} className="max-w-sm mx-auto">

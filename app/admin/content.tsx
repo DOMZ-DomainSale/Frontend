@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { logoutHandler } from "@/utils/auth";
 
 /* 🔑 SHARED TYPE */
-export type AdminView = "dashboard" | "domains" | "Plans" | "Faq";
+export type AdminView = "dashboard" | "Users" | "domains" | "Plans" | "Faq";
 
 /* ✅ PROPS TYPE */
 interface SidebarProps {
@@ -50,6 +50,41 @@ const menu: Menu = [
     section: "Explore",
     children: [
       {
+        label: "Users",
+        view: "Users",
+        iconBg: "bg-[#E6F4FF]",
+        iconColor: "text-[#1570EF]",
+
+        svg: (
+          <>
+            <path
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M18 21a8 8 0 0 0-16 0"
+            />
+            <circle
+              cx="10"
+              cy="8"
+              r="5"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"
+            />
+          </>
+        ),
+
+      },
+      {
         label: "Domains",
         view: "domains",
         iconBg: "bg-[#E0EAFF]",
@@ -91,7 +126,7 @@ const menu: Menu = [
           </>
         ),
       },
-      
+
     ],
   },
 ];
@@ -113,16 +148,16 @@ export default function Content({ activeView, setActiveView }: SidebarProps) {
 
           {"children" in item
             ? item.children.map((sub, idx) => (
-                <SidebarItem
-                  key={idx}
-                  label={sub.label}
-                  iconBg={sub.iconBg}
-                  iconColor={sub.iconColor}
-                  svg={sub.svg}
-                  active={activeView === sub.view}
-                  onClick={() => setActiveView(sub.view)}
-                />
-              ))
+              <SidebarItem
+                key={idx}
+                label={sub.label}
+                iconBg={sub.iconBg}
+                iconColor={sub.iconColor}
+                svg={sub.svg}
+                active={activeView === sub.view}
+                onClick={() => setActiveView(sub.view)}
+              />
+            ))
             : (
               <SidebarItem
                 label={item.label}
