@@ -1,23 +1,30 @@
 'use client';
 
-import React, { ChangeEvent, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { toast, ToastContainer } from "react-toastify";
 import { UserInterface } from "./page";
 import axios from "axios";
+import Modal from "@/components/model";
+import AddPlan from "./AddPlan";
 
 interface UserTableProps {
-  data: UserInterface[];
-  onRefresh: () => void;
+    data: UserInterface[];
+    onRefresh: () => void;
 }
 
+export interface SelectedUser {
+  userId: string;
+  email:string
+}
 
 /* ✅ COMPONENT */
-const UserTable = ({ data ,onRefresh }: UserTableProps) => {
+const UserTable = ({ data, onRefresh }: UserTableProps) => {
     const [search, setSearch] = useState("");
     const [dateFilter, setDateFilter] = useState("");
-
+    const [open, setOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<SelectedUser | null>(null);
     const onChangeHandler = async (_id: string, currentStatus: boolean) => {
         const payload = {
             _id,
@@ -34,7 +41,7 @@ const UserTable = ({ data ,onRefresh }: UserTableProps) => {
                 toast.success(
                     `User ${payload.isActive ? "activated" : "deactivated"} successfully`
                 );
-              onRefresh()
+                onRefresh()
             } else {
                 toast.error("Failed to update user status");
             }
@@ -73,10 +80,9 @@ const UserTable = ({ data ,onRefresh }: UserTableProps) => {
             status: item?.isActive ? " Active" : "In Active",
             CreatedAt: new Date(item.createdAt).toLocaleDateString(),
         }));
-
         const worksheet = XLSX.utils.json_to_sheet(sheetData);
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Domains");
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Users");
 
         const excelBuffer = XLSX.write(workbook, {
             bookType: "xlsx",
@@ -117,9 +123,6 @@ const UserTable = ({ data ,onRefresh }: UserTableProps) => {
                     </button>
                 </div>
             </div>
-
-            {/* TABLE */}
-            {/* TABLE */}
             <div className="overflow-x-auto max-h-105 overflow-y-auto">
                 <table className="min-w-full text-sm border-collapse">
                     <thead className="bg-gray-50 text-gray-500 uppercase text-xs sticky top-0 z-20">
@@ -130,6 +133,8 @@ const UserTable = ({ data ,onRefresh }: UserTableProps) => {
                             <th className="px-6 py-3 text-left">Phone Number</th>
                             <th className="px-6 py-3 text-left">Registered Date</th>
                             <th className="px-6 py-3 text-left">Status</th>
+                            <th className="px-6 py-3 text-left">Change Status</th>
+                            <th className="px-6 py-3 text-left">Plan</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y">
@@ -163,11 +168,34 @@ const UserTable = ({ data ,onRefresh }: UserTableProps) => {
                                         />
                                     </label>
                                 </td>
+                                <td className="px-6 py-4"
+                                onClick={() => {
+                                            setOpen(true)
+                                            setSelectedUser({
+                                                userId:item._id,
+                                                email:item.email
+                                            })
+                                        }}
+                                >
+                                    {item.plan?.title ? item.plan.title : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-plus-icon lucide-plus cursor-pointer"><path d="M5 12h14" /><path d="M12 5v14"
+                                        
+                                    /></svg>}
+                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
+            <Modal
+                isOpen={open}
+                onClose={() => setOpen(false)}
+                title="Add Plan"
+            >
+                <AddPlan
+                    selectedUser={selectedUser}
+                    onClose={() => setOpen(false)}
+                />
+            </Modal>
             <ToastContainer />
         </div>
     );

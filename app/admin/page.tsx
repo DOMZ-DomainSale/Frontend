@@ -14,13 +14,23 @@ import UserTable from './UserTable';
 
 type AdminView = "dashboard" | "domains" | "Plans" | "Faq";
 
+
+export interface UserPlan {
+  title: string;
+  feature: number;
+  status: "active" | "expired" | "cancelled";
+  endingDate: string;
+  plan?: UserPlan | null;
+}
+
 export interface UserInterface {
   _id: string;
   email: string;
   name?: string;
-  phoneNumber: string,
-  createdAt: string,
-  isActive: boolean,
+  phoneNumber?: string;
+  createdAt: string;
+  isActive: boolean;
+  plan?: UserPlan | null;
 }
 
 interface DomainsResponse {
@@ -75,7 +85,7 @@ const Page = () => {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_apiLink}user/allusers`,
           { withCredentials: true }
-        );
+        );        
         setAllUsers(res.data.users);
       } catch {
         toast.error("Error fetching users");
