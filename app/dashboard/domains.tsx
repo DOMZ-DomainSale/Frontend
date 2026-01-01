@@ -11,7 +11,6 @@ interface DomainType {
 
 const Domains = ({ portfolioStatus }: PortfolioProps) => {
    const [userDomains, setUserDomains] = useState<DomainType[]>([]);
-
    useEffect(() => {
       const fetchDomain = async () => {
          try {
@@ -19,7 +18,6 @@ const Domains = ({ portfolioStatus }: PortfolioProps) => {
                `${process.env.NEXT_PUBLIC_apiLink}domain/getdomainbyuser`,
                { withCredentials: true }
             );
-
             setUserDomains(res?.data?.domains);
          } catch (error) {
             console.error(error);

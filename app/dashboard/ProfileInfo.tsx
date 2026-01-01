@@ -31,12 +31,6 @@ const ProfileInfo = (props: backendUserData) => {
                         className="w-full rounded-md px-3 py-2 border border-gray-300 focus:ring focus:ring-blue-200"
                         readOnly
                     />
-                    <button
-                        type="button"
-                        className="absolute right-2 top-7 text-xs text-blue-500 hover:underline"
-                    >
-                        Send Verification Link
-                    </button>
                 </div>
             </form>
         </>

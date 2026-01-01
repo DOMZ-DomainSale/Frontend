@@ -2,20 +2,20 @@
 
 import NavbarComponenet from "@/components/NavbarComponenet";
 import Footer from "@/components/Footer";
-import {toast} from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { ChangeEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Loader from "@/components/Loader";
 import Link from "next/link";
 
-interface UserDataLogin{
-  email:string,
-  password:string,
-  terms:boolean,
+interface UserDataLogin {
+  email: string,
+  password: string,
+  terms: boolean,
 }
 
-const  Page =()=> {
+const Page = () => {
   const [userData, setUserData] = useState<UserDataLogin>({
     email: '',
     password: '',
@@ -31,62 +31,67 @@ const  Page =()=> {
       [name]: type === 'checkbox' ? checked : value,
     }));
   };
-const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  setLoaderStatus(true);
+  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoaderStatus(true);
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_apiLink}auth/login`,
+        {
+          email: userData.email.trim(),
+          password: userData.password,
+          terms: userData.terms,
+        },
+        { withCredentials: true }
+      );
 
-  try {
-    const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_apiLink}auth/login`,
-      {
-        email: userData.email.trim(),
-        password: userData.password,
-        terms: userData.terms,
-      },
-      { withCredentials: true }
-    );
+      // 🔐 Admin OTP
+      if (res.data?.code === "ADMIN_OTP_REQUIRED") {
+        toast.info("OTP sent to your email");
 
-    // 🔐 Admin OTP
-    if (res.data?.code === "ADMIN_OTP_REQUIRED") {
-      toast.info("OTP sent to your email");
-     
-      router.push("/verify");
-      return;
+        router.push("/verify");
+        return;
+      }
+
+      const me = await axios.get(
+        `${process.env.NEXT_PUBLIC_apiLink}auth/me`,
+        { withCredentials: true }
+      );
+
+      toast.success("Login successful");
+      router.push(me.data.user.role === "admin" ? "/admin" : "/dashboard");
+
+    } catch (error: any) {
+      const data = error?.response?.data;
+      const status = error?.response?.status;
+      if (status === 403 && data?.code === "EMAIL_NOT_VERIFIED") {
+        sessionStorage.setItem('verify_email_user_domz', userData?.email)
+        toast(data.message || "EMAIL_NOT_VERIFIED");
+        router.push('/verify')
+        return;
+      }
+      if (status === 403 && data?.code === "PASSWORD_CHANGE_REQUIRED") {
+        toast.error("Please change your password");
+        router.push("/changepassword");
+        return;
+      }
+      console.log(data?.code,"data?.codedata?.codedata?.code");
+      
+      if(status===403 && data?.code==="ACCOUNT_NOT_ACTIVATED"){
+        toast.info(data.message ||"Account Not ACTIVATED")
+        return
+      }
+      if (status === 401) {
+        toast.error("Invalid credentials");
+        return;
+      }
+      toast.error(data?.message || "Login failed");
+    } finally {
+      setLoaderStatus(false);
     }
+  };
 
-    const me = await axios.get(
-      `${process.env.NEXT_PUBLIC_apiLink}auth/me`,
-      { withCredentials: true }
-    );
-
-    toast.success("Login successful");
-    router.push(me.data.user.role === "admin" ? "/admin" : "/dashboard");
-
-  } catch (error: any) {
-    const data = error?.response?.data;
-    const status = error?.response?.status;
-    if (status === 403 && data?.code === "EMAIL_NOT_VERIFIED") {
-      sessionStorage.setItem('verify_email_user_domz',userData?.email)
-      toast(data.message || "EMAIL_NOT_VERIFIED");
-      router.push('/verify')
-      return;
-    }
-    if (status === 403 && data?.code === "PASSWORD_CHANGE_REQUIRED") {
-      toast.error("Please change your password");
-      router.push("/changepassword");
-      return;
-    }
-    if (status === 401) {
-      toast.error("Invalid credentials");
-      return;
-    }
-    toast.error(data?.message || "Login failed");
-  } finally {
-    setLoaderStatus(false);
-  }
-};
-
-if(loaderStatus) return <Loader/>
+  if (loaderStatus) return <Loader />
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <NavbarComponenet
@@ -108,8 +113,8 @@ if(loaderStatus) return <Loader/>
                 type="email"
                 className="w-full rounded-xl bg-blue-50 px-5 py-3
                            focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           name="email"
-                           onChange={onChangeHandler}
+                name="email"
+                onChange={onChangeHandler}
               />
             </div>
 
@@ -120,33 +125,30 @@ if(loaderStatus) return <Loader/>
                 type="password"
                 className="w-full rounded-xl bg-blue-50 px-5 py-3
                            focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           name="password"
-                           onChange={onChangeHandler}
+                name="password"
+                onChange={onChangeHandler}
               />
             </div>
-
-            {/* Terms */}
-           {/* Terms */}
-<div className="flex items-start gap-2 text-sm text-gray-700">
-  <input
-    type="checkbox"
-    name="terms"
-    checked={userData.terms}
-    onChange={onChangeHandler}
-    className="mt-1 h-4 w-4 rounded"
-    required
-  />
-  <p>
-    I agree to the{" "}
-    <span className="text-blue-600 cursor-pointer">
-      Terms of Service
-    </span>{" "}
-    and{" "}
-    <span className="text-blue-600 cursor-pointer">
-      Privacy Policy
-    </span>
-  </p>
-</div>
+            <div className="flex items-start gap-2 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                name="terms"
+                checked={userData.terms}
+                onChange={onChangeHandler}
+                className="mt-1 h-4 w-4 rounded"
+                required
+              />
+              <p>
+                I agree to the{" "}
+                <span className="text-blue-600 cursor-pointer">
+                  Terms of Service
+                </span>{" "}
+                and{" "}
+                <span className="text-blue-600 cursor-pointer">
+                  Privacy Policy
+                </span>
+              </p>
+            </div>
 
             {/* Login Button */}
             <button
@@ -172,7 +174,7 @@ if(loaderStatus) return <Loader/>
           </form>
         </div>
       </main>
-
+     <ToastContainer/>
       <Footer />
     </div>
   );

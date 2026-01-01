@@ -10,13 +10,17 @@ import Table from '@/utils/Table';
 import DomainTable from './DomainTable';
 import PlanTable, { PlansResponse } from './PlanTable';
 import Faq from './Faq';
+import UserTable from './UserTable';
 
-type AdminView = "dashboard" | "domains" | "Plans" | "Faq" ;
+type AdminView = "dashboard" | "domains" | "Plans" | "Faq";
 
-interface User {
+export interface UserInterface {
   _id: string;
   email: string;
   name?: string;
+  phoneNumber: string,
+  createdAt: string,
+  isActive: boolean,
 }
 
 interface DomainsResponse {
@@ -34,9 +38,11 @@ const Page = () => {
 
   const [activeView, setActiveView] = useState<AdminView>("dashboard");
 
-  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [allUsers, setAllUsers] = useState<UserInterface[]>([]);
+  const [refreshUsers, setRefreshUsers] = useState(0);
   const [domainsData, setDomainsData] = useState<DomainsResponse | null>(null);
   const [allPlans, setallPlans] = useState<PlansResponse>()
+  
 
 
   // 🔐 AUTH CHECK
@@ -64,7 +70,6 @@ const Page = () => {
   // 👥 USERS
   useEffect(() => {
     if (!isauthenciated) return;
-
     const fetchUsers = async () => {
       try {
         const res = await axios.get(
@@ -77,7 +82,7 @@ const Page = () => {
       }
     };
     fetchUsers();
-  }, [isauthenciated]);
+  }, [isauthenciated,refreshUsers]);
 
   // 🌐 DOMAINS
   useEffect(() => {
@@ -112,8 +117,6 @@ const Page = () => {
     };
     fetchPlans();
   }, [isauthenciated])
-
-  
   if (loading) return <Loader />;
   return (
     <div className="relative h-screen bg-[#F5F7FB]">
@@ -152,6 +155,7 @@ const Page = () => {
         {/* DASHBOARD */}
         {activeView === "dashboard" && (
           <>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
               {[
                 { label: 'Total Users', value: allUsers.length, color: 'bg-blue-500' },
@@ -172,25 +176,25 @@ const Page = () => {
         )}
 
         {/* IDEAS */}
-        {activeView === "dashboard" && <Table />}
-
-
-
+        {/* {activeView === "dashboard" && <Table />} */}
+        {activeView === "dashboard" && <UserTable data={allUsers} 
+        onRefresh={() => setRefreshUsers(prev => prev + 1)}
+        />}
         {/* DOMAINS */}
         {activeView === "domains" && domainsData?.domains && (
           <div className="bg-white p-6 rounded-xl shadow">
             <DomainTable data={domainsData.domains} />
           </div>
         )}
-        {activeView === "Plans" && allPlans?.plans && (  
+        {activeView === "Plans" && allPlans?.plans && (
           <div className="bg-white p-6 rounded-xl shadow">
-            <PlanTable data={allPlans.plans} />  
+            <PlanTable data={allPlans.plans} />
           </div>
         )}
-        
-         {activeView === "Faq" && (  
+
+        {activeView === "Faq" && (
           <div className="bg-white p-6 rounded-xl shadow">
-            <Faq />  
+            <Faq />
           </div>
         )}
       </main>

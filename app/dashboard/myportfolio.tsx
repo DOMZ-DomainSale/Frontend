@@ -180,7 +180,6 @@ const Myportfolio = () => {
                       onChange={(val) => toggleChat(d.id, val)}
                     />
                   </td>
-
                   <td className="px-4 py-2 text-center">
                     <button
                       onClick={() => deleteDomain(d.id)}
