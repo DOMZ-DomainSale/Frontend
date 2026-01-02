@@ -75,7 +75,6 @@ const Page = () => {
         router.push("/changepassword");
         return;
       }
-      console.log(data?.code,"data?.codedata?.codedata?.code");
       
       if(status===403 && data?.code==="ACCOUNT_NOT_ACTIVATED"){
         toast.info(data.message ||"Account Not ACTIVATED")
