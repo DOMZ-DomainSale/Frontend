@@ -19,8 +19,6 @@ const SubscriptionManagementCard = () => {
     fetchUser();
   }, []);
 
-  console.log(planInfo, "planInfoplanInfoplanInfo");
-
   return (
     <div className="max-w-2xl mx-auto p-6 bg-gray-50 rounded-lg shadow flex flex-col mb-5">
       <h2 className="text-xl font-semibold mb-6">Active Plan</h2>

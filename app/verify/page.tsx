@@ -39,7 +39,6 @@ const VerifyPage = () => {
       const payload = isUserVerification
         ? { email, otp }
         : { otp };
-      console.log(endpoint,payload);
       
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_apiLink}${endpoint}`,

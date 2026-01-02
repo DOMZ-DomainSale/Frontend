@@ -56,7 +56,7 @@ const DomainTable = ({ searchQuery }: DomainTableProps) => {
     };
 
     fetchDomains();
-  }, [page, limit,searchQuery]);
+  }, [page, limit]);
 
   // 🔹 Open modal
   const handleConnect = (domain: Domain) => {
@@ -68,6 +68,7 @@ const DomainTable = ({ searchQuery }: DomainTableProps) => {
   const filteredDomains = domains.filter(d =>
     d.domain.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
   return (
     <div className="w-full mt-10">
 
