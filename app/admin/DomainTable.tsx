@@ -6,6 +6,7 @@ import { saveAs } from "file-saver";
 import Modal from "@/components/model";
 import Promotion from "./Promotion";
 import { ToastContainer } from "react-toastify";
+import { Trash } from "lucide-react";
 
 
 /* 🔑 TYPES */
@@ -107,9 +108,6 @@ const DomainsTable = ({ data }: DomainsTableProps) => {
           </button>
         </div>
       </div>
-
-      {/* TABLE */}
-      {/* TABLE */}
       <div className="overflow-x-auto max-h-105 overflow-y-auto">
         <table className="min-w-full text-sm border-collapse">
           <thead className="bg-gray-50 text-gray-500 uppercase text-xs sticky top-0 z-20">
@@ -120,6 +118,7 @@ const DomainsTable = ({ data }: DomainsTableProps) => {
               <th className="px-6 py-3 text-left">Email</th>
               <th className="px-6 py-3 text-left">Registered Date</th>
               <th className="px-6 py-3 text-left">Promote</th>
+              <th className="px-6 py-3 text-left">Delete</th>
             </tr>
           </thead>
           <tbody className="divide-y">
@@ -147,7 +146,11 @@ const DomainsTable = ({ data }: DomainsTableProps) => {
                     Promote
                   </button>
                 </td>
+                 <td className="px-6 py-4">
+                  <Trash className="cursor-pointer hover:text-red-400" />
+                 </td>
               </tr>
+              
             ))}
           </tbody>
         </table>
@@ -162,7 +165,7 @@ const DomainsTable = ({ data }: DomainsTableProps) => {
           onClose={() => setOpen(false)}
         />
       </Modal>
-<ToastContainer/>
+      <ToastContainer />
     </div>
   );
 }
