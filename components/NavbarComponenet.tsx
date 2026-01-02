@@ -6,29 +6,29 @@ import Link from "next/link";
 
 export type NavbarTextProp =
   | {
-    colorText: string;
-    plainText: string;
-    IsParaText: true;
-    ParaText?: string;
-    searchbarStatus?: boolean;
-  }
+      colorText: string;
+      plainText: string;
+      IsParaText: true;
+      ParaText?: string;
+      searchbarStatus?: boolean;
+      onSearch?: (value: string) => void; // ✅ ADD
+    }
   | {
-    colorText: string;
-    plainText: string;
-    IsParaText: false;
-  };
+      colorText: string;
+      plainText: string;
+      IsParaText: false;
+      searchbarStatus?: boolean;
+      onSearch?: (value: string) => void; // ✅ ADD
+    };
 
 const NavbarComponenet = (props: NavbarTextProp) => {
   const [menuOpen, setMenuOpen] = useState(false);
-
   return (
     <header className="w-full px-4 sm:px-6 lg:px-10">
       {/* HERO CONTAINER */}
       <div className="relative rounded-3xl bg-linear-to-br from-white via-blue-50 to-blue-100 overflow-hidden">
-
         {/* NAVBAR */}
         <nav className="relative z-20 max-w-7xl mx-auto flex items-center justify-between px-6 ">
-
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <Image
@@ -104,6 +104,57 @@ const NavbarComponenet = (props: NavbarTextProp) => {
               {props.ParaText}
             </p>
           )}
+          {/* SEARCH BAR */}
+          {props.searchbarStatus && (
+            <div className="mt-8 w-full flex justify-center px-4">
+              <div
+                className="
+        w-full max-w-2xl
+        bg-white
+        rounded-full
+        shadow-md
+        flex items-center
+        px-4 py-3
+      "
+              >
+                <input
+                  type="text"
+                  placeholder="Search"
+                  onChange={(e) => props.onSearch?.(e.target.value)}
+                  className="w-full text-gray-700 placeholder-gray-400 focus:outline-none"
+                />
+
+
+                <button
+                  className="
+          ml-3
+          flex items-center justify-center
+          w-10 h-10
+          rounded-full
+          bg-white
+          hover:bg-gray-100
+          transition
+        "
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5 text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
+
         </div>
 
         {/* Decorative dots */}

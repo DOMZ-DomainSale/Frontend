@@ -17,8 +17,11 @@ interface Domain {
     name: string;
   };
 }
+interface DomainTableProps {
+  searchQuery: string;
+}
 
-const DomainTable = () => {
+const DomainTable = ({ searchQuery }: DomainTableProps) => {
   const [domains, setDomains] = useState<Domain[]>([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -39,7 +42,6 @@ const DomainTable = () => {
           `${process.env.NEXT_PUBLIC_apiLink}domain/public`,
           { params: { page, limit: LIMIT } }
         );
-
         setDomains(res.data.domains);
         setTotal(res.data.total);
       } catch {
@@ -58,6 +60,11 @@ const DomainTable = () => {
     setSelectedDomain(domain);
     setOpen(true);
   };
+
+  const filteredDomains = domains.filter(d =>
+  d.domain.toLowerCase().includes(searchQuery.toLowerCase())
+);
+
 
   return (
     <div className="w-full mt-10">
@@ -96,7 +103,7 @@ const DomainTable = () => {
                 </td>
               </tr>
             ) : (
-              domains.map((d) => (
+              filteredDomains.map((d) => (
                 <tr key={d.domainId} className="border-t">
                   {/* DOMAIN */}
                   <td className="px-6 py-4">
