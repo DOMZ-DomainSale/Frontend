@@ -81,7 +81,7 @@ const Myportfolio = () => {
     );
 
     try {
-     const res= await axios.patch(
+      const res = await axios.patch(
         `${API}/${id}/toggle-hide`,
         {},
         { withCredentials: true }
@@ -99,7 +99,7 @@ const Myportfolio = () => {
     );
 
     try {
-     const res= await axios.patch(
+      const res = await axios.patch(
         `${API}/${id}/toggle-chat`,
         {},
         { withCredentials: true }
@@ -114,8 +114,8 @@ const Myportfolio = () => {
     setUserDomains((d) => d.filter((x) => x.id !== id));
 
     try {
-     const res= await axios.delete(`${API}/${id}`, { withCredentials: true });
-     toast.success(res?.data?.message);
+      const res = await axios.delete(`${API}/${id}`, { withCredentials: true });
+      toast.success(res?.data?.message);
     } catch {
       setUserDomains(prev);
     }
@@ -146,10 +146,10 @@ const Myportfolio = () => {
             />
           </Modal>
         </div>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto max-h-125 overflow-y-auto">
           <table className="min-w-full border-separate border-spacing-y-2">
-            <thead>
-              <tr className="bg-gray-100">
+            <thead className="sticky top-0 z-10 bg-white/30 backdrop-blur-md">
+              <tr>
                 <th className="px-4 py-2 text-left">Domain</th>
                 <th className="px-4 py-2 text-center">Hide</th>
                 <th className="px-4 py-2 text-center">Chat</th>
@@ -180,10 +180,11 @@ const Myportfolio = () => {
                       onChange={(val) => toggleChat(d.id, val)}
                     />
                   </td>
+
                   <td className="px-4 py-2 text-center">
                     <button
                       onClick={() => deleteDomain(d.id)}
-                      className="text-red-600 hover:underline hover:cursor-pointer"
+                      className="text-red-600 hover:underline"
                     >
                       Delete
                     </button>
@@ -198,7 +199,6 @@ const Myportfolio = () => {
           </table>
         </div>
       </div>
-
       <QuickConectCard
         title="Stay Updated"
         description="Get news, announcements, and highlighted names when our newsletter launches"
