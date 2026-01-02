@@ -15,7 +15,7 @@ export default function Error({
       {/* Illustration */}
       <div className="mb-10">
         <img
-          src="/404-computer.svg"
+          src="/assets/error.svg"
           alt="Error Illustration"
           className="mx-auto max-w-105 w-full"
         />
