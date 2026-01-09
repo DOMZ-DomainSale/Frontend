@@ -10,17 +10,17 @@ import { Trash } from "lucide-react";
 
 /* 🔑 TYPES */
 export interface DomainItem {
+  domainId: string;
   domain: string;
+  status: string;
+  finalUrl: string | null;   // ✅ FIXED
   createdAt: string;
-  domainId: string,
-  status:string,
-  finalUrl:string,
-  manualReviewCount:number,
   owner: {
     name: string;
     email: string;
   };
 }
+
 
 interface DomainsTableProps {
   data: DomainItem[];

@@ -207,7 +207,7 @@ const Page = () => {
         {/* DOMAINS */}
         {activeView === "domains" && domainsData?.domains && (
           <div className="bg-white p-6 rounded-xl shadow">
-            <DomainTable data={domainsData.domains} />
+            <DomainTable data={domainsData?.domains} />
           </div>
         )}
         {activeView === "Plans" && allPlans?.plans && (
