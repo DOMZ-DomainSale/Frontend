@@ -11,8 +11,10 @@ import DomainTable from './DomainTable';
 import PlanTable, { PlansResponse } from './PlanTable';
 import Faq from './Faq';
 import UserTable from './UserTable';
+import PlanRequest from './PlanRequest';
+import PlanRequestTable from './PlanRequest';
 
-type AdminView = "dashboard" | "Users" | "domains" | "Plans" | "Faq";
+type AdminView = "dashboard" | "Users" | "domains" | "Plans" | "Plan Requests" | "Faq";
 
 
 export interface UserPlan {
@@ -49,6 +51,22 @@ interface DomainsResponse {
     };
   }>;
 }
+export interface PlanRequestItem {
+  _id: string;
+  userId: {
+    _id: string;
+    email: string;
+    name: string;
+    phoneNumber: string;
+  };
+  planTitle: string;
+  price: number;
+  per: "Month" | "Year";
+  featureLimit: number;
+  status: "Pending" | "Approved" | "Rejected";
+  createdAt: string;
+  updatedAt: string;
+}
 
 
 const Page = () => {
@@ -57,6 +75,8 @@ const Page = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isauthenciated, setisAuthenciated] = useState(false);
+  const [planRequests, setPlanRequests] = useState<PlanRequestItem[]>([]);
+
 
   const [activeView, setActiveView] = useState<AdminView>("dashboard");
 
@@ -65,6 +85,7 @@ const Page = () => {
   const [domainsData, setDomainsData] = useState<DomainsResponse | null>(null);
   const [allPlans, setallPlans] = useState<PlansResponse>()
   const [refreshPlans, setRefreshPlans] = useState(0);
+  const [refreshPlanRequest, setRefreshPlanRequests] = useState(0);
 
 
 
@@ -90,7 +111,7 @@ const Page = () => {
     checkAdminAuth();
   }, [router]);
 
-  // 👥 USERS
+
   useEffect(() => {
     if (!isauthenciated) return;
     const fetchUsers = async () => {
@@ -106,6 +127,22 @@ const Page = () => {
     };
     fetchUsers();
   }, [isauthenciated, refreshUsers]);
+
+  useEffect(() => {
+    if (!isauthenciated) return;
+    const fetchPlanRequests = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_apiLink}planrequest/getallplanrequest`,
+          { withCredentials: true }
+        );
+        setPlanRequests(res.data.data);
+      } catch {
+        toast.error("Error fetching Plan Requests");
+      }
+    };
+    fetchPlanRequests();
+  }, [isauthenciated,refreshPlanRequest]);
 
   // 🌐 DOMAINS
   useEffect(() => {
@@ -139,9 +176,8 @@ const Page = () => {
       }
     };
     fetchPlans();
-  }, [isauthenciated,refreshPlans])
-  console.log(domainsData,"domainsDatadomainsDatadomainsData");
-  
+  }, [isauthenciated, refreshPlans])
+  console.log(planRequests, "planRequestsplanRequestsplanRequestsplanRequests");
   if (loading) return <Loader />;
   return (
     <div className="relative h-screen bg-[#F5F7FB]">
@@ -184,8 +220,8 @@ const Page = () => {
               {[
                 { label: 'Total Users', value: allUsers.length, color: 'bg-blue-500' },
                 { label: 'Domains Registered', value: domainsData?.count, color: 'bg-teal-500' },
-                { label: 'Manual Review', value:domainsData?.manualReviewCount, color: 'bg-orange-500' },
-                { label: 'Requests', value: '£10,000', color: 'bg-red-500' },
+                { label: 'Manual Review', value: domainsData?.manualReviewCount, color: 'bg-orange-500' },
+                { label: 'Plan Requests', value: '£10,000', color: 'bg-red-500' },
               ].map(item => (
                 <div key={item.label} className="bg-white p-5 rounded-xl shadow flex justify-between">
                   <div>
@@ -212,11 +248,21 @@ const Page = () => {
         )}
         {activeView === "Plans" && allPlans?.plans && (
           <div className="bg-white p-6 rounded-xl shadow">
-            <PlanTable data={allPlans.plans} 
-            onPlanUpdated={() => setRefreshPlans(prev => prev + 1)}
+            <PlanTable data={allPlans.plans}
+              onPlanUpdated={() => setRefreshPlans(prev => prev + 1)}
             />
           </div>
         )}
+
+        {activeView === "Plan Requests" && planRequests?.length > 0 && (
+          <div className="bg-white p-6 rounded-xl shadow">
+            <PlanRequestTable
+              data={planRequests}
+              onRequestUpdated={() => setRefreshPlanRequests(prev => prev + 1)}
+            />
+          </div>
+        )}
+
 
         {activeView === "Faq" && (
           <div className="bg-white p-6 rounded-xl shadow">

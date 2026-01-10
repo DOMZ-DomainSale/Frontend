@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { logoutHandler } from "@/utils/auth";
 
 
-export type AdminView = "dashboard" | "Users" | "domains" | "Plans" | "Faq";
+export type AdminView = "dashboard" | "Users" | "domains" | "Plans" | "Plan Requests" | "Faq";
 
 
 interface SidebarProps {
@@ -101,6 +101,21 @@ const menu: Menu = [
       {
         label: "Plans",
         view: "Plans",
+        iconBg: "bg-[#E6F4FF]",
+        iconColor: "text-[#1570EF]",
+        svg: (
+          <path
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M16 14a4 4 0 1 0-8 0m12 6v-1a5 5 0 0 0-5-5H9a5 5 0 0 0-5 5v1"
+          />
+        ),
+      },
+      {
+        label: "Plan Requests",
+        view: "Plan Requests",
         iconBg: "bg-[#E6F4FF]",
         iconColor: "text-[#1570EF]",
         svg: (
