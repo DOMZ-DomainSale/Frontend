@@ -129,29 +129,51 @@ const DomainsTable = ({ data }: DomainsTableProps) => {
                 <td className="px-6 py-4 text-blue-600 font-medium">{item.domain}</td>
                 <td className="px-6 py-4">{item.owner.name}</td>
                 <td className="px-6 py-4">{item.owner.email}</td>
-                 <td className="px-6 py-4">{item.status}</td>
+                <td className="px-6 py-4">{item.status}</td>
                 <td className="px-6 py-4">
                   {new Date(item.createdAt).toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4">
-                  <button
-                    className="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"
-                    data-id="ITEM_ID"
-                    onClick={() => {
-                      setOpen(true)
-                      setDomainPromotion({
-                        domain_id: item.domainId,
-                        domain: item.domain
-                      })
-                    }}
-                  >
-                    Promote
-                  </button>
+                  {(() => {
+                    const isPass = item.status === "Pass";
+
+                    const tooltipText = isPass
+                      ? "Promote domain"
+                      : item.status === "Fail"
+                        ? "Can't promote: domain failed checks"
+                        : "Can't promote: domain under manual review";
+
+                    return (
+                      <button
+                        disabled={!isPass}
+                        title={tooltipText}
+                        className={`
+          px-4 py-2 rounded-md text-sm font-medium transition-colors
+          ${isPass
+                            ? "bg-blue-400 hover:bg-blue-500 text-white cursor-pointer"
+                            : "bg-gray-300 text-gray-600 cursor-not-allowed opacity-70"
+                          }
+        `}
+                        onClick={() => {
+                          if (!isPass) return;
+
+                          setOpen(true);
+                          setDomainPromotion({
+                            domain_id: item.domainId,
+                            domain: item.domain
+                          });
+                        }}
+                      >
+                        Promote
+                      </button>
+                    );
+                  })()}
                 </td>
-                 <td className="px-6 py-4">
+
+                <td className="px-6 py-4">
                   <Trash className="cursor-pointer hover:text-red-400" />
-                 </td>
-              </tr>  
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>
