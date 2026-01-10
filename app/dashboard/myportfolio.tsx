@@ -9,15 +9,17 @@ import Modal from '@/components/model';
 import AddDomainsCard from './adddomain';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
+import DomainStatus from './DomainStatus';
 
-interface DomainType {
+export interface DomainType {
   id: string;
   domain: string;
+  status: string;
   isHidden: boolean;
   isChatActive: boolean;
   clicks: number;
-  finalUrl:string,
-  createdAt:string
+  finalUrl?: string,
+  createdAt: string
 }
 const Toggle = ({
   checked,
@@ -48,6 +50,7 @@ const Toggle = ({
 const Myportfolio = () => {
   const [loading, setLoading] = useState(true);
   const [userDomains, setUserDomains] = useState<DomainType[]>([]);
+  const [domainStatus, setDomainStatus] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
@@ -128,17 +131,17 @@ const Myportfolio = () => {
     <div className="lg:pl-[10%] lg:pr-[10%] lg:pt-9">
       <div className="max-w-5xl mx-auto mt-8">
         <div className="flex justify-between mb-3">
-          <button className="rounded-full border px-4 py-1 bg-white shadow">
-            Bulk Changes ▼
+          <button className="rounded-full bg-blue-600 text-white px-4 py-1 cursor-pointer hover:bg-blue-700"
+          onClick={()=>setDomainStatus(!domainStatus)}
+          >
+           {domainStatus?"My Registered Domains" :"My Domain Status"}  
           </button>
-
           <button
             onClick={() => setOpen(true)}
             className="rounded-full bg-blue-600 text-white px-4 py-1"
           >
             + Add Domain
           </button>
-
           <Modal isOpen={open} onClose={() => setOpen(false)} title="Add Domains">
             <AddDomainsCard
               onClose={() => {
@@ -148,56 +151,72 @@ const Myportfolio = () => {
             />
           </Modal>
         </div>
-        <div className="overflow-x-auto max-h-125 overflow-y-auto">
-          <table className="min-w-full border-separate border-spacing-y-2">
-            <thead className="sticky top-0 z-10 bg-white/30 backdrop-blur-md">
-              <tr>
-                <th className="px-4 py-2 text-left">Domain</th>
-                <th className="px-4 py-2 text-center">Hide</th>
-                <th className="px-4 py-2 text-center">Chat</th>
-                <th className="px-4 py-2 text-center">Delete</th>
-                <th className="px-4 py-2 text-center">Added On</th>
-              </tr>
-            </thead>
-            <tbody>
-              {userDomains?.map((d) => (
-                <tr key={d.id} className="odd:bg-white even:bg-blue-50">
-                  <td className="px-4 py-2 text-blue-600 underline break-all">
-                    <Link href={d.finalUrl} target={d?.domain}>{d?.domain}</Link>
-                  </td>
-
-                  <td className="px-4 py-2 text-center">
-                    <Toggle
-                      id={`hide-${d.id}`}
-                      checked={d.isHidden}
-                      onChange={(val) => toggleHide(d.id, val)}
-                    />
-                  </td>
-                  <td className="px-4 py-2 text-center">
-                    <Toggle
-                      id={`chat-${d.id}`}
-                      checked={d.isChatActive}
-                      onChange={(val) => toggleChat(d.id, val)}
-                    />
-                  </td>
-
-                  <td className="px-4 py-2 text-center">
-                    <button
-                      onClick={() => deleteDomain(d.id)}
-                      className="text-red-600 hover:underline"
-                    >
-                      Delete
-                    </button>
-                  </td>
-
-                  <td className="px-4 py-2 text-center">
-                   {new Date(d?.createdAt).toLocaleDateString()}
-                  </td>
+        {domainStatus ? <DomainStatus data={userDomains} /> : (
+          <div className="overflow-x-auto max-h-125 overflow-y-auto">
+            <table className="min-w-full border-separate border-spacing-y-2">
+              <thead className="sticky top-0 z-10 bg-white/30 backdrop-blur-md">
+                <tr>
+                  <th className="px-4 py-2 text-left">Domain</th>
+                  <th className="px-4 py-2 text-center">Hide</th>
+                  <th className="px-4 py-2 text-center">Chat</th>
+                  <th className="px-4 py-2 text-center">Delete</th>
+                  <th className="px-4 py-2 text-center">Added On</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {userDomains
+                  ?.filter(d => d.status === "Pass")
+                  .map((d) => (
+                    <tr key={d.id} className="odd:bg-white even:bg-blue-50">
+                      <td className="px-4 py-2 text-blue-600 underline break-all">
+                        {d?.finalUrl ? (
+                          <Link
+                            href={d.finalUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
+                            {d?.domain}
+                          </Link>
+                        ) : (
+                          <span className="text-gray-700">{d?.domain}</span>
+                        )}
+                      </td>
+
+                      <td className="px-4 py-2 text-center">
+                        <Toggle
+                          id={`hide-${d.id}`}
+                          checked={d.isHidden}
+                          onChange={(val) => toggleHide(d.id, val)}
+                        />
+                      </td>
+
+                      <td className="px-4 py-2 text-center">
+                        <Toggle
+                          id={`chat-${d.id}`}
+                          checked={d.isChatActive}
+                          onChange={(val) => toggleChat(d.id, val)}
+                        />
+                      </td>
+
+                      <td className="px-4 py-2 text-center">
+                        <button
+                          onClick={() => deleteDomain(d.id)}
+                          className="text-red-600 hover:underline"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        {new Date(d.createdAt).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
       <QuickConectCard
         title="Stay Updated"
@@ -205,6 +224,7 @@ const Myportfolio = () => {
         mainButton="Subscribe Now"
         subButton={false}
       />
+
     </div>
   );
 };

@@ -55,7 +55,7 @@ const AddPlan = ({ selectedUser, onClose }: AddPlanProps) => {
             );
 
             toast.success(res.data.message);
-            onClose(); // close modal on success
+            onClose(); 
 
         } catch (error: any) {
             toast.error(

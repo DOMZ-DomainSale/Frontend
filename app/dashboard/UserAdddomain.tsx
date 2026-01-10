@@ -3,10 +3,8 @@ const UserAddDomain = ({ onClose }: { onClose: () => void }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="relative w-full max-w-2xl mx-4">
 
-        {/* Modal box */}
         <div className="bg-white border border-gray-200 rounded-xl shadow-lg p-4 md:p-6">
 
-          {/* Header */}
           <div className="flex items-center justify-between border-b pb-4">
             <h3 className="text-lg font-medium text-gray-900">
               Add Domain
@@ -19,7 +17,6 @@ const UserAddDomain = ({ onClose }: { onClose: () => void }) => {
               ✕
             </button>
           </div>
-
           <div className="py-6 space-y-4">
             <p className="text-gray-600">
               Add your domain to start tracking and managing it in your portfolio.
