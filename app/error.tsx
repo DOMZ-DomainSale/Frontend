@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 
+
 export default function Error({
   error,
   reset,
@@ -15,7 +16,7 @@ export default function Error({
       {/* Illustration */}
       <div className="mb-10">
         <img
-          src="/assets/error.svg"
+          src="error.svg"
           alt="Error Illustration"
           className="mx-auto max-w-105 w-full"
         />

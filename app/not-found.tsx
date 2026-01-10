@@ -7,7 +7,7 @@ export default function NotFound() {
       {/* Illustration */}
       <div className="mb-10">
         <img
-          src="/assets/error.svg"
+          src="error.svg"
           alt="404 Illustration"
           className="mx-auto max-w-105 w-full"
         />
