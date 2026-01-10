@@ -53,18 +53,18 @@ const PlanRequestTable = ({ data, onRequestUpdated }: PlanRequestTableProps) => 
     }
   };
   const rejectPlan = async (
-    userId: string, title: string
-  ) => {
+    userId: string, planTitle: string
+  ) => { 
     if (loaderStatus) return;
     setLoaderStatus(true);
     const payload = {
       userId,
-      title,
+      planTitle,
     };
-
+   
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_apiLink}planrequest/approveplanrequest`,
+        `${process.env.NEXT_PUBLIC_apiLink}planrequest/rejectplanrequest`,
         payload,
         { withCredentials: true }
       );
