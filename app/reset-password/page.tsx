@@ -103,7 +103,7 @@ const  ResetPassword=()=> {
         <img
           src="/assets/resetpass.png"
           alt="Reset password"
-          className="max-w-md"
+          className="max-w-2xl"
         />
       </div>
     </div>
