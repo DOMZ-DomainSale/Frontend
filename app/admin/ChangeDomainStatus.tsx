@@ -71,7 +71,6 @@ export default function ChangeDomainStatus({
 
       toast.success("Status change requested")
 
-      // 🔥 THIS IS THE KEY LINE
       onRequestUpdated()
     } catch (error: any) {
       toast.error(

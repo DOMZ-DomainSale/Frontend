@@ -7,6 +7,9 @@ import Modal from "@/components/model";
 import Promotion from "./Promotion";
 import { Trash } from "lucide-react";
 import ChangeDomainStatus from "./ChangeDomainStatus";
+import Confirmation from "@/components/Confirmation";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 
 export interface DomainItem {
@@ -30,13 +33,34 @@ const DomainsTable = ({ data, onRequestUpdated }: DomainsTableProps) => {
   const [search, setSearch] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [open, setOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [domainPromotion, setDomainPromotion] = useState({
     domain_id: "",
     domain: ''
   })
-
-  console.log(data);
-  
+  const openDeleteModal = (domainId: string) => {
+        setDeleteId(domainId)
+        setIsConfirmOpen(true)
+    }
+   const handleConfirmDelete = () => {
+        if (!deleteId) return
+        handleDelete(deleteId) // ✅ YOUR EXISTING DELETE HANDLER
+        setIsConfirmOpen(false)
+        setDeleteId(null)
+    }
+    const handleDelete = async (id: string) => {
+        try {
+            const res = await axios.delete(
+                `${process.env.NEXT_PUBLIC_apiLink}domain/deletedomain/${deleteId}`,
+                { withCredentials: true }
+            );
+            toast.success(res.data.message);
+            onRequestUpdated();
+        } catch (err: any) {
+            toast.error(err?.response?.data?.message);
+        }
+    };
   const filteredData = useMemo(() => {
     return data.filter(item => {
       const searchValue = search.toLowerCase();
@@ -172,7 +196,7 @@ const DomainsTable = ({ data, onRequestUpdated }: DomainsTableProps) => {
                   })()}
                 </td>
                 <td className="px-6 py-4">
-                  <Trash className="cursor-pointer hover:text-red-400" />
+                  <Trash  onClick={() => openDeleteModal(item.domainId)}  className="cursor-pointer hover:text-red-400" />
                 </td>
               </tr>
             ))}
@@ -189,6 +213,11 @@ const DomainsTable = ({ data, onRequestUpdated }: DomainsTableProps) => {
           onClose={() => setOpen(false)}
         />
       </Modal>
+      <Confirmation
+        open={isConfirmOpen}
+        onCancel={() => setIsConfirmOpen(false)}
+        onConfirm={handleConfirmDelete} // ✅ FUNCTION REFERENCE
+      />
     </div>
   );
 }

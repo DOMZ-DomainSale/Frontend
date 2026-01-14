@@ -41,8 +41,6 @@ const AllFaq = ({ setIsAllFaq }: any) => {
         setDeleteId(null)
     }
 
-
-
     const fetchFaq = async () => {
         try {
             const res = await axios.get(`${process.env.NEXT_PUBLIC_apiLink}faq/`);
