@@ -34,36 +34,39 @@ const DomainsTable = ({ data, onRequestUpdated }: DomainsTableProps) => {
   const [dateFilter, setDateFilter] = useState("");
   const [open, setOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
-   const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [deleteId, setDeleteId] = useState<string | null>(null)
   const [domainPromotion, setDomainPromotion] = useState({
     domain_id: "",
     domain: ''
   })
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+
   const openDeleteModal = (domainId: string) => {
-        setDeleteId(domainId)
-        setIsConfirmOpen(true)
+    setDeleteId(domainId)
+    setIsConfirmOpen(true)
+  }
+  const handleConfirmDelete = () => {
+    if (!deleteId) return
+    handleDelete(deleteId) // ✅ YOUR EXISTING DELETE HANDLER
+    setIsConfirmOpen(false)
+    setDeleteId(null)
+  }
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await axios.delete(
+        `${process.env.NEXT_PUBLIC_apiLink}domain/deletedomain/${deleteId}`,
+        { withCredentials: true }
+      );
+      toast.success(res.data.message);
+      onRequestUpdated();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message);
     }
-   const handleConfirmDelete = () => {
-        if (!deleteId) return
-        handleDelete(deleteId) // ✅ YOUR EXISTING DELETE HANDLER
-        setIsConfirmOpen(false)
-        setDeleteId(null)
-    }
-    const handleDelete = async (id: string) => {
-        try {
-            const res = await axios.delete(
-                `${process.env.NEXT_PUBLIC_apiLink}domain/deletedomain/${deleteId}`,
-                { withCredentials: true }
-            );
-            toast.success(res.data.message);
-            onRequestUpdated();
-        } catch (err: any) {
-            toast.error(err?.response?.data?.message);
-        }
-    };
+  };
   const filteredData = useMemo(() => {
     return data.filter(item => {
       const searchValue = search.toLowerCase();
+
       const matchesText =
         item.domain.toLowerCase().includes(searchValue) ||
         item.owner?.name?.toLowerCase().includes(searchValue) ||
@@ -73,10 +76,14 @@ const DomainsTable = ({ data, onRequestUpdated }: DomainsTableProps) => {
         ? item.createdAt.slice(0, 10) === dateFilter
         : true;
 
-      return matchesText && matchesDate;
-    });
-  }, [data, search, dateFilter]);
+      const matchesStatus =
+        statusFilter === "all"
+          ? true
+          : item.status === statusFilter;
 
+      return matchesText && matchesDate && matchesStatus;
+    });
+  }, [data, search, dateFilter, statusFilter]);
 
   const exportToExcel = () => {
     const sheetData = filteredData.map((item, index) => ({
@@ -107,6 +114,16 @@ const DomainsTable = ({ data, onRequestUpdated }: DomainsTableProps) => {
         <h2 className="text-lg font-semibold text-gray-800">
           No Of Domains - {filteredData.length}
         </h2>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="all">All Status</option>
+          <option value="Pass">Pass</option>
+          <option value="Fail">Fail</option>
+          <option value="Manual Review">Manual Review</option>
+        </select>
 
         <div className="flex flex-col sm:flex-row gap-3">
           <input
@@ -130,7 +147,7 @@ const DomainsTable = ({ data, onRequestUpdated }: DomainsTableProps) => {
           </button>
         </div>
       </div>
-      <div className="overflow-x-auto max-h-105 overflow-y-auto">
+      <div className="overflow-x-auto max-h-150 overflow-y-auto">
         <table className="min-w-full text-sm border-collapse">
           <thead className="bg-gray-50 text-gray-500 uppercase text-xs sticky top-0 z-20">
             <tr>
@@ -196,7 +213,7 @@ const DomainsTable = ({ data, onRequestUpdated }: DomainsTableProps) => {
                   })()}
                 </td>
                 <td className="px-6 py-4">
-                  <Trash  onClick={() => openDeleteModal(item.domainId)}  className="cursor-pointer hover:text-red-400" />
+                  <Trash onClick={() => openDeleteModal(item.domainId)} className="cursor-pointer hover:text-red-400" />
                 </td>
               </tr>
             ))}
