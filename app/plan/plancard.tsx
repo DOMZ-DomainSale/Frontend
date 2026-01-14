@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Modal from '@/components/model';
 import { useState } from 'react';
 import PlanRequest from './PlanRequest';
+import Test from '@/utils/Test';
 
 export interface PlanCardInterface {
     title: string;
@@ -15,14 +16,14 @@ export interface PlanCardInterface {
 
 
 const Plancard = ({ title, price, per, feature }: PlanCardInterface) => {
-    const [open,setOpen]=useState(false);
+    const [open, setOpen] = useState(false);
     // const router=useRouter();
     // const buyPlanHandler = () => {
     // router.push(`/payment?plan=${encodeURIComponent(title)}`);
 
     return (
         <>
-            <div className="relative bg-linear-to-b from-[#F6F9FF] to-[#EEF3FF] rounded-4xl shadow-[0_4px_24px_rgba(146,151,255,0.12)] border border-[#EBEEF8] p-8 w-full max-w-xs flex flex-col items-start mx-auto ">
+            {/* <div className="relative bg-linear-to-b from-[#F6F9FF] to-[#EEF3FF] rounded-4xl shadow-[0_4px_24px_rgba(146,151,255,0.12)] border border-[#EBEEF8] p-8 w-full max-w-xs flex flex-col items-start mx-auto ">
                 <div className="absolute top-4 left-4">
                     <div className="bg-white w-12 h-12 flex items-center justify-center rounded-full shadow-[0_1px_6px_rgba(166,178,255,0.15)]">
                         <Image src="/assets/icons/arrow-right.webp" alt="arrow" height={14} width={14} />
@@ -41,7 +42,9 @@ const Plancard = ({ title, price, per, feature }: PlanCardInterface) => {
                 >
                     Start 30 Day Free Trial
                 </button>
-            </div>
+            </div> */}
+            <Test/>
+
             <Modal
                 isOpen={open}
                 onClose={() => setOpen(false)}

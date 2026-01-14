@@ -6,6 +6,7 @@ import { saveAs } from "file-saver";
 import Modal from "@/components/model";
 import Promotion from "./Promotion";
 import { Trash } from "lucide-react";
+import ChangeDomainStatus from "./ChangeDomainStatus";
 
 
 export interface DomainItem {
@@ -22,9 +23,10 @@ export interface DomainItem {
 
 interface DomainsTableProps {
   data: DomainItem[];
+  onRequestUpdated: () => void;
 }
 
-const DomainsTable = ({ data }: DomainsTableProps) => {
+const DomainsTable = ({ data, onRequestUpdated }: DomainsTableProps) => {
   const [search, setSearch] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [open, setOpen] = useState(false);
@@ -68,7 +70,6 @@ const DomainsTable = ({ data }: DomainsTableProps) => {
       bookType: "xlsx",
       type: "array",
     });
-
     saveAs(
       new Blob([excelBuffer], { type: "application/octet-stream" }),
       "domains.xlsx"
@@ -125,7 +126,11 @@ const DomainsTable = ({ data }: DomainsTableProps) => {
                 <td className="px-6 py-4 text-blue-600 font-medium">{item.domain}</td>
                 <td className="px-6 py-4">{item.owner.name}</td>
                 <td className="px-6 py-4">{item.owner.email}</td>
-                <td className="px-6 py-4">{item.status}</td>
+                <ChangeDomainStatus
+                  status={item.status}
+                  domainId={item.domainId}
+                  onRequestUpdated={onRequestUpdated}
+                />
                 <td className="px-6 py-4">
                   {new Date(item.createdAt).toLocaleDateString()}
                 </td>

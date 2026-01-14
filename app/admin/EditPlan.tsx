@@ -58,12 +58,6 @@ const EditPlan = ({ selectedPlan, onClose,onSuccess }: EditPlanProps) => {
     );
 
     toast.success(res.data.message || "Plan Updated Successfully");
-
-    setTimeout(() => {
-      onSuccess();
-      onClose();
-    }, 3000);
-
   } catch (error: any) {
     toast.error(
       error?.response?.data?.message || "Something went wrong"

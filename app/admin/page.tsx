@@ -92,6 +92,7 @@ const Page = () => {
   const [allUsers, setAllUsers] = useState<UserInterface[]>([]);
   const [refreshUsers, setRefreshUsers] = useState(0);
   const [domainsData, setDomainsData] = useState<DomainsResponse | null>(null);
+  const [refreshDomainStatus, setrefreshDomainStatus] = useState(0);
   const [allPlans, setallPlans] = useState<PlansResponse>()
   const [refreshPlans, setRefreshPlans] = useState(0);
   const [refreshPlanRequest, setRefreshPlanRequests] = useState(0);
@@ -169,7 +170,7 @@ const Page = () => {
       }
     };
     fetchDomains();
-  }, [isauthenciated]);
+  }, [isauthenciated, refreshDomainStatus]);
 
   useEffect(() => {
     if (!isauthenciated) return;
@@ -252,7 +253,10 @@ const Page = () => {
         {/* DOMAINS */}
         {activeView === "domains" && domainsData?.domains && (
           <div className="bg-white p-6 rounded-xl shadow">
-            <DomainTable data={domainsData?.domains} />
+            <DomainTable
+              data={domainsData?.domains}
+              onRequestUpdated={() => setrefreshDomainStatus(p => p + 1)}
+            />
           </div>
         )}
         {activeView === "Plans" && allPlans?.plans && (
