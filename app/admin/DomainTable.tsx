@@ -35,14 +35,15 @@ const DomainsTable = ({ data, onRequestUpdated }: DomainsTableProps) => {
     domain: ''
   })
 
+  console.log(data);
+  
   const filteredData = useMemo(() => {
     return data.filter(item => {
       const searchValue = search.toLowerCase();
-
       const matchesText =
         item.domain.toLowerCase().includes(searchValue) ||
-        item.owner.name.toLowerCase().includes(searchValue) ||
-        item.owner.email.toLowerCase().includes(searchValue);
+        item.owner?.name?.toLowerCase().includes(searchValue) ||
+        item.owner?.email?.toLowerCase().includes(searchValue);
 
       const matchesDate = dateFilter
         ? item.createdAt.slice(0, 10) === dateFilter

@@ -14,8 +14,8 @@ interface UserTableProps {
     onRefresh: () => void;
 }
 export interface SelectedUser {
-  userId: string;
-  email:string
+    userId: string;
+    email: string
 }
 /* ✅ COMPONENT */
 const UserTable = ({ data, onRefresh }: UserTableProps) => {
@@ -165,17 +165,53 @@ const UserTable = ({ data, onRefresh }: UserTableProps) => {
                                         />
                                     </label>
                                 </td>
-                                <td className="px-6 py-4 hover:cursor-pointer"
-                                onClick={() => {
-                                            setOpen(true)
-                                            setSelectedUser({
-                                                userId:item._id,
-                                                email:item.email
-                                            })
-                                        }}
+                                <td
+                                    className="px-6 py-4 cursor-pointer"
+                                    onClick={() => {
+                                        setOpen(true)
+                                        setSelectedUser({
+                                            userId: item._id,
+                                            email: item.email,
+                                        })
+                                    }}
                                 >
-                                    {item.plan?.title ? item.plan.title : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-plus-icon lucide-plus cursor-pointer"><path d="M5 12h14" /><path d="M12 5v14"
-                                    /></svg>}
+                                    <div className="relative inline-flex items-center group">
+                                        {/* CONTENT */}
+                                        {item.plan?.title ? (
+                                            <span>{item.plan.title}</span>
+                                        ) : (
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="20"
+                                                height="20"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                className="lucide lucide-plus"
+                                            >
+                                                <path d="M5 12h14" />
+                                                <path d="M12 5v14" />
+                                            </svg>
+                                        )}
+
+                                        {/* TOOLTIP */}
+                                        <span
+                                            className="
+        absolute top-8 left-1/2 -translate-x-1/2
+        whitespace-nowrap
+        rounded-md bg-gray-800 px-2 py-1
+        text-xs text-white
+        opacity-0 transition-opacity
+        group-hover:opacity-100
+        pointer-events-none
+      "
+                                        >
+                                            Change Plan
+                                        </span>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
