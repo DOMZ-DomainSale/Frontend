@@ -215,7 +215,7 @@ const SidebarItem = ({
 }: SidebarItemProps) => (
   <button
     onClick={onClick}
-    className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg transition
+    className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg transition cursor-pointer
       ${active ? "bg-gray-100 font-semibold" : "hover:bg-gray-100"}
     `}
   >
