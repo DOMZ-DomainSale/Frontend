@@ -39,6 +39,7 @@ interface DomainsResponse {
   success: boolean;
   count: number;
   manualReviewCount: number;
+  promotedNumber:number | null;
   domains: Array<{
     domainId: string;
     domain: string;
@@ -165,6 +166,8 @@ const Page = () => {
           { withCredentials: true }
         );
         setDomainsData(res.data);
+        console.log(res.data);
+        
       } catch {
         toast.error("Error fetching domains");
       }
@@ -244,7 +247,6 @@ const Page = () => {
             </div>
           </>
         )}
-
         {/* IDEAS */}
         {activeView === "dashboard" && <Table />}
         {activeView === "Users" && <UserTable data={allUsers}

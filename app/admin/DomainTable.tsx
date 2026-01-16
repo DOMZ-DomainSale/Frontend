@@ -68,7 +68,6 @@ const DomainsTable = ({ data, onRequestUpdated }: DomainsTableProps) => {
   const filteredData = useMemo(() => {
     return data.filter(item => {
       const searchValue = search.toLowerCase();
-
       const matchesText =
         item.domain.toLowerCase().includes(searchValue) ||
         item.owner?.name?.toLowerCase().includes(searchValue) ||
