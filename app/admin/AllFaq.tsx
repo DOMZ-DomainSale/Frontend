@@ -12,12 +12,14 @@ interface FaqItem {
     question: string;
     answer: string;
     priorityNumber: number;
+    category?:string;
 }
 export interface SelectedFaq {
     id: string;
     question: string;
     answer: string;
     priorityNumber: number;
+    category?:string;
 }
 
 
@@ -54,7 +56,7 @@ const AllFaq = ({ setIsAllFaq }: any) => {
 
     useEffect(() => {
         fetchFaq();
-    }, [refreshKey]); // Empty deps - runs once on mount
+    }, [refreshKey]); 
 
     const handleDelete = async (id: string) => {
         try {
@@ -97,6 +99,7 @@ const AllFaq = ({ setIsAllFaq }: any) => {
                             <th className="px-6 py-3 font-medium">Question</th>
                             <th className="px-6 py-3 font-medium">Answer</th>
                             <th className="px-6 py-3 font-medium">Priority</th>
+                            <th className="px-6 py-3 font-medium">Category</th>
                             <th className="px-6 py-3 font-medium">Edit</th>
                             <th className="px-6 py-3 font-medium">Delete</th>
                         </tr>
@@ -118,7 +121,9 @@ const AllFaq = ({ setIsAllFaq }: any) => {
                                 <td className="px-6 py-4">
                                     {faq.priorityNumber}
                                 </td>
-
+                                 <td className="px-6 py-4">
+                                    {faq?.category}
+                                </td>
                                 <td className="px-6 py-4">
                                     <button
                                         className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
@@ -130,13 +135,13 @@ const AllFaq = ({ setIsAllFaq }: any) => {
                                                 question: faq.question,
                                                 answer: faq.answer,
                                                 priorityNumber: faq.priorityNumber,
+                                                category:faq?.category
                                             });
                                         }}
                                     >
                                         <SquarePen className="w-5 h-5" />
                                     </button>
                                 </td>
-
                                 <td className="px-6 py-4">
                                     <button
                                         onClick={() => openDeleteModal(faq._id)} // ✅ PASS ID

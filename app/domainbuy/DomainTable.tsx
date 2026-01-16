@@ -112,7 +112,6 @@ const DomainTable = ({ searchQuery }: DomainTableProps) => {
         {/* SCROLL CONTAINER */}
         
           <table className="w-full min-w-150 text-sm border-collapse">
-
             {/* FIXED HEADER */}
             <thead className="sticky top-0 z-10 bg-blue-50 text-blue-900 backdrop-blur-md">
               <tr>
@@ -153,7 +152,6 @@ const DomainTable = ({ searchQuery }: DomainTableProps) => {
                         <span className="text-gray-700">{d?.domain}</span>
                       )}
                     </td>
-
                     <td className="px-6 py-4 text-center">
                       <button
                         onClick={() => handleConnect(d)}
@@ -179,7 +177,6 @@ const DomainTable = ({ searchQuery }: DomainTableProps) => {
           </table>
         
       </div>
-
 
       {/* PAGINATION */}
       {totalPages > 1 && (
