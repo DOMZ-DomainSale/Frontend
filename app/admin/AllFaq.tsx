@@ -12,16 +12,15 @@ interface FaqItem {
     question: string;
     answer: string;
     priorityNumber: number;
-    category?:string;
+    category?: string;
 }
 export interface SelectedFaq {
     id: string;
     question: string;
     answer: string;
     priorityNumber: number;
-    category?:string;
+    category?: string;
 }
-
 
 const AllFaq = ({ setIsAllFaq }: any) => {
     const [faq, setFaq] = useState<FaqItem[]>([]);
@@ -30,6 +29,23 @@ const AllFaq = ({ setIsAllFaq }: any) => {
     const [open, setOpen] = useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
     const [deleteId, setDeleteId] = useState<string | null>(null)
+    const [selectedCategory, setSelectedCategory] = useState<string>("All");
+
+    const categories = [
+        "All",
+        ...Array.from(
+            new Set(faq.map(f => f.category).filter(Boolean))
+        )
+    ];
+    const filteredFaqs = faq
+        .filter(f =>
+            selectedCategory === "All"
+                ? true
+                : f.category === selectedCategory
+        )
+        .sort((a, b) => a.priorityNumber - b.priorityNumber);
+
+
 
     const openDeleteModal = (id: string) => {
         setDeleteId(id)
@@ -56,7 +72,7 @@ const AllFaq = ({ setIsAllFaq }: any) => {
 
     useEffect(() => {
         fetchFaq();
-    }, [refreshKey]); 
+    }, [refreshKey]);
 
     const handleDelete = async (id: string) => {
         try {
@@ -84,6 +100,20 @@ const AllFaq = ({ setIsAllFaq }: any) => {
                         These questions will appear on the Home Page FAQ section
                     </p>
                 </div>
+                <div className="flex gap-3 items-center">
+                    <select
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    >
+                        {categories.map(cat => (
+                            <option key={cat} value={cat}>
+                                {cat}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
                 <button
                     type="button"
                     className="inline-flex items-center justify-center rounded-md border border-indigo-600 px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-50 transition w-full sm:w-auto"
@@ -105,7 +135,7 @@ const AllFaq = ({ setIsAllFaq }: any) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {faq?.map((faq) => (
+                        {filteredFaqs?.map((faq) => (
                             <tr
                                 key={faq._id}
                                 className="bg-neutral-primary border-b border-default"
@@ -121,7 +151,7 @@ const AllFaq = ({ setIsAllFaq }: any) => {
                                 <td className="px-6 py-4">
                                     {faq.priorityNumber}
                                 </td>
-                                 <td className="px-6 py-4">
+                                <td className="px-6 py-4">
                                     {faq?.category}
                                 </td>
                                 <td className="px-6 py-4">
@@ -135,7 +165,7 @@ const AllFaq = ({ setIsAllFaq }: any) => {
                                                 question: faq.question,
                                                 answer: faq.answer,
                                                 priorityNumber: faq.priorityNumber,
-                                                category:faq?.category
+                                                category: faq?.category
                                             });
                                         }}
                                     >
