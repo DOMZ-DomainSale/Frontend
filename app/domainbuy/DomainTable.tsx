@@ -80,43 +80,71 @@ const DomainTable = ({ searchQuery }: DomainTableProps) => {
   };
 
   /* ---------------- APPLY FILTERS ---------------- */
-  const filteredDomains = domains.filter(d => {
-    const name = d.domain.toLowerCase();
+const filteredDomains = domains.filter(d => {
+  const fullDomain = d.domain.toLowerCase();
+  const domainName = fullDomain.split(".")[0]; // name without extension
+  const search = searchQuery.toLowerCase();
 
-    // search box
-    if (searchQuery && !name.includes(searchQuery.toLowerCase())) return false;
+  /* ---------------- SEARCH BAR ---------------- */
+  if (search && !fullDomain.includes(search)) return false;
 
-    // extensions
+  /* ---------------- EXTENSIONS ---------------- */
+  if (
+    appliedFilters.extensions.length > 0 &&
+    !appliedFilters.extensions.some(ext => fullDomain.endsWith(ext))
+  ) {
+    return false;
+  }
+
+  /* ---------------- WORD MATCHING ---------------- */
+  if (appliedFilters.exact) {
+    // EXACT match overrides partial matching
+    if (appliedFilters.startsWith && domainName !== appliedFilters.startsWith.toLowerCase())
+      return false;
+
+    if (appliedFilters.endsWith && domainName !== appliedFilters.endsWith.toLowerCase())
+      return false;
+
+    if (appliedFilters.contains && domainName !== appliedFilters.contains.toLowerCase())
+      return false;
+  } else {
+    // Normal partial matching
     if (
-      appliedFilters.extensions.length &&
-      !appliedFilters.extensions.some(ext => name.endsWith(ext))
+      appliedFilters.startsWith &&
+      !domainName.startsWith(appliedFilters.startsWith.toLowerCase())
     ) return false;
 
-    // words
-    if (appliedFilters.startsWith && !name.startsWith(appliedFilters.startsWith.toLowerCase()))
-      return false;
-
-    if (appliedFilters.endsWith && !name.endsWith(appliedFilters.endsWith.toLowerCase()))
-      return false;
-
-    if (appliedFilters.contains && !name.includes(appliedFilters.contains.toLowerCase()))
-      return false;
-
-    // length
-    if (appliedFilters.minLength && name.length < appliedFilters.minLength)
-      return false;
-
-    if (appliedFilters.maxLength && name.length > appliedFilters.maxLength)
-      return false;
-
-    // seller
     if (
-      appliedFilters.sellerName &&
-      !d.user?.name?.toLowerCase().includes(appliedFilters.sellerName.toLowerCase())
+      appliedFilters.endsWith &&
+      !domainName.endsWith(appliedFilters.endsWith.toLowerCase())
     ) return false;
 
-    return true;
-  });
+    if (
+      appliedFilters.contains &&
+      !domainName.includes(appliedFilters.contains.toLowerCase())
+    ) return false;
+  }
+
+  /* ---------------- LENGTH ---------------- */
+  if (
+    appliedFilters.minLength !== undefined &&
+    domainName.length < appliedFilters.minLength
+  ) return false;
+
+  if (
+    appliedFilters.maxLength !== undefined &&
+    domainName.length > appliedFilters.maxLength
+  ) return false;
+
+  /* ---------------- SELLER ---------------- */
+  if (
+    appliedFilters.sellerName &&
+    !d.user?.name?.toLowerCase().includes(appliedFilters.sellerName.toLowerCase())
+  ) return false;
+
+  return true;
+});
+
 
   return (
     <div className="w-full mt-10">
