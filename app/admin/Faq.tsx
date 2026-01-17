@@ -76,7 +76,8 @@ const Faq = () => {
 
               <button
                 type="button"
-                className="inline-flex items-center justify-center rounded-md border border-indigo-600 px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-50 transition w-full sm:w-auto"
+                className="inline-flex items-center justify-center rounded-md border border-indigo-600 px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-50 transition w-full sm:w-auto
+                cursor-pointer"
                 onClick={() => setIsAllFaq('view')}
               >
                 View All FAQ
@@ -156,7 +157,7 @@ const Faq = () => {
         <div className="mt-6 flex justify-end">
           <button
             type="submit"
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
+            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500 cursor-pointer"
           >
             Save
           </button>
