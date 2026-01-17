@@ -44,7 +44,7 @@ export default function Pricing() {
   }
 
   return (
-    <section className="relative bg-white px-6 py-24 sm:py-32 lg:px-8">
+    <section className="relative bg-white px-6 py-5 sm:py-5 lg:px-8">
       {/* HEADER */}
       <div className="mx-auto max-w-4xl text-center">
         <h2 className="text-base font-semibold text-indigo-600">Pricing</h2>

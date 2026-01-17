@@ -11,6 +11,7 @@ import Loader from "@/components/Loader";
 import { logoutHandler } from "@/utils/auth";
 import Myportfolio from "./myportfolio";
 import Profile from "./profile";
+import Pricing from "@/utils/Test";
 
 const Page = () => {
   const router = useRouter();
@@ -35,14 +36,13 @@ const Page = () => {
 
   const sidebarLinks = [
     { label: "Profile", icon: "/assets/icons/user.webp", onClick: () => setActiveSection("Profile") },
-    { label: "Plans", icon: "/assets/icons/padlock.webp", onClick: () => router.push("/plan") },
     { label: "My Portfolio", icon: "/assets/icons/padlock.webp", onClick: () => setActiveSection("myPortfolio") },
     { label: "Subscription", icon: "/assets/icons/credit-card.webp", onClick: () => setActiveSection("Subscription") },
+    { label: "Plans", icon: "/assets/icons/padlock.webp", onClick: () => setActiveSection("Pricing") },
     { label: "Logout", icon: "/assets/icons/logout.png", onClick: () => logoutHandler(router) },
   ];
 
   if (loading) return <Loader />;
-
   return (
     <div className="min-h-dvh flex flex-col bg-white">
       <NavbarComponenet colorText="P" plainText="rofile" IsParaText={false} />
@@ -96,6 +96,7 @@ const Page = () => {
         )}
         <main className="flex-1 px-4 sm:px-8 py-6 mt-2 sm:mt-0">
           {activeSection === "Profile" && <Profile />}
+          {activeSection === "Pricing" && <Pricing />}
           {activeSection === "Subscription" && <SubscriptionManagementCard />}
           {activeSection === "billing" && <PaymentSettingCard />}
           {activeSection === "myPortfolio" && <Myportfolio />}
