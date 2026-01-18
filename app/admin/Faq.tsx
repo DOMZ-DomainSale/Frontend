@@ -86,20 +86,7 @@ const Faq = () => {
             </div>
             <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-6">
               {/* QUESTION */}
-              <div className="sm:col-span-4">
-                <label className="block text-sm font-medium text-gray-900">
-                  Question
-                </label>
-                <input
-                  type="text"
-                  name="question"
-                  value={faq.question}
-                  onChange={onChangeHandler}
-                  placeholder="What is FAQ?"
-                  required
-                  className="mt-2 block w-full rounded-md border px-3 py-2"
-                />
-              </div>
+              
               <div className="sm:col-span-4">
                 <label className="block text-sm font-medium text-gray-900">
                   Category
@@ -121,6 +108,20 @@ const Faq = () => {
                     </option>
                   ))}
                 </select>
+              </div>
+              <div className="sm:col-span-4">
+                <label className="block text-sm font-medium text-gray-900">
+                  Question
+                </label>
+                <input
+                  type="text"
+                  name="question"
+                  value={faq.question}
+                  onChange={onChangeHandler}
+                  placeholder="What is FAQ?"
+                  required
+                  className="mt-2 block w-full rounded-md border px-3 py-2"
+                />
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-900">

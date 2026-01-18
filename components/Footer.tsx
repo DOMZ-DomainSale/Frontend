@@ -137,7 +137,7 @@ const Footer = () => {
                 </li>
                 <li
                   onClick={() => handleAuthRedirect(router)}
-                  className="text-gray-700 transition hover:opacity-75"
+                  className="text-gray-700 transition hover:opacity-75 cursor-pointer"
                 >
                   Sell
                 </li>

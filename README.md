@@ -9,3 +9,8 @@ example.com
 
 
 message icon and seller name and then promoted
+
+
+
+
+bulk changes in portfolio
