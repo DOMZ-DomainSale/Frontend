@@ -11,6 +11,8 @@ import { toast } from 'react-toastify';
 import Link from 'next/link';
 import DomainStatus from './DomainStatus';
 
+type DateRange = 'all' | 'today' | '7days' | '30days';
+
 export interface DomainType {
   id: string;
   domain: string;
@@ -18,9 +20,10 @@ export interface DomainType {
   isHidden: boolean;
   isChatActive: boolean;
   clicks: number;
-  finalUrl?: string,
-  createdAt: string
+  finalUrl?: string;
+  createdAt: string;
 }
+
 const Toggle = ({
   checked,
   onChange,
@@ -47,14 +50,91 @@ const Toggle = ({
     />
   </div>
 );
+
+const SegmentedTabs = ({
+  active,
+  onChange,
+}: {
+  active: 'domains' | 'status';
+  onChange: (val: 'domains' | 'status') => void;
+}) => (
+  <div className="inline-flex bg-slate-100 rounded-full p-1">
+    <button
+      onClick={() => onChange('domains')}
+      className={`px-4 py-1.5 rounded-full text-sm font-medium transition
+        ${active === 'domains'
+          ? 'bg-white shadow text-slate-900'
+          : 'text-slate-500 hover:text-slate-700'
+        }`}
+    >
+      My Domains
+    </button>
+
+    <button
+      onClick={() => onChange('status')}
+      className={`px-4 py-1.5 rounded-full text-sm font-medium transition
+        ${active === 'status'
+          ? 'bg-white shadow text-slate-900'
+          : 'text-slate-500 hover:text-slate-700'
+        }`}
+    >
+      Domain Status
+    </button>
+  </div>
+);
+
+const StatusHeader = ({
+  active,
+  onChange,
+}: {
+  active: DateRange;
+  onChange: (val: DateRange) => void;
+}) => (
+  <div className="mb-4 rounded-xl border bg-blue-50 px-4 py-3">
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h2 className="text-sm font-semibold text-slate-800">
+          Domain Health Monitoring
+        </h2>
+        <p className="text-xs text-slate-600">
+          Filter domains by activity period
+        </p>
+      </div>
+
+      <div className="flex flex-wrap gap-2 text-xs">
+        {[
+          { key: 'all', label: 'All' },
+          { key: 'today', label: 'Today' },
+          { key: '7days', label: '7 Days' },
+          { key: '30days', label: '30 Days' },
+        ].map(({ key, label }) => (
+          <button
+            key={key}
+            onClick={() => onChange(key as DateRange)}
+            className={`rounded-full px-3 py-1 border transition
+              ${active === key
+                ? 'bg-blue-600 text-white border-blue-600'
+                : 'bg-white text-slate-600 hover:bg-blue-100'
+              }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
 const Myportfolio = () => {
   const [loading, setLoading] = useState(true);
   const [userDomains, setUserDomains] = useState<DomainType[]>([]);
   const [domainStatus, setDomainStatus] = useState(false);
   const [open, setOpen] = useState(false);
-  const router = useRouter();
 
+  const router = useRouter();
   const API = `${process.env.NEXT_PUBLIC_apiLink}domain`;
+  const [dateRange, setDateRange] = useState<DateRange>('all');
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -69,6 +149,7 @@ const Myportfolio = () => {
     };
     checkAuth();
   }, [router]);
+
   const fetchDomains = async () => {
     const res = await axios.get(`${API}/getdomainbyuser`, {
       withCredentials: true,
@@ -79,9 +160,9 @@ const Myportfolio = () => {
   useEffect(() => {
     fetchDomains();
   }, []);
+
   const toggleHide = async (id: string, value: boolean) => {
     const prev = [...userDomains];
-
     setUserDomains((d) =>
       d.map((x) => (x.id === id ? { ...x, isHidden: value } : x))
     );
@@ -97,9 +178,9 @@ const Myportfolio = () => {
       setUserDomains(prev);
     }
   };
+
   const toggleChat = async (id: string, value: boolean) => {
     const prev = [...userDomains];
-
     setUserDomains((d) =>
       d.map((x) => (x.id === id ? { ...x, isChatActive: value } : x))
     );
@@ -115,71 +196,127 @@ const Myportfolio = () => {
       setUserDomains(prev);
     }
   };
+
   const deleteDomain = async (id: string) => {
     const prev = [...userDomains];
     setUserDomains((d) => d.filter((x) => x.id !== id));
 
     try {
-      const res = await axios.delete(`${API}/${id}`, { withCredentials: true });
+      const res = await axios.delete(`${API}/${id}`, {
+        withCredentials: true,
+      });
       toast.success(res?.data?.message);
     } catch {
       setUserDomains(prev);
     }
   };
+  const filterDomainsByDate = (domains: DomainType[]) => {
+    if (dateRange === 'all') return domains;
+
+    const now = new Date();
+
+    return domains.filter((d) => {
+      const created = new Date(d.createdAt);
+      const diff = now.getTime() - created.getTime();
+
+      if (dateRange === 'today') {
+        return (
+          created.getDate() === now.getDate() &&
+          created.getMonth() === now.getMonth() &&
+          created.getFullYear() === now.getFullYear()
+        );
+      }
+
+      if (dateRange === '7days') {
+        return diff <= 7 * 24 * 60 * 60 * 1000;
+      }
+
+      if (dateRange === '30days') {
+        return diff <= 30 * 24 * 60 * 60 * 1000;
+      }
+
+      return true;
+    });
+  };
+
+
+
   if (loading) return <Loader />;
+
   return (
-    <div className="lg:pl-[10%] lg:pr-[10%] lg:pt-9">
-      <div className="max-w-5xl mx-auto mt-8">
-        <div className="flex justify-between mb-3">
-          <button className="rounded-full bg-blue-600 text-white px-4 py-1 cursor-pointer hover:bg-blue-700"
-          onClick={()=>setDomainStatus(!domainStatus)}
-          >
-           {domainStatus?"My Registered Domains" :"My Domain Status"}  
-          </button>
+    <div className="lg:px-[10%] lg:pt-10">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+          <SegmentedTabs
+            active={domainStatus ? 'status' : 'domains'}
+            onChange={(val) => setDomainStatus(val === 'status')}
+          />
+
           <button
             onClick={() => setOpen(true)}
-            className="rounded-full bg-blue-600 text-white px-4 py-1"
+            className="
+    inline-flex items-center gap-2
+    rounded-full border border-blue-600
+    bg-white px-4 py-1.5
+    text-sm font-medium text-blue-600
+    transition
+    hover:bg-blue-50
+    focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer
+  "
           >
             + Add Domain
           </button>
-          <Modal isOpen={open} onClose={() => setOpen(false)} title="Add Domains">
-            <AddDomainsCard
-              onClose={() => {
-                setOpen(false);
-                fetchDomains();
-              }}
-            />
-          </Modal>
+
         </div>
-        {domainStatus ? <DomainStatus data={userDomains} /> : (
-          <div className="overflow-x-auto max-h-125 overflow-y-auto">
-            <table className="min-w-full border-separate border-spacing-y-2">
-              <thead className="sticky top-0 z-10 bg-white/30 backdrop-blur-md">
-                <tr>
-                  <th className="px-4 py-2 text-left">Domain</th>
-                  <th className="px-4 py-2 text-center">Hide</th>
-                  <th className="px-4 py-2 text-center">Chat</th>
-                  <th className="px-4 py-2 text-center">Delete</th>
-                  <th className="px-4 py-2 text-center">Added On</th>
+
+        <Modal isOpen={open} onClose={() => setOpen(false)} title="Add Domains">
+          <AddDomainsCard
+            onClose={() => {
+              setOpen(false);
+              fetchDomains();
+            }}
+          />
+        </Modal>
+
+        {domainStatus ? (
+          <>
+            <StatusHeader active={dateRange} onChange={setDateRange} />
+
+            <DomainStatus data={filterDomainsByDate(userDomains)} />
+
+          </>
+        ) : (
+          <div className="rounded-xl border bg-white shadow-sm overflow-x-auto max-h-130 overflow-y-auto">
+            <table className="min-w-full border-separate border-spacing-y-1">
+              <thead className="sticky top-0 bg-white z-10">
+                <tr className="text-xs text-slate-600">
+                  <th className="px-4 py-3 text-left">Domain</th>
+                  <th className="px-4 py-3 text-center">Hide</th>
+                  <th className="px-4 py-3 text-center">Chat</th>
+                  <th className="px-4 py-3 text-center">Delete</th>
+                  <th className="px-4 py-3 text-center">Added</th>
                 </tr>
               </thead>
+
               <tbody>
                 {userDomains
-                  ?.filter(d => d.status === "Pass")
+                  .filter((d) => d.status === 'Pass')
                   .map((d) => (
-                    <tr key={d.id} className="odd:bg-white even:bg-blue-50">
-                      <td className="px-4 py-2 text-blue-600 underline break-all">
-                        {d?.finalUrl ? (
+                    <tr
+                      key={d.id}
+                      className="bg-slate-50 hover:bg-blue-50 transition"
+                    >
+                      <td className="px-4 py-2 break-all text-blue-600">
+                        {d.finalUrl ? (
                           <Link
                             href={d.finalUrl}
                             target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline"
+                            className="hover:underline"
                           >
-                            {d?.domain}
+                            {d.domain}
                           </Link>
                         ) : (
-                          <span className="text-gray-700">{d?.domain}</span>
+                          <span className="text-slate-700">{d.domain}</span>
                         )}
                       </td>
 
@@ -202,29 +339,29 @@ const Myportfolio = () => {
                       <td className="px-4 py-2 text-center">
                         <button
                           onClick={() => deleteDomain(d.id)}
-                          className="text-red-600 hover:underline"
+                          className="text-xs font-medium text-red-600 hover:underline"
                         >
                           Delete
                         </button>
                       </td>
-                      <td className="px-4 py-2 text-center">
+
+                      <td className="px-4 py-2 text-center text-xs text-slate-600">
                         {new Date(d.createdAt).toLocaleDateString()}
                       </td>
                     </tr>
-                  ))
-                }
+                  ))}
               </tbody>
             </table>
           </div>
         )}
-      </div>
-      <QuickConectCard
-        title="Stay Updated"
-        description="Get news, announcements, and highlighted names when our newsletter launches"
-        mainButton="Subscribe Now"
-        subButton={false}
-      />
 
+        <QuickConectCard
+          title="Stay Updated"
+          description="Get news, announcements, and highlighted names when our newsletter launches"
+          mainButton="Subscribe Now"
+          subButton={false}
+        />
+      </div>
     </div>
   );
 };
