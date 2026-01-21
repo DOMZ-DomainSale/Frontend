@@ -122,8 +122,10 @@ const Faq = () => {
                               }`}
                           >
                             <div className="overflow-hidden">
-                              <div className="px-6 pb-5 text-gray-600 leading-relaxed border-l-4 border-blue-500 ml-2">
-                                {item.answer}
+                              <div className="px-6 pb-5 ml-2">
+                                <div className="border-l-4 border-blue-500 pl-4 text-gray-600 leading-relaxed inline-block">
+                                  {item.answer}
+                                </div>
                               </div>
                             </div>
                           </div>
