@@ -9,6 +9,7 @@ import Modal from '@/components/model';
 import AddDomainsCard from './adddomain';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
+import { Calendar } from 'lucide-react';
 import DomainStatus from './DomainStatus';
 
 type DateRange = 'all' | 'today' | '7days' | '30days' | 'custom';
@@ -119,29 +120,28 @@ const StatusHeader = ({
           <button
             key={key}
             onClick={() => onChange(key as DateRange)}
-            className={`rounded-full px-3 py-1 border transition
-              ${
-                active === key
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-slate-600 hover:bg-blue-100'
+            className={`rounded-full px-3 py-1 border transition cursor-pointer
+              ${active === key
+                ? 'bg-blue-600 text-white border-blue-600 '
+                : 'bg-white text-slate-600 hover:bg-blue-100'
               }`}
           >
             {label}
           </button>
         ))}
 
-        {/* Calendar Button (GUARDED) */}
         <button
           onClick={() => active !== 'custom' && onChange('custom')}
-          className={`rounded-full px-3 py-1 border transition
-            ${
-              active === 'custom'
-                ? 'bg-blue-600 text-white border-blue-600'
-                : 'bg-white text-slate-600 hover:bg-blue-100'
+          className={`rounded-full px-3 py-1 border transition inline-flex items-center gap-1 cursor-pointer
+    ${active === 'custom'
+              ? 'bg-blue-600 text-white border-blue-600'
+              : 'bg-white text-slate-600 hover:bg-blue-100'
             }`}
         >
-          Range
+          <Calendar size={14} />
+          Date Range
         </button>
+
       </div>
     </div>
 
