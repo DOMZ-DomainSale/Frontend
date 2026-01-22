@@ -16,9 +16,11 @@ interface Domain {
   isChatActive: boolean;
   user: { name: string };
 }
+
 interface Props {
   searchQuery: string;
 }
+
 const DomainTable = ({ searchQuery }: Props) => {
   const [showFilter, setShowFilter] = useState(true);
   const [filters, setFilters] = useState<DomainFilters>({ extensions: [] });
@@ -34,6 +36,10 @@ const DomainTable = ({ searchQuery }: Props) => {
   const totalPages = limit === 'all'
   ? 1
   : Math.ceil(total / numericLimit);
+  type SortOption = 'az' | 'za';
+
+const [sortBy, setSortBy] = useState<SortOption>('az');
+
 
 
   useEffect(() => {
@@ -71,7 +77,8 @@ const DomainTable = ({ searchQuery }: Props) => {
     setPage(1);
   }, [filters, searchQuery]);
 
-  const filteredDomains = domains.filter(d => {
+const filteredDomains = domains
+  .filter(d => {
     const full = d.domain.toLowerCase();
     const name = full.split('.')[0];
     const search = searchQuery.toLowerCase();
@@ -102,7 +109,16 @@ const DomainTable = ({ searchQuery }: Props) => {
     ) return false;
 
     return true;
+  })
+  .sort((a, b) => {
+    const da = a.domain.toLowerCase();
+    const db = b.domain.toLowerCase();
+
+    return sortBy === 'az'
+      ? da.localeCompare(db)
+      : db.localeCompare(da);
   });
+
 
   return (
     <div className="w-full mt-10">
@@ -133,6 +149,18 @@ const DomainTable = ({ searchQuery }: Props) => {
           </select>
 
         </div>
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+  <span>Sort by</span>
+  <select
+    value={sortBy}
+    onChange={e => setSortBy(e.target.value as SortOption)}
+    className="border rounded-md px-2 py-1"
+  >
+    <option value="az">Alphabetical (A–Z)</option>
+    <option value="za">Alphabetical (Z–A)</option>
+  </select>
+</div>
+
       </div>
       <div className="flex border border-t-0 rounded-b-xl bg-white overflow-hidden min-h-150">
         {showFilter && (
