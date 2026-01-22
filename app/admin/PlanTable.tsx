@@ -61,8 +61,8 @@ const PlanTable = ({ data, onPlanUpdated }: PlanTableProps) => {
       const searchValue = search.toLowerCase();
 
       const matchesText =
-        item.userId.email.toLowerCase().includes(searchValue) ||
-        item.userId.name.toLowerCase().includes(searchValue);
+        item?.userId?.email.toLowerCase().includes(searchValue) ||
+        item?.userId?.name.toLowerCase().includes(searchValue);
 
       const matchesDate = dateFilter
         ? item.createdAt.slice(0, 10) === dateFilter
