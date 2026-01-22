@@ -139,13 +139,13 @@ const Page = () => {
               />
               <p>
                 I agree to the{" "}
-                <span className="text-blue-600 cursor-pointer">
+                <Link href={'/terms'} className="text-blue-600 cursor-pointer">
                   Terms of Service
-                </span>{" "}
+                </Link>{" "}
                 and{" "}
-                <span className="text-blue-600 cursor-pointer">
+                <Link href={'/terms'} className="text-blue-600 cursor-pointer">
                   Privacy Policy
-                </span>
+                </Link>
               </p>
             </div>
 
