@@ -1,5 +1,4 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
@@ -51,7 +50,6 @@ const Toggle = ({
     />
   </div>
 );
-
 const SegmentedTabs = ({
   active,
   onChange,
@@ -174,7 +172,6 @@ const StatusHeader = ({
   </div>
 );
 
-
 const Myportfolio = () => {
   const [loading, setLoading] = useState(true);
   const [userDomains, setUserDomains] = useState<DomainType[]>([]);
@@ -182,8 +179,6 @@ const Myportfolio = () => {
   const [open, setOpen] = useState(false);
   const [customFrom, setCustomFrom] = useState('');
   const [customTo, setCustomTo] = useState('');
-
-
 
   const router = useRouter();
   const API = `${process.env.NEXT_PUBLIC_apiLink}domain`;
@@ -304,11 +299,7 @@ const Myportfolio = () => {
     });
   };
 
-
-
-
   if (loading) return <Loader />;
-
   return (
     <div className="lg:px-[10%] lg:pt-10">
       <div className="max-w-6xl mx-auto">
@@ -354,9 +345,9 @@ const Myportfolio = () => {
               setCustomFrom={setCustomFrom}
               setCustomTo={setCustomTo}
             />
-
-
-            <DomainStatus data={filterDomainsByDate(userDomains)} />
+            <DomainStatus data={filterDomainsByDate(userDomains)} 
+            onDeleteSuccess={fetchDomains}   
+            />
 
           </>
         ) : (
@@ -371,7 +362,6 @@ const Myportfolio = () => {
                   <th className="px-4 py-3 text-center">Added</th>
                 </tr>
               </thead>
-
               <tbody>
                 {userDomains
                   .filter((d) => d.status === 'Pass')

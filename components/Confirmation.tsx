@@ -11,7 +11,8 @@ interface ConfirmationProps {
 
 const Confirmation = ({ open, onConfirm, onCancel }: ConfirmationProps) => {
   return (
-    <Dialog open={open} onClose={onCancel} className="relative z-10">
+    <Dialog open={open} onClose={onCancel} className="relative z-100">
+
       <DialogBackdrop className="fixed inset-0 bg-gray-500/75" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
