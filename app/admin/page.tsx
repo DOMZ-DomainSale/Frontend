@@ -11,10 +11,10 @@ import DomainTable from './DomainTable';
 import PlanTable, { PlansResponse } from './PlanTable';
 import Faq from './Faq';
 import UserTable from './UserTable';
-import PlanRequest from './PlanRequest';
 import PlanRequestTable from './PlanRequest';
+import Subscribers from './subscribers';
 
-type AdminView = "dashboard" | "Users" | "domains" | "Plans" | "Plan Requests" | "Faq";
+type AdminView = "dashboard" | "Users" | "domains" | "Plans" | "Plan Requests" | "Faq" | "Subscribers";
 
 
 export interface UserPlan {
@@ -272,6 +272,11 @@ const Page = () => {
         {activeView === "Faq" && (
           <div className="bg-white p-6 rounded-xl shadow">
             <Faq />
+          </div>
+        )}
+        {activeView === "Subscribers" && (
+          <div className="bg-white p-6 rounded-xl shadow">
+           <Subscribers/>
           </div>
         )}
       </main>

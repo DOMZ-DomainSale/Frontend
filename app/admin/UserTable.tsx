@@ -65,7 +65,7 @@ const UserTable = ({ data, onRefresh }: UserTableProps) => {
                 : true;
 
             return matchesText && matchesDate;
-        });
+        }); 
     }, [data, search, dateFilter]);
 
     /* 📤 EXPORT TO EXCEL */
