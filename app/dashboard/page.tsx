@@ -42,12 +42,10 @@ const Page = () => {
     { label: "Plans", icon: "/assets/icons/padlock.webp", onClick: () => setActiveSection("Pricing") },
     { label: "Logout", icon: "/assets/icons/logout.png", onClick: () => logoutHandler(router) },
   ];
-console.log(searchQuery,"searchQuerysearchQuerysearchQuery");
-
   if (loading) return <Loader />;
   return (
     <div className="min-h-dvh flex flex-col bg-white">
-      <NavbarComponenet colorText="P" plainText="rofile" IsParaText={false} searchbarStatus={true}
+      <NavbarComponenet colorText="P" plainText="rofile" IsParaText={false} searchbarStatus={activeSection === "myPortfolio"}
       onSearch={setSearchQuery}
       />
       <div className="flex sm:hidden justify-between items-center px-4 py-3 border-b">
