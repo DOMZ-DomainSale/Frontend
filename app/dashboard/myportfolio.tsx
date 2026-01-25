@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import QuickConectCard from '@/components/cards/QuickConectCard';
@@ -23,7 +23,9 @@ export interface DomainType {
   finalUrl?: string;
   createdAt: string;
 }
-
+type MyPortfolioProps = {
+  searchQuery: string;
+};
 const Toggle = ({
   checked,
   onChange,
@@ -172,7 +174,7 @@ const StatusHeader = ({
   </div>
 );
 
-const Myportfolio = () => {
+const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
   const [loading, setLoading] = useState(true);
   const [userDomains, setUserDomains] = useState<DomainType[]>([]);
   const [domainStatus, setDomainStatus] = useState(false);
@@ -198,7 +200,13 @@ const Myportfolio = () => {
     };
     checkAuth();
   }, [router]);
+  const filterBySearch = (domains: DomainType[]) => {
+    if (!searchQuery?.trim()) return domains;
 
+    return domains.filter((d) =>
+      d.domain.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  };
   const fetchDomains = async () => {
     const res = await axios.get(`${API}/getdomainbyuser`, {
       withCredentials: true,
@@ -298,6 +306,18 @@ const Myportfolio = () => {
       return true;
     });
   };
+  const searchedDomains = useMemo(() => {
+    if (!searchQuery?.trim()) return userDomains;
+
+    return userDomains.filter((d) =>
+      d.domain.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [userDomains, searchQuery]);
+
+  const dateFilteredDomains = useMemo(() => {
+    return filterDomainsByDate(searchedDomains);
+  }, [searchedDomains, dateRange, customFrom, customTo]);
+
 
   if (loading) return <Loader />;
   return (
@@ -343,10 +363,10 @@ const Myportfolio = () => {
               setCustomFrom={setCustomFrom}
               setCustomTo={setCustomTo}
             />
-            <DomainStatus data={filterDomainsByDate(userDomains)} 
-            onDeleteSuccess={fetchDomains}   
+            <DomainStatus
+              data={dateFilteredDomains}
+              onDeleteSuccess={fetchDomains}
             />
-
           </>
         ) : (
           <div className="rounded-xl border bg-white shadow-sm overflow-x-auto max-h-130 overflow-y-auto">
@@ -361,7 +381,7 @@ const Myportfolio = () => {
                 </tr>
               </thead>
               <tbody>
-                {userDomains
+                {searchedDomains
                   .filter((d) => d.status === 'Pass')
                   .map((d) => (
                     <tr
@@ -381,7 +401,6 @@ const Myportfolio = () => {
                           <span className="text-slate-700">{d.domain}</span>
                         )}
                       </td>
-
                       <td className="px-4 py-2 text-center">
                         <Toggle
                           id={`hide-${d.id}`}

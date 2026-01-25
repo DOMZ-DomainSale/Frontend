@@ -11,7 +11,7 @@ const Portfolio = () => {
     const [loading, setLoading] = useState(true);
     const router = useRouter();
     useEffect(() => {
-    let isMounted = true; // flag to prevent state update on unmounted component
+    let isMounted = true; 
     const checkAuth = async () => {
       try {
         await axios.get(
@@ -32,7 +32,8 @@ const Portfolio = () => {
     if (loading) return <Loader />;
     return (
         <div className='lg:pl-[10%] lg:pr-[10%] lg:pt-9'>
-            <NavbarComponenet colorText="MY " plainText="Portfolio" IsParaText={true} ParaText="Browse a commission-free catalog and connect directly with domain owners." />
+            <NavbarComponenet colorText="MY " plainText="Portfolio" IsParaText={true} ParaText="Browse a commission-free catalog and connect directly with domain owners."
+             />
             <div className="w-full max-w-5xl mx-auto mt-8">
                 <div className="flex justify-between mb-2">
                     <button className="rounded-full border border-gray-300 px-4 py-1 bg-white text-gray-700 shadow hover:bg-gray-100">

@@ -18,6 +18,7 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState("Profile");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -41,11 +42,14 @@ const Page = () => {
     { label: "Plans", icon: "/assets/icons/padlock.webp", onClick: () => setActiveSection("Pricing") },
     { label: "Logout", icon: "/assets/icons/logout.png", onClick: () => logoutHandler(router) },
   ];
+console.log(searchQuery,"searchQuerysearchQuerysearchQuery");
 
   if (loading) return <Loader />;
   return (
     <div className="min-h-dvh flex flex-col bg-white">
-      <NavbarComponenet colorText="P" plainText="rofile" IsParaText={false} />
+      <NavbarComponenet colorText="P" plainText="rofile" IsParaText={false} searchbarStatus={true}
+      onSearch={setSearchQuery}
+      />
       <div className="flex sm:hidden justify-between items-center px-4 py-3 border-b">
         <h2 className="text-lg font-semibold">Dashboard</h2>
         <button
@@ -99,7 +103,7 @@ const Page = () => {
           {activeSection === "Pricing" && <Pricing />}
           {activeSection === "Subscription" && <SubscriptionManagementCard />}
           {activeSection === "billing" && <PaymentSettingCard />}
-          {activeSection === "myPortfolio" && <Myportfolio />}
+          {activeSection === "myPortfolio" && <Myportfolio searchQuery={searchQuery} />}
         </main>
       </div>
       <Footer />
