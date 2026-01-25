@@ -14,6 +14,7 @@ interface Domain {
   finalUrl: string;
   domain: string;
   isChatActive: boolean;
+  createdAt: string;
   user: { name: string };
 }
 
@@ -34,13 +35,11 @@ const DomainTable = ({ searchQuery }: Props) => {
   const [selectedDomain, setSelectedDomain] = useState<Domain | null>(null);
   const numericLimit = limit === 'all' ? total : limit;
   const totalPages = limit === 'all'
-  ? 1
-  : Math.ceil(total / numericLimit);
-  type SortOption = 'az' | 'za';
+    ? 1
+    : Math.ceil(total / numericLimit);
 
-const [sortBy, setSortBy] = useState<SortOption>('az');
-
-
+  type SortOption = 'az' | 'za' | 'length_desc' | 'newest' | 'oldest';
+  const [sortBy, setSortBy] = useState<SortOption>('newest');
 
   useEffect(() => {
     const fetchDomains = async () => {
@@ -77,49 +76,60 @@ const [sortBy, setSortBy] = useState<SortOption>('az');
     setPage(1);
   }, [filters, searchQuery]);
 
-const filteredDomains = domains
-  .filter(d => {
-    const full = d.domain.toLowerCase();
-    const name = full.split('.')[0];
-    const search = searchQuery.toLowerCase();
+  const filteredDomains = domains
+    .filter(d => {
+      const full = d.domain.toLowerCase();
+      const name = full.split('.')[0];
+      const search = searchQuery.toLowerCase();
 
-    if (search && !full.includes(search)) return false;
+      if (search && !full.includes(search)) return false;
 
-    if (
-      filters.extensions.length &&
-      !filters.extensions.some(ext => full.endsWith(ext))
-    ) return false;
+      if (
+        filters.extensions.length &&
+        !filters.extensions.some(ext => full.endsWith(ext))
+      ) return false;
 
-    if (filters.exact) {
-      if (filters.startsWith && name !== filters.startsWith.toLowerCase()) return false;
-      if (filters.endsWith && name !== filters.endsWith.toLowerCase()) return false;
-      if (filters.contains && name !== filters.contains.toLowerCase()) return false;
-    } else {
-      if (filters.startsWith && !name.startsWith(filters.startsWith.toLowerCase())) return false;
-      if (filters.endsWith && !name.endsWith(filters.endsWith.toLowerCase())) return false;
-      if (filters.contains && !name.includes(filters.contains.toLowerCase())) return false;
-    }
+      if (filters.exact) {
+        if (filters.startsWith && name !== filters.startsWith.toLowerCase()) return false;
+        if (filters.endsWith && name !== filters.endsWith.toLowerCase()) return false;
+        if (filters.contains && name !== filters.contains.toLowerCase()) return false;
+      } else {
+        if (filters.startsWith && !name.startsWith(filters.startsWith.toLowerCase())) return false;
+        if (filters.endsWith && !name.endsWith(filters.endsWith.toLowerCase())) return false;
+        if (filters.contains && !name.includes(filters.contains.toLowerCase())) return false;
+      }
 
-    if (filters.minLength && name.length < filters.minLength) return false;
-    if (filters.maxLength && name.length > filters.maxLength) return false;
+      if (filters.minLength && name.length < filters.minLength) return false;
+      if (filters.maxLength && name.length > filters.maxLength) return false;
 
-    if (
-      filters.sellerName &&
-      !d.user?.name?.toLowerCase().includes(filters.sellerName.toLowerCase())
-    ) return false;
+      if (
+        filters.sellerName &&
+        !d.user?.name?.toLowerCase().includes(filters.sellerName.toLowerCase())
+      ) return false;
 
-    return true;
-  })
-  .sort((a, b) => {
-    const da = a.domain.toLowerCase();
-    const db = b.domain.toLowerCase();
+      return true;
+    })
+    .sort((a, b) => {
+      const nameA = a.domain.toLowerCase().split('.')[0];
+      const nameB = b.domain.toLowerCase().split('.')[0];
+      switch (sortBy) {
+        case 'az':
+          return a.domain.localeCompare(b.domain);
+        case 'za':
+          return b.domain.localeCompare(a.domain);
 
-    return sortBy === 'az'
-      ? da.localeCompare(db)
-      : db.localeCompare(da);
-  });
+        case 'length_desc':
+          return nameB.length - nameA.length;
 
+        case 'newest':
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        case 'oldest':
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
 
+        default:
+          return 0;
+      }
+    });
   return (
     <div className="w-full mt-10">
       <div className="flex items-center justify-between px-4 py-3 border rounded-t-xl bg-white">
@@ -150,17 +160,19 @@ const filteredDomains = domains
 
         </div>
         <div className="flex items-center gap-2 text-sm text-gray-600">
-  <span>Sort by</span>
-  <select
-    value={sortBy}
-    onChange={e => setSortBy(e.target.value as SortOption)}
-    className="border rounded-md px-2 py-1"
-  >
-    <option value="az">Alphabetical (A–Z)</option>
-    <option value="za">Alphabetical (Z–A)</option>
-  </select>
-</div>
-
+          <span>Sort by</span>
+          <select
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value as SortOption)}
+            className="border rounded-md px-2 py-1"
+          >
+            <option value="az">A–Z</option>
+            <option value="za">Z–A</option>
+            <option value="length_desc">L–LL (Long → Short)</option>
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+          </select>
+        </div>
       </div>
       <div className="flex border border-t-0 rounded-b-xl bg-white overflow-hidden min-h-150">
         {showFilter && (
@@ -180,7 +192,6 @@ const filteredDomains = domains
                 <th className="px-6 py-4 text-left">Seller</th>
               </tr>
             </thead>
-
             <tbody>
               {loading ? (
                 <tr>
@@ -217,7 +228,23 @@ const filteredDomains = domains
                     </td>
 
                     <td className="px-6 py-4">
-                      {d.user?.name || 'Anonymous'}
+                      {d.user?.name ? (
+                        <button
+                          onClick={() => {
+                            setShowFilter(true); // ensure filter panel is open
+                            setFilters(prev => ({
+                              ...prev,
+                              sellerName: d.user.name
+                            }));
+                            setPage(1);
+                          }}
+                          className="text-blue-600 hover:underline font-medium cursor-pointer"
+                        >
+                          {d.user.name}
+                        </button>
+                      ) : (
+                        'Anonymous'
+                      )}
                     </td>
                   </tr>
                 ))

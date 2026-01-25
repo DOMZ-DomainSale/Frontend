@@ -145,7 +145,7 @@ const FilterDomain = ({ filters, onChange }: Props) => {
       </section>
       <button
         onClick={() => onChange({ extensions: [] })}
-        className="text-blue-600 font-medium"
+        className="text-blue-600 font-medium cursor-pointer"
       >
         Clear all
       </button>
