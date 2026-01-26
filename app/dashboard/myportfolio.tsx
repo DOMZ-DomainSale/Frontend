@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { Calendar } from 'lucide-react';
 import DomainStatus from './DomainStatus';
 import Subscribe from '@/utils/subscribe';
+import Confirmation from '@/components/Confirmation';
 
 type DateRange = 'all' | 'today' | '7days' | '30days' | 'custom';
 
@@ -182,6 +183,9 @@ const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
   const [open, setOpen] = useState(false);
   const [customFrom, setCustomFrom] = useState('');
   const [customTo, setCustomTo] = useState('');
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+
 
   const router = useRouter();
   const API = `${process.env.NEXT_PUBLIC_apiLink}domain`;
@@ -353,7 +357,6 @@ const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
             }}
           />
         </Modal>
-
         {domainStatus ? (
           <>
             <StatusHeader
@@ -377,7 +380,7 @@ const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
                   <th className="px-4 py-3 text-left">Domain</th>
                   <th className="px-4 py-3 text-center">Hide</th>
                   <th className="px-4 py-3 text-center">Chat</th>
-                  <th className="px-4 py-3 text-center">Delete</th>
+                  <th className="px-4 py-3 text-center cursor-pointer">Delete</th>
                   <th className="px-4 py-3 text-center">Added</th>
                 </tr>
               </thead>
@@ -420,11 +423,15 @@ const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
 
                       <td className="px-4 py-2 text-center">
                         <button
-                          onClick={() => deleteDomain(d.id)}
+                          onClick={() => {
+                            setPendingDeleteId(d.id);
+                            setConfirmOpen(true);
+                          }}
                           className="text-xs font-medium text-red-600 hover:underline"
                         >
                           Delete
                         </button>
+
                       </td>
 
                       <td className="px-4 py-2 text-center text-xs text-slate-600">
@@ -436,8 +443,23 @@ const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
             </table>
           </div>
         )}
-        <Subscribe/>
+        <Subscribe />
       </div>
+      <Confirmation
+        open={confirmOpen}
+        onCancel={() => {
+          setConfirmOpen(false);
+          setPendingDeleteId(null);
+        }}
+        onConfirm={async () => {
+          if (!pendingDeleteId) return;
+
+          await deleteDomain(pendingDeleteId);
+          setConfirmOpen(false);
+          setPendingDeleteId(null);
+        }}
+      />
+
     </div>
   );
 };
