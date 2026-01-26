@@ -215,13 +215,18 @@ const DomainStatus = ({ data, onDeleteSuccess }: DomainTableProps) => {
                   <td className="p-4 border-b text-sm text-gray-900">
                     <Trash2
                       onClick={() => {
+                        if (domain.status === "Pass") return; // hard stop
                         setPendingDelete([domain]);
                         setConfirmOpen(true);
                       }}
-                      className="cursor-pointer text-red-600 hover:text-red-700"
+                      className={`
+      ${domain.status === "Pass"
+                          ? "text-gray-400  opacity-50 cursor-not-allowed"
+                          : "text-red-600 hover:text-red-700 cursor-pointer"
+                        }`}
                     />
-
                   </td>
+
                 </tr>
               ))
             ) : (
