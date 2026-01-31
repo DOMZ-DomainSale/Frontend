@@ -4,13 +4,13 @@ import React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { checkAuth } from "@/utils/checkAuth"
+import { CheckAuth } from "@/utils/checkAuth"
 
 
 const AboutDomz = () => {
     const router=useRouter();
     const handleAuthRedirect = async () => {
-        const status = await checkAuth()
+        const status = await CheckAuth()
         router.push(status === "authenticated" ? "/dashboard" : "/login")
       }
   return (

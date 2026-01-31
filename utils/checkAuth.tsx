@@ -3,7 +3,7 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 
 export type AuthResult = "authenticated" | "unauthenticated"
 
-export const checkAuth = async (): Promise<AuthResult> => {
+export const CheckAuth = async (): Promise<AuthResult> => {
   try {
     await axios.get(
       `${process.env.NEXT_PUBLIC_apiLink}auth/authenticate`,
@@ -18,6 +18,6 @@ export const checkAuth = async (): Promise<AuthResult> => {
 export const handleAuthRedirect = async (
     router: AppRouterInstance
   ) => {
-    const status = await checkAuth()
+    const status = await CheckAuth()
     router.push(status === "authenticated" ? "/dashboard" : "/login")
   }
