@@ -107,6 +107,7 @@ const DomainsTable = ({ data, onRequestUpdated }: DomainsTableProps) => {
       "domains.xlsx"
     );
   };
+
   if (isPromotedDomain) {
     return (
       <PromotedDomainTable

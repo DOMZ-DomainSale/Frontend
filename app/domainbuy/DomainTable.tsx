@@ -42,26 +42,51 @@ const DomainTable = ({ searchQuery }: Props) => {
   const [sortBy, setSortBy] = useState<SortOption>('newest');
 
   useEffect(() => {
+    if (searchQuery) {
+      setLimit('all');
+      setPage(1);
+    }
+  }, [searchQuery]);
+
+
+  useEffect(() => {
     const fetchDomains = async () => {
       try {
         setLoading(true);
-        const params: any = { page };
-        if (limit !== 'all') {
-          params.limit = limit;
+
+        let res;
+
+        if (searchQuery) { 
+          // 🔍 SEARCH MODE
+          res = await axios.get(
+            `${process.env.NEXT_PUBLIC_apiLink}domain/search`,
+            {
+              params: {
+                search: searchQuery,   // ✅ correct key
+                limit: 'all',
+                page: 1
+              }
+            }
+          );
+
         } else {
-          params.all = true;
-        }
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_apiLink}domain/public`,
-          { params }
-        );
-        setDomains(res.data.domains);
-        setTotal(res.data.total);
-        if (res.data.capped) {
-          toast.info(
-            `Showing first ${res.data.capLimit} domains for performance reasons`
+          // 📄 BROWSE MODE
+          const params: any = { page };
+
+          if (limit !== 'all') {
+            params.limit = limit;
+          } else {
+            params.all = true;
+          }
+
+          res = await axios.get(
+            `${process.env.NEXT_PUBLIC_apiLink}domain/public`,
+            { params }
           );
         }
+
+        setDomains(res.data.domains);
+        setTotal(res.data.total ?? res.data.domains.length);
 
       } catch {
         toast.error('Failed to load domains');
@@ -69,8 +94,10 @@ const DomainTable = ({ searchQuery }: Props) => {
         setLoading(false);
       }
     };
+
     fetchDomains();
-  }, [page, limit]);
+  }, [page, limit, searchQuery]);
+
 
   useEffect(() => {
     setPage(1);
@@ -80,10 +107,6 @@ const DomainTable = ({ searchQuery }: Props) => {
     .filter(d => {
       const full = d.domain.toLowerCase();
       const name = full.split('.')[0];
-      const search = searchQuery.toLowerCase();
-
-      if (search && !full.includes(search)) return false;
-
       if (
         filters.extensions.length &&
         !filters.extensions.some(ext => full.endsWith(ext))
