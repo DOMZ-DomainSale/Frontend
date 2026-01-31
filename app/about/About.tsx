@@ -3,16 +3,13 @@
 import React from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { CheckAuth } from "@/utils/checkAuth"
+import { useRouter } from 'next/navigation'
+import { handleAuthRedirect } from "@/utils/checkAuth"
 
 
 const AboutDomz = () => {
     const router=useRouter();
-    const handleAuthRedirect = async () => {
-        const status = await CheckAuth()
-        router.push(status === "authenticated" ? "/dashboard" : "/login")
-      }
+    
   return (
     <section className="relative min-h-225 overflow-hidden bg-white">
 
@@ -115,7 +112,7 @@ const AboutDomz = () => {
               </Link>
 
               <button
-                onClick={handleAuthRedirect}
+                  onClick={() => handleAuthRedirect(router)}
                 className="inline-flex items-center justify-center rounded-full border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-100 hover:cursor-pointer"
               >
                 List Your Domains
