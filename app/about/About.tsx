@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { checkAuth } from "@/utils/checkAuth"
 
+
 const AboutDomz = () => {
     const router=useRouter();
     const handleAuthRedirect = async () => {
