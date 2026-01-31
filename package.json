@@ -9,16 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "typescript": "^5.9.3",
-    "@types/react": "^19.2.10",
-    "@types/react-dom": "^19",
-    "@types/node": "^20.19.30",
-
     "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
     "@stripe/react-stripe-js": "^5.4.1",
     "@stripe/stripe-js": "^8.6.0",
     "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^20.19.30",
+    "@types/react": "^19.2.10",
+    "@types/react-dom": "^19",
     "autoprefixer": "^10.4.24",
     "axios": "^1.13.2",
     "file-saver": "^2.0.5",
@@ -32,6 +30,7 @@
     "react-toastify": "^11.0.5",
     "sharp": "^0.34.5",
     "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.3",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
