@@ -3,8 +3,8 @@
 import React from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { checkAuth } from "@/utils/checkAuth"
 import { useRouter } from "next/navigation"
+import { checkAuth } from "@/utils/checkAuth"
 
 const AboutDomz = () => {
     const router=useRouter();
