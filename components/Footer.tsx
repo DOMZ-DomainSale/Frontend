@@ -86,6 +86,7 @@ const Footer = () => {
         href="#navbar"
         aria-label="Scroll to top"
         className="
+        animate-bounce
           fixed bottom-6 right-6 z-50
           flex h-12 w-12 items-center justify-center
           rounded-full bg-gray-900 text-white
