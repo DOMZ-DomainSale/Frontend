@@ -37,9 +37,9 @@ return (
           <span className="font-normal"> Benefits Both Sellers and Buyers</span>
         </h2>
 
-        <p className="text-base text-gray-600 text-center max-w-2xl mb-8">
+        {/* <p className="text-base text-gray-600 text-center max-w-2xl mb-8">
           Our domain catalog is designed to remove the friction of traditional marketplaces that frustrates both sides.
-        </p>
+        </p> */}
       </div>
 
       <Footer />

@@ -293,7 +293,6 @@ const DomainTable = ({ searchQuery }: Props) => {
           <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)}>›</button>
         </div>
       )}
-
       <Modal isOpen={open} onClose={() => setOpen(false)} title="Contact Seller">
         {selectedDomain && (
           <EmailTemplate
