@@ -13,7 +13,7 @@ export type DomainFilters = {
 };
 
 const extensions = [
-  ".com", ".org", ".net", ".ai", ".io", ".co", ".xyz", ".us", ".uk"
+  ".com", ".org", ".net", ".ai", ".io", ".xyz",
 ];
 
 type Props = {
