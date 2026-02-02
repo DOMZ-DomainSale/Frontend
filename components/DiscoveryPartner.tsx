@@ -89,7 +89,7 @@ const descVariants: Variants = {
 };
 
 const DiscoveryPartner: React.FC = () => (
-  <main className="flex items-center justify-center bg-linear-to-b from-blue-100 via-blue-50 to-white px-2 pb-20 rounded-2xl">
+  <main className="flex items-center justify-center bg-linear-to-b from-blue-100 via-blue-50 to-white px-2 pb-20 rounded-2xl" id='about'>
     <div className="max-w-7xl w-full mx-auto py-12 px-6 rounded-3xl bg-transparent">
 
       <h1 className="text-3xl md:text-5xl font-normal mb-4 text-gray-900">

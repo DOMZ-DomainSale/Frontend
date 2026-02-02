@@ -29,7 +29,7 @@ const NavbarComponenet = (props: NavbarTextProp) => {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
     <header className="w-full px-4 sm:px-6 lg:px-10" id="navbar">
-      <div className="relative rounded-3xl bg-linear-to-br from-white via-blue-50 to-blue-100 overflow-hidden">
+      <div className="relative rounded-3xl bg-linear-to-br from-white via-blue-50 to-blue-100 overflow-hidden pt-3.5">
         <nav className="relative z-20 max-w-7xl mx-auto flex items-center justify-between px-6 ">
           {/* Logo */}
           <Link href="/" className="flex items-center">
@@ -54,7 +54,7 @@ const NavbarComponenet = (props: NavbarTextProp) => {
                 Sell
               </li>
               <Link href={'/contact'} className="hover:text-blue-600 cursor-pointer">Contact</Link>
-              <Link href="/about" className="hover:text-blue-600 transition cursor-pointer">About</Link>
+              {/* <Link href="/about" className="hover:text-blue-600 transition cursor-pointer">About</Link> */}
             </ul>
           </div>
 

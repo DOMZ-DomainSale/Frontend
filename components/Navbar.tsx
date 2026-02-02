@@ -48,6 +48,12 @@ const Navbar = () => {
                 >
                   Demo
                 </Link>
+                <Link
+                  href="#about"
+                  className="block px-4 py-2 hover:bg-gray-50 hover:text-blue-600 transition"
+                >
+                  About
+                </Link>
               </ul>
             </div>
           </li>
@@ -65,9 +71,9 @@ const Navbar = () => {
           <Link href="/contact" className="hover:text-blue-600 transition cursor-pointer">
             Contact
           </Link>
-          <Link href="/about" className="hover:text-blue-600 transition cursor-pointer">
+          {/* <Link href="/about" className="hover:text-blue-600 transition cursor-pointer">
             About
-          </Link>
+          </Link> */}
         </ul>
       </div>
 
