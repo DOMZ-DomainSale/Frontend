@@ -17,16 +17,18 @@ const page = () => {
       <div className="min-h-full bg-cover bg-center rounded-4xl"
         style={{ backgroundImage: `url(${backgroundImg.src})` }}>
         <Navbar />
-        <Hero />
+        <section id="hero">
+          <Hero />
+        </section>
       </div>
       <ConnectedBrands />
       <BrowseDomain />
       <Features />
-      <DiscoveryPartner/>
-      <DemoVideo/>
-      <Faq/>
-      <GetStarted/>
-      <Footer/>
+      <DiscoveryPartner />
+      <DemoVideo />
+      <Faq />
+      <GetStarted />
+      <Footer />
     </div>
   )
 }
