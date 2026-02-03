@@ -30,8 +30,8 @@ const Navbar = () => {
       <div className="hidden md:flex bg-white/70 backdrop-blur-lg shadow-sm px-6 py-2 rounded-full border border-gray-200">
         <ul className="flex items-center space-x-8 text-gray-800 font-medium">
           <li className="relative group">
-            <Link
-              href="/"
+            <span
+              onClick={() => router.push("/")}
               className="flex items-center gap-1 hover:text-blue-600 transition cursor-pointer"
             >
               Home
@@ -39,26 +39,26 @@ const Navbar = () => {
                 size={16}
                 className="text-gray-500 group-hover:text-blue-600 transition-transform duration-200 group-hover:rotate-180"
               />
-            </Link>
+            </span>
 
             <div className="absolute left-0 top-full mt-3 w-44 rounded-xl bg-white shadow-lg border border-gray-200 
                   opacity-0 invisible group-hover:opacity-100 group-hover:visible 
                   transition-all duration-200">
               <ul className="py-2 text-sm text-gray-700">
                 <Link
-                  href="#faq"
+                  href="/#faq"
                   className="block px-4 py-2 hover:bg-gray-50 hover:text-blue-600 transition"
                 >
                   FAQ
                 </Link>
                 <Link
-                  href="#demo"
+                  href="/#demo"
                   className="block px-4 py-2 hover:bg-gray-50 hover:text-blue-600 transition"
                 >
                   Demo
                 </Link>
                 <Link
-                  href="#about"
+                  href="/#about"
                   className="block px-4 py-2 hover:bg-gray-50 hover:text-blue-600 transition"
                 >
                   About

@@ -49,14 +49,15 @@ const NavbarComponenet = (props: NavbarTextProp) => {
 
               {/* HOME WITH DROPDOWN */}
               <li className="relative group cursor-pointer">
-                <span className="flex items-center gap-1 hover:text-blue-600 transition">
+                <span className="flex items-center gap-1 hover:text-blue-600 transition"
+                 onClick={() => router.push("/")}
+                >
                   Home
                   <ChevronDown
                     size={16}
                     className="text-gray-500 group-hover:text-blue-600 transition-transform duration-200 group-hover:rotate-180"
                   />
                 </span>
-                {/* Dropdown */}
                 <div
                   className="absolute left-0 top-full mt-3 w-44 rounded-xl bg-white shadow-lg border border-gray-200
                   opacity-0 invisible group-hover:opacity-100 group-hover:visible
@@ -64,19 +65,19 @@ const NavbarComponenet = (props: NavbarTextProp) => {
                 >
                   <ul className="py-2 text-sm text-gray-700">
                     <Link
-                      href="#faq"
+                      href="/#faq"
                       className="block px-4 py-2 hover:bg-gray-50 hover:text-blue-600 transition"
                     >
                       FAQ
                     </Link>
                     <Link
-                      href="#demo"
+                      href="/#demo"
                       className="block px-4 py-2 hover:bg-gray-50 hover:text-blue-600 transition"
                     >
                       Demo
                     </Link>
                     <Link
-                      href="#about"
+                      href="/#about"
                       className="block px-4 py-2 hover:bg-gray-50 hover:text-blue-600 transition"
                     >
                       About
