@@ -721,7 +721,7 @@ const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
 
   if (loading) return <Loader />;
 
-  return (
+return (
     <div className="lg:px-[10%] lg:pt-10">
       <div className="max-w-6xl mx-auto">
 
