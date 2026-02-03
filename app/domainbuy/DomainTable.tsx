@@ -15,7 +15,7 @@ interface Domain {
   domain: string;
   isChatActive: boolean;
   createdAt: string;
-  user: { name: string };
+  user: { name: string ,email:string};
 }
 
 interface Props {
@@ -299,6 +299,7 @@ const DomainTable = ({ searchQuery }: Props) => {
             domainId={selectedDomain.domainId}
             domain={selectedDomain.domain}
             onClose={() => setOpen(false)}
+            sellerEmail={selectedDomain.user.email}
           />
         )}
       </Modal>
