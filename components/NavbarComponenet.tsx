@@ -104,11 +104,11 @@ const NavbarComponenet = (props: NavbarTextProp) => {
           </div>
 
           {/* My Domz Button */}
-          <Link href="/portfolio" className="hidden md:block">
-            <button className="bg-linear-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-full font-semibold shadow hover:from-blue-600 hover:to-blue-700 transition">
+          <div  className="hidden md:block">
+            <button onClick={() => handleAuthRedirect(router)} className="bg-linear-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-full font-semibold shadow hover:from-blue-600 hover:to-blue-700 transition">
               My Domz
             </button>
-          </Link>
+          </div>
 
           {/* Mobile Menu Button */}
           <button
