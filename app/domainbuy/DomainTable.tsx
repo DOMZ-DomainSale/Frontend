@@ -170,18 +170,16 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
   return (
     <div className="w-full mt-10">
       <div className="flex items-center justify-between px-4 py-3 border rounded-t-xl bg-white">
+        {/* LEFT: Filters */}
         <div className="flex items-center gap-2">
-          {/* Primary action */}
           <button
             onClick={() => setShowFilter(v => !v)}
             className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white
                  hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-            <Filter size={16} />
-            {showFilter ? 'Close filters' : 'Filters'}
+            {showFilter ? 'Close Filter' : 'Filter'}
           </button>
 
-          {/* Secondary action */}
           <button
             onClick={() => {
               setFilters({ extensions: [] });
@@ -189,19 +187,44 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
               setPage(1);
               setLimit(10);
             }}
-            disabled={!hasActiveFilters}
-            className={`inline-flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium
-        ${hasActiveFilters
-                ? 'text-gray-700 hover:bg-gray-100'
-                : 'text-gray-400 cursor-not-allowed'
-              }`}
+            disabled={
+              !filters.extensions.length &&
+              !filters.startsWith &&
+              !filters.endsWith &&
+              !filters.contains &&
+              !filters.exact &&
+              !filters.minLength &&
+              !filters.maxLength &&
+              !filters.sellerName &&
+              !searchQuery
+            }
+            className="inline-flex items-center rounded-md px-3 py-2 text-sm font-medium
+                 text-gray-600 hover:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
           >
-            <XCircle size={16} />
             Clear all
           </button>
         </div>
-      </div>
 
+        {/* RIGHT: Show dropdown */}
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <span>Show</span>
+          <select
+            value={limit}
+            onChange={e => {
+              const value = e.target.value;
+              setLimit(value === 'all' ? 'all' : Number(value));
+              setPage(1);
+            }}
+            className="rounded-md border px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+            <option value="all">All</option>
+          </select>
+        </div>
+      </div>
       <div className="flex border border-t-0 rounded-b-xl bg-white overflow-hidden min-h-150">
         {showFilter && (
           <aside className="w-75 min-w-75 border-r bg-gray-50 overflow-y-auto">
