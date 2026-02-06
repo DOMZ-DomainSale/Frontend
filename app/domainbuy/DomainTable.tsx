@@ -8,6 +8,8 @@ import EmailTemplate from '../../components/EmailTemplate'
 import { toast } from 'react-toastify';
 import Link from 'next/link';
 import FilterDomain, { DomainFilters } from '../../components/FilterDashboard';
+import { Filter, XCircle } from 'lucide-react';
+
 
 interface Domain {
   domainId: string;
@@ -15,14 +17,15 @@ interface Domain {
   domain: string;
   isChatActive: boolean;
   createdAt: string;
-  user: { name: string ,email:string};
+  user: { name: string, email: string };
 }
 
 interface Props {
   searchQuery: string;
+  setSearchQuery: (value: string) => void;
 }
 
-const DomainTable = ({ searchQuery }: Props) => {
+const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
   const [showFilter, setShowFilter] = useState(true);
   const [filters, setFilters] = useState<DomainFilters>({ extensions: [] });
 
@@ -56,7 +59,7 @@ const DomainTable = ({ searchQuery }: Props) => {
 
         let res;
 
-        if (searchQuery) { 
+        if (searchQuery) {
           // 🔍 SEARCH MODE
           res = await axios.get(
             `${process.env.NEXT_PUBLIC_apiLink}domain/search`,
@@ -153,50 +156,52 @@ const DomainTable = ({ searchQuery }: Props) => {
           return 0;
       }
     });
+  const hasActiveFilters =
+    filters.extensions.length > 0 ||
+    filters.startsWith ||
+    filters.endsWith ||
+    filters.contains ||
+    filters.exact ||
+    filters.minLength ||
+    filters.maxLength ||
+    filters.sellerName ||
+    searchQuery;
+
   return (
     <div className="w-full mt-10">
       <div className="flex items-center justify-between px-4 py-3 border rounded-t-xl bg-white">
-        <button
-          onClick={() => setShowFilter(v => !v)}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-md"
-        >
-          {showFilter ? 'Close Filter' : 'Filter'}
-        </button>
+        <div className="flex items-center gap-2">
+          {/* Primary action */}
+          <button
+            onClick={() => setShowFilter(v => !v)}
+            className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white
+                 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            <Filter size={16} />
+            {showFilter ? 'Close filters' : 'Filters'}
+          </button>
 
-        <div className="flex items-center gap-2 text-sm text-gray-600">
-          <span>Show</span>
-          <select
-            value={limit}
-            onChange={e => {
-              const value = e.target.value;
-              setLimit(value === 'all' ? 'all' : Number(value));
+          {/* Secondary action */}
+          <button
+            onClick={() => {
+              setFilters({ extensions: [] });
+              setSearchQuery('');
               setPage(1);
+              setLimit(10);
             }}
-            className="border rounded-md px-2 py-1"
+            disabled={!hasActiveFilters}
+            className={`inline-flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium
+        ${hasActiveFilters
+                ? 'text-gray-700 hover:bg-gray-100'
+                : 'text-gray-400 cursor-not-allowed'
+              }`}
           >
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-            <option value={100}>100</option>
-            <option value="all">All</option>
-          </select>
-
-        </div>
-        <div className="flex items-center gap-2 text-sm text-gray-600">
-          <span>Sort by</span>
-          <select
-            value={sortBy}
-            onChange={e => setSortBy(e.target.value as SortOption)}
-            className="border rounded-md px-2 py-1"
-          >
-            <option value="az">A–Z</option>
-            <option value="za">Z–A</option>
-            <option value="length_desc">L–LL (Long → Short)</option>
-            <option value="newest">Newest</option>
-            <option value="oldest">Oldest</option>
-          </select>
+            <XCircle size={16} />
+            Clear all
+          </button>
         </div>
       </div>
+
       <div className="flex border border-t-0 rounded-b-xl bg-white overflow-hidden min-h-150">
         {showFilter && (
           <aside className="w-75 min-w-75 border-r bg-gray-50 overflow-y-auto">

@@ -24,7 +24,6 @@ type Props = {
 const FilterDomain = ({ filters, onChange }: Props) => {
   const update = (patch: Partial<DomainFilters>) =>
     onChange({ ...filters, ...patch });
-
   return (
     <div className="p-5 space-y-6 text-sm">
       <section>
@@ -143,13 +142,6 @@ const FilterDomain = ({ filters, onChange }: Props) => {
           onChange={e => update({ sellerName: e.target.value })}
         />
       </section>
-      <button
-        onClick={() => onChange({ extensions: [] })}
-        className="text-blue-600 font-medium cursor-pointer"
-      >
-        Clear all
-      </button>
-
     </div>
   );
 };
