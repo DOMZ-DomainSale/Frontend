@@ -362,15 +362,15 @@ const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
           {/* My Domains (single button) */}
           <button
             onClick={() => setDomainStatus(false)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition cursor-pointer
-              ${!domainStatus
-                ? 'bg-white shadow text-slate-900'
-                : 'bg-slate-100 text-slate-500 hover:text-slate-700'
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition
+    border cursor-pointer
+    ${!domainStatus
+                ? 'bg-white border-slate-300 text-slate-900 shadow-sm'
+                : 'bg-slate-100 border-transparent text-slate-500 hover:text-slate-700'
               }`}
           >
             My Domains
           </button>
-
           {/* Domain Status + Add Domain */}
           <div className="inline-flex bg-slate-100 rounded-full p-1 gap-1">
             <button
@@ -424,7 +424,7 @@ const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
                   setBulkMode(prev => !prev);
                   setSelectedDomains([]);
                 }}
-                className="px-4 py-2 text-sm border rounded-md hover:bg-gray-50"
+                className="px-4 py-2 text-sm border rounded-md hover:bg-gray-50 cursor-pointer"
               >
                 {bulkMode ? 'Cancel bulk actions' : 'Bulk actions'}
               </button>
@@ -486,8 +486,7 @@ const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
 
             <table className="min-w-full border-separate border-spacing-y-1">
               <thead className="sticky top-0 bg-white">
-
-                <tr className="text-xs text-slate-600">
+                <tr className="text-xs font-semibold text-slate-600 tracking-wide">
                   {bulkMode && (
                     <th className="px-4 py-3 text-center">
                       <input
@@ -499,13 +498,12 @@ const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
                     </th>
                   )}
                   <th className="px-4 py-3 text-left">Domain</th>
-                  <th className="px-4 py-3 text-center">Hide</th>
+                  <th className="px-4 py-3 text-center">Visibility</th>
                   <th className="px-4 py-3 text-center">Chat</th>
-                  <th className="px-4 py-3 text-center">Delete</th>
-                  <th className="px-4 py-3 text-center">Added</th>
+                  <th className="px-4 py-3 text-center">Actions</th>
+                  <th className="px-4 py-3 text-center">Added On</th>
                 </tr>
               </thead>
-
               <tbody>
                 {searchedDomains
                   .filter((d) => d.status === 'Pass')
@@ -633,9 +631,6 @@ const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
           setBulkAction(null);
         }}
       />
-
-
-
     </div>
   );
 };
