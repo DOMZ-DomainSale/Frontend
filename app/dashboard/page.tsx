@@ -45,8 +45,7 @@ const Page = () => {
   if (loading) return <Loader />;
   return (
     <div className="min-h-dvh flex flex-col bg-white">
-      <NavbarComponenet colorText="P" plainText="rofile" IsParaText={false} searchbarStatus={activeSection === "myPortfolio"}
-      onSearch={setSearchQuery}
+      <NavbarComponenet colorText="P" plainText="rofile" IsParaText={false} searchbarStatus={false}
       />
       <div className="flex sm:hidden justify-between items-center px-4 py-3 border-b">
         <h2 className="text-lg font-semibold">Dashboard</h2>
@@ -101,7 +100,7 @@ const Page = () => {
           {activeSection === "Pricing" && <Pricing />}
           {activeSection === "Subscription" && <SubscriptionManagementCard />}
           {activeSection === "billing" && <PaymentSettingCard />}
-          {activeSection === "myPortfolio" && <Myportfolio searchQuery={searchQuery} />}
+          {activeSection === "myPortfolio" && <Myportfolio />}
         </main>
       </div>
       <Footer />

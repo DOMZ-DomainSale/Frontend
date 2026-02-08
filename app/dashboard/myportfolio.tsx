@@ -11,6 +11,7 @@ import { Calendar } from 'lucide-react';
 import DomainStatus from './DomainStatus';
 import Subscribe from '../../utils/subscribe';
 import ActionConfirmation from './ActionConfirmation';
+import SearchBox from '@/utils/SearchBox';
 
 type DateRange = 'all' | 'today' | '7days' | '30days' | 'custom';
 
@@ -24,10 +25,6 @@ export interface DomainType {
   finalUrl?: string;
   createdAt: string;
 }
-
-type MyPortfolioProps = {
-  searchQuery: string;
-};
 
 /* ---------------- Toggle ---------------- */
 const Toggle = ({
@@ -144,7 +141,7 @@ const StatusHeader = ({
 );
 
 /* ================= MAIN ================= */
-const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
+const Myportfolio = () => {
 
   type BulkAction =
     | { type: 'hide'; value: boolean }
@@ -160,11 +157,12 @@ const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
   const [customFrom, setCustomFrom] = useState('');
   const [customTo, setCustomTo] = useState('');
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [dateRange, setDateRange] = useState<DateRange>('all');
   const [bulkAction, setBulkAction] = useState<BulkAction>(null);
   const [bulkMode, setBulkMode] = useState(false);
   const [selectedDomains, setSelectedDomains] = useState<DomainType[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
 
 
 
@@ -188,6 +186,10 @@ const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
     };
     checkAuth();
   }, [router]);
+  useEffect(() => {
+    setSearchQuery('');
+  }, [domainStatus]);
+
   const toggleChat = async (id: string, value: boolean) => {
     const prev = [...userDomains];
     setUserDomains((d) =>
@@ -355,28 +357,33 @@ const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
   return (
     <div className="lg:px-[10%] lg:pt-10">
       <div className="max-w-6xl mx-auto">
-
-        {/* ===== HEADER BUTTONS ===== */}
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-
-          {/* My Domains (single button) */}
+        <div className="mb-6 flex items-center gap-4">
+          {/* LEFT: My Domains */}
           <button
             onClick={() => setDomainStatus(false)}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition
-    border cursor-pointer
-    ${!domainStatus
+      border cursor-pointer
+      ${!domainStatus
                 ? 'bg-white border-slate-300 text-slate-900 shadow-sm'
                 : 'bg-slate-100 border-transparent text-slate-500 hover:text-slate-700'
               }`}
           >
             My Domains
           </button>
-          {/* Domain Status + Add Domain */}
+
+          {/* CENTER: SEARCH */}
+          <div className="flex-1 flex justify-center">
+            <SearchBox
+              value={searchQuery}
+              onChange={setSearchQuery}
+            />
+          </div>
+          {/* RIGHT: Upload Status + Add Domain */}
           <div className="inline-flex bg-slate-100 rounded-full p-1 gap-1">
             <button
               onClick={() => setDomainStatus(true)}
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition cursor-pointer
-                ${domainStatus
+        ${domainStatus
                   ? 'bg-white shadow text-slate-900'
                   : 'text-slate-500 hover:text-slate-700'
                 }`}
@@ -386,12 +393,14 @@ const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
 
             <button
               onClick={() => setOpen(true)}
-              className="px-4 py-1.5 rounded-full text-sm font-medium text-blue-600 hover:bg-blue-50 transition cursor-pointer"
+              className="px-4 py-1.5 rounded-full text-sm font-medium
+        text-blue-600 hover:bg-blue-50 transition cursor-pointer"
             >
               + Add Domain
             </button>
           </div>
         </div>
+
 
         {/* ===== MODAL ===== */}
         <Modal isOpen={open} onClose={() => setOpen(false)} title="Add Domains">
@@ -403,7 +412,6 @@ const Myportfolio = ({ searchQuery }: MyPortfolioProps) => {
           />
         </Modal>
 
-        {/* ===== CONTENT ===== */}
         {domainStatus ? (
           <>
             <StatusHeader
