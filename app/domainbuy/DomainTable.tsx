@@ -28,7 +28,6 @@ interface Props {
 const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
   const [showFilter, setShowFilter] = useState(true);
   const [filters, setFilters] = useState<DomainFilters>({ extensions: [] });
-
   const [domains, setDomains] = useState<Domain[]>([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState<number | 'all'>(10);
@@ -41,7 +40,14 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
     ? 1
     : Math.ceil(total / numericLimit);
 
-  type SortOption = 'az' | 'za' | 'length_desc' | 'newest' | 'oldest';
+  type SortOption =
+    | 'az'
+    | 'za'
+    | 'length_desc'
+    | 'length_asc'
+    | 'newest'
+    | 'oldest';
+
   const [sortBy, setSortBy] = useState<SortOption>('newest');
 
   useEffect(() => {
@@ -56,11 +62,8 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
     const fetchDomains = async () => {
       try {
         setLoading(true);
-
         let res;
-
         if (searchQuery) {
-          // 🔍 SEARCH MODE
           res = await axios.get(
             `${process.env.NEXT_PUBLIC_apiLink}domain/search`,
             {
@@ -146,7 +149,8 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
 
         case 'length_desc':
           return nameB.length - nameA.length;
-
+        case 'length_asc':
+          return nameA.length - nameB.length;
         case 'newest':
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         case 'oldest':
@@ -156,6 +160,8 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
           return 0;
       }
     });
+
+
   const hasActiveFilters =
     filters.extensions.length > 0 ||
     filters.startsWith ||
@@ -169,64 +175,82 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
 
   return (
     <div className="w-full mt-10">
-      <div className="flex items-center justify-between px-4 py-3 border rounded-t-xl bg-white">
-        <div className="flex items-center gap-2">
+      <div className="grid grid-cols-3 items-center px-4 py-3 border rounded-t-xl bg-white">
+
+        {/* LEFT */}
+        <div className="flex items-center gap-3 justify-start">
           <button
             onClick={() => setShowFilter(v => !v)}
             className="
-    inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white
-    hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-  "
+        inline-flex items-center gap-2 rounded-md
+        bg-blue-600 px-4 py-2 text-sm font-semibold text-white
+        hover:bg-blue-700 focus:outline-none focus:ring-2
+        focus:ring-blue-500 focus:ring-offset-2
+      "
           >
             <Filter size={16} />
             {showFilter ? 'Hide filters' : 'Filters'}
           </button>
 
-          {hasActiveFilters &&
+          {hasActiveFilters && (
             <button
               onClick={() => {
                 setFilters({ extensions: [] });
                 setSearchQuery('');
+                setSortBy('newest');
                 setPage(1);
                 setLimit(10);
               }}
-              disabled={
-                !filters.extensions.length &&
-                !filters.startsWith &&
-                !filters.endsWith &&
-                !filters.contains &&
-                !filters.exact &&
-                !filters.minLength &&
-                !filters.maxLength &&
-                !filters.sellerName &&
-                !searchQuery
-              }
-              title="Reset all filters and search"
               className="
-    inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium
-    text-gray-600 hover:bg-gray-100
-    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-    disabled:text-gray-400 disabled:cursor-not-allowed disabled:hover:bg-transparent
-  "
+          inline-flex items-center gap-2 rounded-md px-3 py-2
+          text-sm font-medium text-gray-600 hover:bg-gray-100
+        "
             >
               <RotateCcw size={16} />
-              Reset filters
+              Reset
             </button>
-          }
-
+          )}
         </div>
 
-        {/* RIGHT: Show dropdown */}
-        <div className="flex items-center gap-2 text-sm text-gray-600">
+        {/* CENTER — SORT BY (TRUE CENTER) */}
+        <div className="flex items-center justify-center gap-2 text-sm text-gray-700">
+          <span className="whitespace-nowrap">Sort by</span>
+          <select
+            value={sortBy}
+            onChange={(e) => {
+              setSortBy(e.target.value as SortOption);
+              setPage(1);
+            }}
+            className="
+        rounded-md border border-gray-300 bg-white
+        px-3 py-1.5 text-sm
+        focus:outline-none focus:ring-2 focus:ring-blue-500
+      "
+          >
+            <option value="az">Alphabet (A–Z)</option>
+            <option value="za">Alphabet (Z–A)</option>
+            <option value="length_desc">Length (Long → Short)</option>
+            <option value="length_asc">Length (Short → Long)</option>
+            <option value="newest">New → Old</option>
+            <option value="oldest">Old → New</option>
+          </select>
+        </div>
+
+        {/* RIGHT */}
+        <div className="flex items-center justify-end gap-2 text-sm text-gray-700">
           <span>Show</span>
           <select
             value={limit}
-            onChange={e => {
+            onChange={(e) => {
               const value = e.target.value;
               setLimit(value === 'all' ? 'all' : Number(value));
               setPage(1);
             }}
-            className="rounded-md border px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="
+        rounded-md border border-gray-300 bg-white
+        px-3 py-1.5 text-sm
+        focus:outline-none focus:ring-2 focus:ring-blue-500
+      "
           >
             <option value={10}>10</option>
             <option value={20}>20</option>
@@ -235,6 +259,7 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
             <option value="all">All</option>
           </select>
         </div>
+
       </div>
       <div className="flex border border-t-0 rounded-b-xl bg-white overflow-hidden min-h-150">
         {showFilter && (
