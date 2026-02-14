@@ -26,7 +26,6 @@ export interface DomainType {
   createdAt: string;
 }
 
-/* ---------------- Toggle ---------------- */
 const Toggle = ({
   checked,
   onChange,
@@ -54,7 +53,6 @@ const Toggle = ({
   </div>
 );
 
-/* ---------------- Status Header ---------------- */
 const StatusHeader = ({
   active,
   onChange,
@@ -140,7 +138,6 @@ const StatusHeader = ({
   </div>
 );
 
-/* ================= MAIN ================= */
 const Myportfolio = () => {
 
   type BulkAction =
@@ -163,15 +160,9 @@ const Myportfolio = () => {
   const [selectedDomains, setSelectedDomains] = useState<DomainType[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-
-
-
-
-
   const router = useRouter();
   const API = `${process.env.NEXT_PUBLIC_apiLink}domain`;
 
-  /* ---------- Auth ---------- */
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -235,8 +226,6 @@ const Myportfolio = () => {
   useEffect(() => {
     fetchDomains();
   }, []);
-
-  /* ---------- Filters ---------- */
   const searchedDomains = useMemo(() => {
     if (!searchQuery?.trim()) return userDomains;
     return userDomains.filter((d) =>
@@ -358,7 +347,6 @@ const Myportfolio = () => {
     <div className="lg:px-[10%] lg:pt-10">
       <div className="max-w-6xl mx-auto">
         <div className="mb-6 flex items-center gap-4">
-          {/* LEFT: My Domains */}
           <button
             onClick={() => setDomainStatus(false)}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition
@@ -371,14 +359,12 @@ const Myportfolio = () => {
             My Domains
           </button>
 
-          {/* CENTER: SEARCH */}
           <div className="flex-1 flex justify-center">
             <SearchBox
               value={searchQuery}
               onChange={setSearchQuery}
             />
           </div>
-          {/* RIGHT: Upload Status + Add Domain */}
           <div className="inline-flex bg-slate-100 rounded-full p-1 gap-1">
             <button
               onClick={() => setDomainStatus(true)}
@@ -401,8 +387,6 @@ const Myportfolio = () => {
           </div>
         </div>
 
-
-        {/* ===== MODAL ===== */}
         <Modal isOpen={open} onClose={() => setOpen(false)} title="Add Domains">
           <AddDomainsCard
             onClose={() => {

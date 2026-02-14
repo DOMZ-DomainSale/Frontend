@@ -12,6 +12,7 @@ import { logoutHandler } from "../../utils/auth";
 import Myportfolio from "./myportfolio";
 import Profile from "./profile";
 import Pricing from "../../utils/Test";
+import MessagesPage from "./MessagesPage";
 
 const Page = () => {
   const router = useRouter();
@@ -39,7 +40,8 @@ const Page = () => {
     { label: "Profile", icon: "/assets/icons/user.webp", onClick: () => setActiveSection("Profile") },
     { label: "My Portfolio", icon: "/assets/icons/padlock.webp", onClick: () => setActiveSection("myPortfolio") },
     { label: "Subscription", icon: "/assets/icons/credit-card.webp", onClick: () => setActiveSection("Subscription") },
-    { label: "Plans", icon: "/assets/icons/padlock.webp", onClick: () => setActiveSection("Pricing") },
+    { label: "Plans", icon: "/assets/icons/padlock.webp", onClick: () => setActiveSection("Pricing") }, 
+    { label: "Message", icon: "/assets/icons/padlock.webp", onClick: () => setActiveSection("MessagesPage") },
     { label: "Logout", icon: "/assets/icons/logout.png", onClick: () => logoutHandler(router) },
   ];
   if (loading) return <Loader />;
@@ -100,6 +102,8 @@ const Page = () => {
           {activeSection === "Pricing" && <Pricing />}
           {activeSection === "Subscription" && <SubscriptionManagementCard />}
           {activeSection === "billing" && <PaymentSettingCard />}
+          
+          {activeSection === "MessagesPage" && <MessagesPage />}
           {activeSection === "myPortfolio" && <Myportfolio />}
         </main>
       </div>
