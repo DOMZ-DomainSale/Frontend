@@ -69,8 +69,8 @@ export default function MessagesPage() {
     loadMessages();
   }, [activeConversation, API]);
 
-  const sendReply = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const sendReply = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (!reply.trim() || !activeConversation) return;
 
     try {
