@@ -13,6 +13,16 @@ import Myportfolio from "./myportfolio";
 import Profile from "./profile";
 import Pricing from "../../utils/Test";
 import MessagesPage from "./MessagesPage";
+import {
+  User,
+  Briefcase,
+  CreditCard,
+  Layers,
+  MessageSquare,
+  LogOut,
+  Menu
+} from "lucide-react";
+
 
 const Page = () => {
   const router = useRouter();
@@ -36,17 +46,37 @@ const Page = () => {
     checkAuth();
   }, [router]);
 
-  const sidebarLinks = [
-    { label: "Profile", icon: "/assets/icons/user.webp", onClick: () => setActiveSection("Profile") },
-    { label: "My Portfolio", icon: "/assets/icons/padlock.webp", onClick: () => setActiveSection("myPortfolio") },
-    { label: "Subscription", icon: "/assets/icons/credit-card.webp", onClick: () => setActiveSection("Subscription") },
-    { label: "Plans", icon: "/assets/icons/padlock.webp", onClick: () => setActiveSection("Pricing") }, 
-    { label: "Message", icon: "/assets/icons/padlock.webp", onClick: () => setActiveSection("MessagesPage") },
-    { label: "Logout", icon: "/assets/icons/logout.png", onClick: () => logoutHandler(router) },
+  const sidebarLinks = [{ label: "Profile", icon: User, onClick: () => setActiveSection("Profile"), },
+  {
+    label: "My Portfolio",
+    icon: Briefcase,
+    onClick: () => setActiveSection("myPortfolio"),
+  },
+  {
+    label: "Subscription",
+    icon: CreditCard,
+    onClick: () => setActiveSection("Subscription"),
+  },
+  {
+    label: "Plans",
+    icon: Layers,
+    onClick: () => setActiveSection("Pricing"),
+  },
+  {
+    label: "Message",
+    icon: MessageSquare,
+    onClick: () => setActiveSection("MessagesPage"),
+  },
+  {
+    label: "Logout",
+    icon: LogOut,
+    onClick: () => logoutHandler(router),
+  },
   ];
+
   if (loading) return <Loader />;
   return (
-    <div className="min-h-dvh flex flex-col bg-white">
+    <div className="flex flex-col bg-white">
       <NavbarComponenet colorText="P" plainText="rofile" IsParaText={false} searchbarStatus={false}
       />
       <div className="flex sm:hidden justify-between items-center px-4 py-3 border-b">
@@ -55,7 +85,8 @@ const Page = () => {
           className="text-gray-700"
           onClick={() => setSidebarOpen(!sidebarOpen)}
         >
-          <Image src="/assets/icons/menu.svg" alt="menu" width={26} height={26} />
+          <Menu size={26} />
+
         </button>
       </div>
 
@@ -65,7 +96,7 @@ const Page = () => {
     fixed sm:sticky
     top-0 sm:top-22
     left-0
-    h-screen sm:h-[calc(100vh-88px)]
+    h-full sm:h-auto
     w-64
     bg-white
     border-r border-gray-200
@@ -75,21 +106,28 @@ const Page = () => {
   `}
         >
           <ul className="space-y-6 px-4 py-6">
-            {sidebarLinks.map((item) => (
-              <li key={item.label}>
-                <button
-                  onClick={() => {
-                    item.onClick();
-                    setSidebarOpen(false);
-                  }}
-                  className="flex items-center gap-3 w-full text-left text-gray-700 hover:text-blue-600 font-medium cursor-pointer"
-                >
-                  <Image src={item.icon} alt={item.label} width={20} height={20} />
-                  <span>{item.label}</span>
-                </button>
-              </li>
-            ))}
+            {sidebarLinks.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <li key={item.label}>
+                  <button
+                    onClick={() => {
+                      item.onClick();
+                      setSidebarOpen(false);
+                    }}
+                    className="flex items-center gap-3 w-full text-left
+                     text-gray-700 hover:text-blue-600
+                     font-medium cursor-pointer"
+                  >
+                    <Icon size={20} strokeWidth={1.8} />
+                    <span>{item.label}</span>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
+
         </aside>
         {sidebarOpen && (
           <div
@@ -102,7 +140,7 @@ const Page = () => {
           {activeSection === "Pricing" && <Pricing />}
           {activeSection === "Subscription" && <SubscriptionManagementCard />}
           {activeSection === "billing" && <PaymentSettingCard />}
-          
+
           {activeSection === "MessagesPage" && <MessagesPage />}
           {activeSection === "myPortfolio" && <Myportfolio />}
         </main>
@@ -111,5 +149,4 @@ const Page = () => {
     </div>
   );
 };
-
 export default Page;
