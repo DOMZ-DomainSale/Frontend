@@ -12,6 +12,9 @@ import DomainStatus from './DomainStatus';
 import Subscribe from '../../utils/subscribe';
 import ActionConfirmation from './ActionConfirmation';
 import SearchBox from '@/utils/SearchBox';
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+
 
 type DateRange = 'all' | 'today' | '7days' | '30days' | 'custom';
 
@@ -340,8 +343,34 @@ const Myportfolio = () => {
       toast.error('Bulk action failed');
     }
   };
+  const exportMyDomainsToExcel = () => {
+    const exportData = searchedDomains
+      .filter((d) => d.status === "Pass")
+      .map((d, index) => ({
+        "S.No.": index + 1,
+        Domain: d.domain,
+        Visibility: d.isHidden ? "Hidden" : "Visible",
+        Chat: d.isChatActive ? "Enabled" : "Disabled",
+        Notification: d.isMessageNotificationEnabled ? "Enabled" : "Disabled",
+        "Added On": new Date(d.createdAt).toLocaleDateString(),
+        FinalURL: d.finalUrl ?? "",
+      }));
 
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
 
+    XLSX.utils.book_append_sheet(workbook, worksheet, "My Domains");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+
+    saveAs(
+      new Blob([excelBuffer], { type: "application/octet-stream" }),
+      "my-domains.xlsx"
+    );
+  };
   const dateFilteredDomains = useMemo(() => {
     if (dateRange === 'all') return searchedDomains;
     const now = new Date();
@@ -435,71 +464,25 @@ const Myportfolio = () => {
         ) : (
           <div className="rounded-xl border bg-white shadow-sm overflow-x-auto max-h-130 overflow-y-auto">
             <div className="mb-3 flex items-center justify-between">
-              <button
-                onClick={() => {
-                  setBulkMode(prev => !prev);
-                  setSelectedDomains([]);
-                }}
-                className="px-4 py-2 text-sm border rounded-md hover:bg-gray-50 cursor-pointer"
-              >
-                {bulkMode ? 'Cancel bulk actions' : 'Bulk actions'}
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    setBulkMode(prev => !prev);
+                    setSelectedDomains([]);
+                  }}
+                  className="px-4 py-2 text-sm border rounded-md hover:bg-gray-50 cursor-pointer"
+                >
+                  {bulkMode ? 'Cancel bulk actions' : 'Bulk actions'}
+                </button>
 
-              {bulkMode && selectedDomains.length > 0 && (
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {
-                      setBulkAction({ type: 'hide', value: true });
-                      setConfirmOpen(true);
-                    }}
-                    className="px-3 py-1 text-xs bg-slate-700 text-white rounded"
-                  >
-                    Hide
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setBulkAction({ type: 'hide', value: false });
-                      setConfirmOpen(true);
-                    }}
-                    className="px-3 py-1 text-xs bg-slate-500 text-white rounded"
-                  >
-                    Unhide
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setBulkAction({ type: 'chat', value: true });
-                      setConfirmOpen(true);
-                    }}
-                    className="px-3 py-1 text-xs bg-blue-600 text-white rounded"
-                  >
-                    Enable Chat
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setBulkAction({ type: 'chat', value: false });
-                      setConfirmOpen(true);
-                    }}
-                    className="px-3 py-1 text-xs bg-blue-400 text-white rounded"
-                  >
-                    Disable Chat
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setBulkAction({ type: 'delete' });
-                      setConfirmOpen(true);
-                    }}
-                    className="px-3 py-1 text-xs bg-red-600 text-white rounded"
-                  >
-                    Delete
-                  </button>
-                </div>
-              )}
+                <button
+                  onClick={exportMyDomainsToExcel}
+                  className="px-4 py-2 text-sm bg-green-600 text-white rounded-md hover:bg-green-700"
+                >
+                  Export Excel
+                </button>
+              </div>
             </div>
-
             <table className="min-w-full border-separate border-spacing-y-1">
               <thead className="sticky top-0 bg-white">
                 <tr className="text-xs font-semibold text-slate-600 tracking-wide">
@@ -568,8 +551,6 @@ const Myportfolio = () => {
                           onChange={(val) => toggleNotification(d.id, val)}
                         />
                       </td>
-
-
                       <td className="px-4 py-2 text-center">
                         <button
                           disabled={bulkMode}
