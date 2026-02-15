@@ -115,8 +115,8 @@ export default function MessagesPage() {
             key={c.conversationId}
             onClick={() => setActiveConversation(c)}
             className={`w-full text-left px-4 py-3 border-b hover:bg-gray-50 ${activeConversation?.conversationId === c.conversationId
-                ? "bg-blue-100"
-                : ""
+              ? "bg-blue-100"
+              : ""
               }`}
           >
             <div className="font-medium">{c.user}</div>
@@ -143,7 +143,10 @@ export default function MessagesPage() {
                   className={`text-xs mt-1 ${m.isMine ? "text-blue-100" : "text-gray-400"
                     }`}
                 >
-                  {new Date(m.createdAt).toLocaleTimeString([], {
+                  {new Date(m.createdAt).toLocaleString([], {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
                     hour: "2-digit",
                     minute: "2-digit"
                   })}
