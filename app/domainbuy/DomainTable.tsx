@@ -4,12 +4,13 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Send } from 'lucide-react';
 import Modal from '../../components/model';
-import EmailTemplate from '../../components/EmailTemplate'
 import { toast } from 'react-toastify';
 import Link from 'next/link';
-import FilterDomain, { DomainFilters } from '../../components/FilterDashboard';
-import { Filter, RotateCcw } from 'lucide-react';
+import { useRouter } from "next/navigation";
+import { checkAuth } from '@/utils/checkAuth';
+import DomainReplyEmail from "./DomainReplyEmail";
 
+import FilterDomain, { DomainFilters } from '../../components/FilterDashboard';
 
 interface Domain {
   domainId: string;
@@ -22,12 +23,12 @@ interface Domain {
 
 interface Props {
   searchQuery: string;
-  setSearchQuery: (value: string) => void;
 }
 
-const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
+const DomainTable = ({ searchQuery }: Props) => {
   const [showFilter, setShowFilter] = useState(true);
   const [filters, setFilters] = useState<DomainFilters>({ extensions: [] });
+
   const [domains, setDomains] = useState<Domain[]>([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState<number | 'all'>(10);
@@ -40,15 +41,10 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
     ? 1
     : Math.ceil(total / numericLimit);
 
-  type SortOption =
-    | 'az'
-    | 'za'
-    | 'length_desc'
-    | 'length_asc'
-    | 'newest'
-    | 'oldest';
-
+  type SortOption = 'az' | 'za' | 'length_desc' | 'newest' | 'oldest';
   const [sortBy, setSortBy] = useState<SortOption>('newest');
+  const router = useRouter();
+
 
   useEffect(() => {
     if (searchQuery) {
@@ -62,8 +58,11 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
     const fetchDomains = async () => {
       try {
         setLoading(true);
+
         let res;
+
         if (searchQuery) {
+          // 🔍 SEARCH MODE
           res = await axios.get(
             `${process.env.NEXT_PUBLIC_apiLink}domain/search`,
             {
@@ -149,8 +148,7 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
 
         case 'length_desc':
           return nameB.length - nameA.length;
-        case 'length_asc':
-          return nameA.length - nameB.length;
+
         case 'newest':
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         case 'oldest':
@@ -160,97 +158,26 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
           return 0;
       }
     });
-
-
-  const hasActiveFilters =
-    filters.extensions.length > 0 ||
-    filters.startsWith ||
-    filters.endsWith ||
-    filters.contains ||
-    filters.exact ||
-    filters.minLength ||
-    filters.maxLength ||
-    filters.sellerName ||
-    searchQuery;
-
   return (
     <div className="w-full mt-10">
-      <div className="grid grid-cols-3 items-center px-4 py-3 border rounded-t-xl bg-white">
+      <div className="flex items-center justify-between px-4 py-3 border rounded-t-xl bg-white">
+        <button
+          onClick={() => setShowFilter(v => !v)}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-md"
+        >
+          {showFilter ? 'Close Filter' : 'Filter'}
+        </button>
 
-        {/* LEFT */}
-        <div className="flex items-center gap-3 justify-start">
-          <button
-            onClick={() => setShowFilter(v => !v)}
-            className="
-        inline-flex items-center gap-2 rounded-md
-        bg-blue-600 px-4 py-2 text-sm font-semibold text-white
-        hover:bg-blue-700 focus:outline-none focus:ring-2
-        focus:ring-blue-500 focus:ring-offset-2
-      "
-          >
-            <Filter size={16} />
-            {showFilter ? 'Hide filters' : 'Filters'}
-          </button>
-
-          {hasActiveFilters && (
-            <button
-              onClick={() => {
-                setFilters({ extensions: [] });
-                setSearchQuery('');
-                setSortBy('newest');
-                setPage(1);
-                setLimit(10);
-              }}
-              className="
-          inline-flex items-center gap-2 rounded-md px-3 py-2
-          text-sm font-medium text-gray-600 hover:bg-gray-100
-        "
-            >
-              <RotateCcw size={16} />
-              Reset
-            </button>
-          )}
-        </div>
-
-        {/* CENTER — SORT BY (TRUE CENTER) */}
-        <div className="flex items-center justify-center gap-2 text-sm text-gray-700">
-          <span className="whitespace-nowrap">Sort by</span>
-          <select
-            value={sortBy}
-            onChange={(e) => {
-              setSortBy(e.target.value as SortOption);
-              setPage(1);
-            }}
-            className="
-        rounded-md border border-gray-300 bg-white
-        px-3 py-1.5 text-sm
-        focus:outline-none focus:ring-2 focus:ring-blue-500
-      "
-          >
-            <option value="az">Alphabet (A–Z)</option>
-            <option value="za">Alphabet (Z–A)</option>
-            <option value="length_desc">Length (Long → Short)</option>
-            <option value="length_asc">Length (Short → Long)</option>
-            <option value="newest">New → Old</option>
-            <option value="oldest">Old → New</option>
-          </select>
-        </div>
-
-        {/* RIGHT */}
-        <div className="flex items-center justify-end gap-2 text-sm text-gray-700">
+        <div className="flex items-center gap-2 text-sm text-gray-600">
           <span>Show</span>
           <select
             value={limit}
-            onChange={(e) => {
+            onChange={e => {
               const value = e.target.value;
               setLimit(value === 'all' ? 'all' : Number(value));
               setPage(1);
             }}
-            className="
-        rounded-md border border-gray-300 bg-white
-        px-3 py-1.5 text-sm
-        focus:outline-none focus:ring-2 focus:ring-blue-500
-      "
+            className="border rounded-md px-2 py-1"
           >
             <option value={10}>10</option>
             <option value={20}>20</option>
@@ -258,8 +185,22 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
             <option value={100}>100</option>
             <option value="all">All</option>
           </select>
-        </div>
 
+        </div>
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <span>Sort by</span>
+          <select
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value as SortOption)}
+            className="border rounded-md px-2 py-1"
+          >
+            <option value="az">A–Z</option>
+            <option value="za">Z–A</option>
+            <option value="length_desc">L–LL (Long → Short)</option>
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+          </select>
+        </div>
       </div>
       <div className="flex border border-t-0 rounded-b-xl bg-white overflow-hidden min-h-150">
         {showFilter && (
@@ -271,31 +212,25 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
           </aside>
         )}
         <div className="flex-1 overflow-x-auto">
-          <table className="min-w-full border-separate border-spacing-y-1 text-sm">
-            <thead className="sticky top-0 bg-white z-10">
-              <tr className="text-xs font-semibold text-slate-600 tracking-wide">
-                <th className="px-6 py-3 text-left">Domain</th>
-                <th className="px-6 py-3 text-center">Contact</th>
-                <th className="px-6 py-3 text-left">Seller</th>
+          <table className="w-full text-sm">
+            <thead className="bg-blue-50">
+              <tr>
+                <th className="px-6 py-4 text-left">Domain</th>
+                <th className="px-6 py-4 text-center">Connect</th>
+                <th className="px-6 py-4 text-left">Seller</th>
               </tr>
             </thead>
-
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={3} className="py-10 text-center text-sm text-slate-500">
-
+                  <td colSpan={3} className="py-10 text-center text-gray-500">
                     Loading domains...
                   </td>
                 </tr>
               ) : (
                 filteredDomains.map(d => (
-                  <tr
-                    key={d.domainId}
-                    className="bg-slate-50 hover:bg-blue-50 transition"
-                  >
-                    <td className="px-6 py-3 text-blue-600 break-all">
-
+                  <tr key={d.domainId} className="border-t">
+                    <td className="px-6 py-4">
                       {d.finalUrl ? (
                         <Link href={d.finalUrl} target="_blank" className="text-blue-600 hover:underline">
                           {d.domain}
@@ -303,25 +238,25 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
                       ) : d.domain}
                     </td>
 
-                    <td className="px-6 py-3 text-center">
+                    <td className="px-6 py-4 text-center">
                       <button
                         disabled={!d.isChatActive}
-                        onClick={() => {
+                        onClick={async () => {
+                          const status = await checkAuth();
+                          if (status === "unauthenticated") {
+                            router.push("/login");
+                            return;
+                          }
                           setSelectedDomain(d);
                           setOpen(true);
                         }}
-                        className={
-                          d.isChatActive
-                            ? 'text-blue-600 hover:text-blue-800'
-                            : 'text-gray-400 cursor-not-allowed'
-                        }
+
                       >
                         <Send size={16} />
                       </button>
                     </td>
 
-                    <td className="px-6 py-3 text-blue-600 break-all">
-
+                    <td className="px-6 py-4">
                       {d.user?.name ? (
                         <button
                           onClick={() => {
@@ -344,16 +279,6 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
                 ))
               )}
             </tbody>
-            <tbody>
-              {filteredDomains.length === 0 && !loading && (
-                <tr>
-                  <td colSpan={3} className="p-6 text-center text-sm text-slate-500">
-                    No domains found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-
           </table>
         </div>
       </div>
@@ -376,11 +301,10 @@ const DomainTable = ({ searchQuery, setSearchQuery }: Props) => {
       )}
       <Modal isOpen={open} onClose={() => setOpen(false)} title="Contact Seller">
         {selectedDomain && (
-          <EmailTemplate
+          <DomainReplyEmail
             domainId={selectedDomain.domainId}
             domain={selectedDomain.domain}
             onClose={() => setOpen(false)}
-            sellerEmail={selectedDomain.user.email}
           />
         )}
       </Modal>
