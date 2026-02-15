@@ -54,9 +54,7 @@ const Hero = () => {
                 "
               >
                 List. Connect. Close.
-                <br />
-                <span className="text-blue-600 font-bold">Find</span>{" "}
-                <span className="font-bold">your domain</span>
+              
               </h1>
 
               <p
