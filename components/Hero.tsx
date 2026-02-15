@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 const Hero = () => {
   const router=useRouter()
-  const [rotation, setRotation] = useState(0);
+  const [rotateY, setRotateY] = useState(0);
 
 useEffect(() => {
   const handleScroll = () => {
@@ -18,8 +18,8 @@ useEffect(() => {
       document.documentElement.scrollHeight -
       document.documentElement.clientHeight;
 
-    const scrollProgress = scrollTop / docHeight;
-    setRotation(scrollProgress * 360);
+    const progress = Math.min(scrollTop / docHeight, 1);
+    setRotateY(progress * 360);
   };
 
   window.addEventListener("scroll", handleScroll, { passive: true });
@@ -152,31 +152,36 @@ useEffect(() => {
             </div>
 
             {/* RIGHT: IMAGE */}
-            <div className="w-full lg:w-1/2 flex justify-center">
-             <Image
-  src="/assets/heroAnimation.png"
-  alt="Globe and Server Illustration"
-  width={600}
-  height={600}
-  priority
-  style={{
-    transform: `rotate(${rotation}deg)`,
-    transition: "transform 0.05s linear",
-  }}
-  className="
-    w-full
-    max-w-50        
-    sm:max-w-70     
-    md:max-w-90     
-    lg:max-w-130    
-    xl:max-w-150
-    h-auto
-    object-contain
-    will-change-transform
-  "
-/>
+<div
+  className="w-full lg:w-1/2 flex justify-center"
+  style={{ perspective: "1200px" }}
+>
+  <Image
+    src="/assets/heroAnimation.png"
+    alt="Globe and Server Illustration"
+    width={600}
+    height={600}
+    priority
+    style={{
+      transform: `rotateY(${rotateY}deg) translateZ(20px)`,
+      transition: "transform 0.05s linear",
+      transformStyle: "preserve-3d",
+    }}
+    className="
+      w-full
+      max-w-50        
+      sm:max-w-70     
+      md:max-w-90     
+      lg:max-w-130    
+      xl:max-w-150
+      h-auto
+      object-contain
+      will-change-transform
+    "
+  />
+</div>
 
-            </div>
+
           </div>
         </div>
       </div>
