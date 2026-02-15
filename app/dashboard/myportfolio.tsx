@@ -483,6 +483,65 @@ const Myportfolio = () => {
                 </button>
               </div>
             </div>
+            {bulkMode&& (
+              <div className="mb-3 flex items-center justify-between rounded-md border bg-slate-50 px-3 py-2">
+                <span className="text-sm text-slate-600">
+                  {selectedDomains.length} selected
+                </span>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setBulkAction({ type: 'hide', value: true });
+                      setConfirmOpen(true);
+                    }}
+                    className="px-3 py-1.5 text-xs rounded-md bg-slate-700 text-white hover:bg-slate-800"
+                  >
+                    Hide
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setBulkAction({ type: 'hide', value: false });
+                      setConfirmOpen(true);
+                    }}
+                    className="px-3 py-1.5 text-xs rounded-md bg-slate-200 hover:bg-slate-300"
+                  >
+                    Unhide
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setBulkAction({ type: 'chat', value: true });
+                      setConfirmOpen(true);
+                    }}
+                    className="px-3 py-1.5 text-xs rounded-md bg-blue-600 text-white hover:bg-blue-700"
+                  >
+                    Enable Chat
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setBulkAction({ type: 'chat', value: false });
+                      setConfirmOpen(true);
+                    }}
+                    className="px-3 py-1.5 text-xs rounded-md bg-blue-100 hover:bg-blue-200"
+                  >
+                    Disable Chat
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setBulkAction({ type: 'delete' });
+                      setConfirmOpen(true);
+                    }}
+                    className="px-3 py-1.5 text-xs rounded-md bg-red-600 text-white hover:bg-red-700"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            )}
             <table className="min-w-full border-separate border-spacing-y-1">
               <thead className="sticky top-0 bg-white">
                 <tr className="text-xs font-semibold text-slate-600 tracking-wide">
