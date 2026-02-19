@@ -1,17 +1,13 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Send } from 'lucide-react';
 import Modal from '../../components/model';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
-import { useRouter } from "next/navigation";
 import { checkAuth } from '@/utils/checkAuth';
 import DomainReplyEmail from "./DomainReplyEmail";
 import FilterDomain, { DomainFilters } from '../../components/FilterDashboard';
-
-/* ---------------- TYPES ---------------- */
 
 interface Domain {
   domainId: string;
@@ -28,37 +24,24 @@ interface Props {
 
 type SortOption = 'az' | 'za' | 'length_desc' | 'newest' | 'oldest';
 
-/* ---------------- CONSTANTS ---------------- */
 
 const DEFAULT_FILTERS: DomainFilters = {
   extensions: [],
 };
 
-/* ---------------- COMPONENT ---------------- */
-
 const DomainTable = ({ searchQuery }: Props) => {
-  const router = useRouter();
-
-  /* UI state */
   const [showFilter, setShowFilter] = useState(true);
   const [open, setOpen] = useState(false);
-
-  /* data state */
   const [domains, setDomains] = useState<Domain[]>([]);
   const [selectedDomain, setSelectedDomain] = useState<Domain | null>(null);
-
-  /* filters / sorting / paging */
   const [filters, setFilters] = useState<DomainFilters>(DEFAULT_FILTERS);
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState<number | 'all'>(10);
   const [total, setTotal] = useState(0);
   const [authPopupOpen, setAuthPopupOpen] = useState(false);
-
-
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  /* derived values */
   const numericLimit = limit === 'all' ? total : limit;
   const totalPages =
     limit === 'all' ? 1 : Math.ceil(total / numericLimit);
@@ -72,22 +55,23 @@ const DomainTable = ({ searchQuery }: Props) => {
     filters.maxLength ||
     filters.sellerName;
 
-  /* ---------------- EFFECTS ---------------- */
+  useEffect(() => {
+    (async () => {
+      const status = await checkAuth();
+      setIsAuthenticated(status === 'authenticated');
+    })();
+  }, []);
 
-  // Search → force ALL results
   useEffect(() => {
     if (searchQuery) {
       setLimit('all');
       setPage(1);
     }
   }, [searchQuery]);
-
-  // Reset page on filter change
   useEffect(() => {
     setPage(1);
   }, [filters, searchQuery]);
 
-  // Fetch domains
   useEffect(() => {
     const fetchDomains = async () => {
       try {
@@ -123,8 +107,6 @@ const DomainTable = ({ searchQuery }: Props) => {
 
     fetchDomains();
   }, [page, limit, searchQuery]);
-
-  /* ---------------- FILTER + SORT ---------------- */
 
   const filteredDomains = domains
     .filter(d => {
@@ -170,15 +152,9 @@ const DomainTable = ({ searchQuery }: Props) => {
       }
     });
 
-  /* ---------------- RENDER ---------------- */
-
   return (
     <div className="w-full mt-10">
-
-      {/* 🔝 TOP BAR */}
       <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-3 border rounded-t-xl bg-white">
-
-        {/* LEFT */}
         <div className="flex items-center gap-3">
           <button
             onClick={() => setShowFilter(v => !v)}
@@ -186,7 +162,6 @@ const DomainTable = ({ searchQuery }: Props) => {
           >
             {showFilter ? 'Close Filter' : 'Filter'}
           </button>
-
           <button
             disabled={!hasActiveFilters}
             onClick={() => {
@@ -202,11 +177,7 @@ const DomainTable = ({ searchQuery }: Props) => {
             Clear Filters
           </button>
         </div>
-
-        {/* RIGHT */}
         <div className="flex items-center gap-4 text-sm text-gray-600">
-
-          {/* PAGE LIMIT — RESTORED ✅ */}
           <div className="flex items-center gap-2">
             <span>Show</span>
             <select
@@ -225,8 +196,6 @@ const DomainTable = ({ searchQuery }: Props) => {
               <option value="all">All</option>
             </select>
           </div>
-
-          {/* SORT */}
           <div className="flex items-center gap-2">
             <span>Sort by</span>
             <select
@@ -243,16 +212,12 @@ const DomainTable = ({ searchQuery }: Props) => {
           </div>
         </div>
       </div>
-
-      {/* 🧱 CONTENT */}
       <div className="flex border border-t-0 rounded-b-xl bg-white overflow-hidden min-h-150">
-
         {showFilter && (
           <aside className="w-75 min-w-75 border-r bg-gray-50 overflow-y-auto">
             <FilterDomain filters={filters} onChange={setFilters} />
           </aside>
         )}
-
         <div className="flex-1 overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-blue-50">
@@ -282,37 +247,42 @@ const DomainTable = ({ searchQuery }: Props) => {
                     </td>
 
                     <td className="px-6 py-4 text-center">
-                     <div className="relative group inline-flex justify-center">
-  <button
-    type="button"
-    onClick={async () => {
-      const status = await checkAuth();
+                      <div className="relative group inline-flex justify-center">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!isAuthenticated) {
+                              setAuthPopupOpen(true);
+                              return;
+                            }
 
-      if (status === 'unauthenticated') {
-        setAuthPopupOpen(true); // ✅ open info popup
-        return;
-      }
+                            if (!d.isChatActive) return;
 
-      setSelectedDomain(d);
-      setOpen(true);
-    }}
-    className={`p-2 rounded-md transition-all duration-150
-      ${d.isChatActive
-        ? 'text-blue-600 hover:bg-blue-50'
-        : 'text-gray-400 cursor-not-allowed'}
-    `}
-    aria-label="Message seller"
-  >
-    <Send size={16} />
-  </button>
-
-  {/* Tooltip */}
-  <div className="absolute bottom-full mb-2 hidden group-hover:block z-10">
-    <div className="bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg text-center whitespace-nowrap">
-      Verified users only — log in to message the seller.
-    </div>
-  </div>
-</div>
+                            setSelectedDomain(d);
+                            setOpen(true);
+                          }}
+                          className={`
+    p-2 rounded-md transition-all duration-150
+    ${!d.isChatActive
+                              ? 'text-gray-400 cursor-not-allowed'
+                              : isAuthenticated
+                                ? 'text-blue-600 hover:bg-blue-100 hover:scale-105'
+                                : 'text-gray-500 hover:bg-gray-100'}
+  `}
+                          aria-label="Message seller"
+                        >
+                          <Send size={16} />
+                        </button>
+                        <div className="absolute bottom-full mb-2 hidden group-hover:block z-10">
+                          <div className="bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
+                            {!d.isChatActive
+                              ? 'Messaging is disabled for this domain'
+                              : isAuthenticated
+                                ? 'Message seller'
+                                : 'Log in to message the seller'}
+                          </div>
+                        </div>
+                      </div>
 
                     </td>
 
@@ -340,8 +310,6 @@ const DomainTable = ({ searchQuery }: Props) => {
           </table>
         </div>
       </div>
-
-      {/* 📄 PAGINATION */}
       {limit !== 'all' && totalPages > 1 && (
         <div className="flex justify-center gap-3 mt-6 text-sm">
           <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>‹</button>
@@ -357,43 +325,40 @@ const DomainTable = ({ searchQuery }: Props) => {
           <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)}>›</button>
         </div>
       )}
-
-
-<Modal
-  isOpen={authPopupOpen}
-  onClose={() => setAuthPopupOpen(false)}
-  title="Message Seller"
->
-  <div className="relative space-y-4 text-sm text-gray-700">
-    <p className="text-gray-600 leading-relaxed">
-      Please sign up or log in to message the seller.
-      Creating an account is completely free — no subscription required.
-      <br />
-      Email verification helps keep the marketplace secure and prevent spam.
-    </p>
-
-    <div className="flex flex-col sm:flex-row gap-3 pt-3">
-      <Link
-        href="/signup"
-        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center px-4 py-2.5 rounded-lg font-medium transition"
+      <Modal
+        isOpen={authPopupOpen}
+        onClose={() => setAuthPopupOpen(false)}
+        title="Message Seller"
       >
-        Create Free Account
-      </Link>
+        <div className="relative space-y-4 text-sm text-gray-700">
+          <p className="text-gray-600 leading-relaxed">
+            Please sign up or log in to message the seller.
+            Creating an account is completely free — no subscription required.
+            <br />
+            Email verification helps keep the marketplace secure and prevent spam.
+          </p>
 
-      <Link
-        href="/login"
-        className="flex-1 border border-gray-300 hover:bg-gray-100 text-center px-4 py-2.5 rounded-lg font-medium transition"
-      >
-        Log In
-      </Link>
-    </div>
+          <div className="flex flex-col sm:flex-row gap-3 pt-3">
+            <Link
+              href="/signup"
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center px-4 py-2.5 rounded-lg font-medium transition"
+            >
+              Create Free Account
+            </Link>
 
-    <p className="text-xs text-gray-500 text-center pt-2">
-      Takes less than a minute to get started
-    </p>
-  </div>
-</Modal>
+            <Link
+              href="/login"
+              className="flex-1 border border-gray-300 hover:bg-gray-100 text-center px-4 py-2.5 rounded-lg font-medium transition"
+            >
+              Log In
+            </Link>
+          </div>
 
+          <p className="text-xs text-gray-500 text-center pt-2">
+            Takes less than a minute to get started
+          </p>
+        </div>
+      </Modal>
       <Modal isOpen={open} onClose={() => setOpen(false)} title="Contact Seller">
         {selectedDomain && (
           <DomainReplyEmail
