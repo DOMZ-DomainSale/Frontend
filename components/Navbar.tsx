@@ -12,7 +12,7 @@ const Navbar = () => {
   const router = useRouter()
 
   return (
-    <nav className="w-full flex justify-between items-center px-6 lg:px-20 py-4 relative z-50">
+    <nav className="w-full flex justify-between items-center px-6 lg:px-20 py-6 relative z-50">
       <Link href="/">
         <div className="flex items-center space-x-2 cursor-pointer">
           <Image
@@ -66,8 +66,6 @@ const Navbar = () => {
               </ul>
             </div>
           </li>
-
-
           <Link href="/domainbuy" className="hover:text-blue-600 transition cursor-pointer">
             Buy
           </Link>

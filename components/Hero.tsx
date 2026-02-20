@@ -25,14 +25,14 @@ const Hero = () => {
             gap-8
           "
         >
-          <span
+          {/* <span
             className="
               inline-block bg-white rounded-full px-5 py-1.5
               text-gray-600 font-medium shadow uppercase
             "
           >
             THE FUTURE OF DOMAIN DISCOVERY
-          </span>
+          </span> */}
           <div
             className="
               font-bold text-gray-900
