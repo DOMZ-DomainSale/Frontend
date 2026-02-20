@@ -28,10 +28,10 @@ const Hero = () => {
           <span
             className="
               inline-block bg-white rounded-full px-5 py-1.5
-              text-gray-600 font-medium shadow
+              text-gray-600 font-medium shadow uppercase
             "
           >
-            TRANSPARENT BY DESIGN
+            THE FUTURE OF DOMAIN DISCOVERY
           </span>
           <div
             className="
