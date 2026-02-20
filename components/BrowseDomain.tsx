@@ -35,9 +35,9 @@ const BrowseDomain = () => {
         <h2 className="text-slate-900 text-3xl md:text-5xl font-semibold mb-4">
           Find Your Perfect Domain, Instantly
         </h2>
-        <p className="text-base text-slate-600 mb-8">
+        {/* <p className="text-base text-slate-600 mb-8">
           Browse available domains and connect directly with sellers.
-        </p>
+        </p> */}
 
         <form className="max-w-md mx-auto" onSubmit={onSubmitHandler}>
           <label className="mb-2 text-sm font-medium text-gray-900 sr-only ">Search</label>
