@@ -35,7 +35,7 @@ const Hero = () => {
           </span>
           <div
             className="
-              font-extrabold text-gray-900
+              font-bold text-gray-900
               text-3xl sm:text-2xl lg:text-4xl
             "
           >
@@ -43,7 +43,7 @@ const Hero = () => {
           </div>
           <h1
             className="
-              text-3xl sm:text-4xl lg:text-5xl
+              text-2xl sm:text-3xl lg:text-4xl
               font-semibold text-gray-900
             "
           >
