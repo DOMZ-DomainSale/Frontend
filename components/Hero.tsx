@@ -36,7 +36,7 @@ const Hero = () => {
           <div
             className="
               font-extrabold text-gray-900
-              text-5xl sm:text-6xl lg:text-7xl
+              text-3xl sm:text-2xl lg:text-4xl
             "
           >
             DOM<span className="text-blue-600">Z</span>
@@ -65,7 +65,7 @@ const Hero = () => {
               href="/domainbuy"
               className="
                 bg-blue-600 text-white px-8 py-3 rounded-full
-                font-medium shadow hover:bg-blue-700 transition
+                font-medium shadow hover:bg-blue-700 transition w-28
               "
             >
               Buy
@@ -75,7 +75,7 @@ const Hero = () => {
               onClick={handleAuthRedirect}
               className="
                 border border-blue-600 text-blue-600 px-8 py-3
-                rounded-full font-medium hover:bg-blue-100 transition
+                rounded-full font-medium hover:bg-blue-100 transition w-28
               "
             >
               Sell
