@@ -15,7 +15,7 @@ const packages = [
 
 const page = () => (
   <div className='lg:px-[10%] pt-12 pb-6'>
-    <NavbarComponenet colorText="Choose the " plainText="Plan that Fits Your Portfolio" IsParaText={true} />
+    <NavbarComponenet text="Choose the Plan that Fits Your Portfolio"IsParaText={true} />
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-8">
       {packages.map((itm) => (
         <Plancard
