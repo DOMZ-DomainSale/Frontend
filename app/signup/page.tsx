@@ -85,7 +85,7 @@ const Page = () => {
 
   return (
     <div className="bg-white lg:px-[10%] lg:pt-9">
-      <NavbarComponenet colorText="S" plainText="ignUp" IsParaText={false} />
+      <NavbarComponenet text="Sign Up" IsParaText={false} />
 
       {loading ? (
         <Loader />

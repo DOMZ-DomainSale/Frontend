@@ -9,16 +9,14 @@ import { useRouter } from "next/navigation";
 
 export type NavbarTextProp =
   | {
-    colorText: string;
-    plainText: string;
+    text: string;
     IsParaText: true;
     ParaText?: string;
     searchbarStatus?: boolean;
     onSearch?: (value: string) => void;
   }
   | {
-    colorText: string;
-    plainText: string;
+    text: string;
     IsParaText: false;
     searchbarStatus?: boolean;
     onSearch?: (value: string) => void;
@@ -31,9 +29,8 @@ const NavbarComponenet = (props: NavbarTextProp) => {
 
   return (
     <header className="w-full px-4 sm:px-6 lg:px-10" id="navbar">
-      <div className="relative rounded-3xl bg-linear-to-br from-white via-blue-50 to-blue-100 overflow-hidden pt-3.5">
+      <div className="relative rounded-3xl bg-linear-to-br from-white via-blue-50 to-blue-100 overflow-hidden pt-4 pb-6">
         <nav className="relative z-20 max-w-7xl mx-auto flex items-center justify-between px-6">
-          {/* Logo */}
           <Link href="/" className="flex items-center">
             <Image
               src="/assets/logo.jpg"
@@ -44,7 +41,7 @@ const NavbarComponenet = (props: NavbarTextProp) => {
             />
           </Link>
           <div className="hidden md:flex">
-            <ul className="flex items-center gap-8 bg-white px-8 py-3 rounded-full shadow-sm text-gray-900 text-[15px]">
+            <ul className="flex items-center gap-8 bg-white/80 backdrop-blur px-8 py-2.5 rounded-full shadow-sm border border-white/40">
               <li className="relative group cursor-pointer">
                 <span className="flex items-center gap-1 hover:text-blue-600 transition"
                   onClick={() => router.push("/")}
@@ -130,49 +127,47 @@ const NavbarComponenet = (props: NavbarTextProp) => {
             </ul>
           </div>
         )}
-        <div className="flex flex-col items-center justify-center text-center py-20 relative z-10">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold flex gap-1">
-            <span className="text-blue-600">{props.colorText}</span>
-            <span className="bg-linear-to-r from-blue-500 via-gray-800 to-black bg-clip-text text-transparent">
-              {props.plainText}
+        <div className="flex flex-col items-center justify-center text-center pt-14 pb-10 relative z-10">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
+            <span className="bg-linear-to-r from-blue-600 via-blue-500 to-slate-900 bg-clip-text text-transparent">
+              {props.text}
             </span>
           </h1>
-
           {props.IsParaText && (
             <p className="mt-4 max-w-xl text-gray-700">
               {props.ParaText}
             </p>
           )}
-          <div className="w-full max-w-2xl bg-white rounded-full shadow-md flex items-center px-4 py-3 relative">
+          {props.searchbarStatus && (
+            <div className="mt-6 w-full max-w-xl">
+              <div className="bg-white/90 backdrop-blur rounded-full shadow-sm border border-gray-200 flex items-center px-5 py-3 relative">
+                <input
+                  type="text"
+                  value={searchValue}
+                  placeholder="Search"
+                  onChange={(e) => {
+                    setSearchValue(e.target.value);
+                    props.onSearch?.(e.target.value);
+                  }}
+                  className="w-full text-gray-700 placeholder-gray-400 focus:outline-none pr-10 bg-transparent"
+                />
 
-            <input
-              type="text"
-              value={searchValue}
-              placeholder="Search"
-              onChange={(e) => {
-                setSearchValue(e.target.value);
-                props.onSearch?.(e.target.value);
-              }}
-              className="w-full text-gray-700 placeholder-gray-400 focus:outline-none pr-12"
-            />
-            {searchValue && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchValue("");
-                  props.onSearch?.("");
-                }}
-                className="
-        absolute right-4 top-1/2 -translate-y-1/2
-        text-gray-400 hover:text-gray-600
-        transition
-      "
-                aria-label="Clear search"
-              >
-                ✕
-              </button>
-            )}
-          </div>
+                {searchValue && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchValue("");
+                      props.onSearch?.("");
+                    }}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                    aria-label="Clear search"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,#ffffff80_1px,transparent_0)] bg-size-[16px_16px] opacity-40" />
       </div>

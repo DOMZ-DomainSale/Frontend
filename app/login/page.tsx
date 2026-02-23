@@ -36,10 +36,10 @@ const Page = () => {
     }));
   };
   useEffect(() => {
-  axios.get("/api/site-status")
-    .then(() => setSiteUnlocked(true))
-    .catch(() => setSiteUnlocked(false));
-}, []);
+    axios.get("/api/site-status")
+      .then(() => setSiteUnlocked(true))
+      .catch(() => setSiteUnlocked(false));
+  }, []);
 
   const unlockSite = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,46 +117,45 @@ const Page = () => {
       setLoaderStatus(false);
     }
   };
-// 🔒 SITE PASSWORD GATE
-if (!siteUnlocked) {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
-      <form
-        onSubmit={unlockSite}
-        className="w-full max-w-md p-6 rounded-xl shadow-md space-y-4"
-      >
-        <h1 className="text-xl font-semibold text-center">🔒 Private Access</h1>
+  // 🔒 SITE PASSWORD GATE
+  if (!siteUnlocked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <form
+          onSubmit={unlockSite}
+          className="w-full max-w-md p-6 rounded-xl shadow-md space-y-4"
+        >
+          <h1 className="text-xl font-semibold text-center">🔒 Private Access</h1>
 
-        <input
-          type="password"
-          placeholder="Enter site password"
-          className="w-full rounded-xl bg-blue-50 px-5 py-3
+          <input
+            type="password"
+            placeholder="Enter site password"
+            className="w-full rounded-xl bg-blue-50 px-5 py-3
                      focus:outline-none focus:ring-2 focus:ring-blue-500"
-          onChange={(e) => setSitePassword(e.target.value)}
-          required
-        />
+            onChange={(e) => setSitePassword(e.target.value)}
+            required
+          />
 
-        {siteError && <p className="text-red-500 text-sm">{siteError}</p>}
+          {siteError && <p className="text-red-500 text-sm">{siteError}</p>}
 
-        <button
-          type="submit"
-          className="w-full rounded-full py-3
+          <button
+            type="submit"
+            className="w-full rounded-full py-3
                      bg-linear-to-r from-blue-500 to-blue-600
                      text-white font-semibold"
-        >
-          Enter Site
-        </button>
-      </form>
-    </div>
-  );
-}
+          >
+            Enter Site
+          </button>
+        </form>
+      </div>
+    );
+  }
 
   if (loaderStatus) return <Loader />
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <NavbarComponenet
-        colorText="S"
-        plainText="ign In"
+        text="Login"
         IsParaText={false}
       />
 
