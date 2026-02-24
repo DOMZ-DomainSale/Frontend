@@ -45,14 +45,14 @@ const Footer = () => {
   inline-flex items-center justify-center
   px-6 py-3
   rounded-full
-  bg-linear-to-r from-blue-600 to-blue-500
-  text-white text-sm font-semibold
-  shadow-[0_6px_18px_rgba(37,99,235,0.35)]
-  hover:shadow-[0_10px_26px_rgba(37,99,235,0.45)]
-  hover:from-blue-700 hover:to-blue-600
+  border border-blue-600
+  bg-white
+  text-blue-600 text-sm font-semibold
+  shadow-sm
+  hover:bg-blue-600 hover:text-white hover:border-blue-600
   active:scale-[0.97]
   transition-all duration-200
-  focus:outline-none focus:ring-2 focus:ring-blue-500/40
+  focus:outline-none focus:ring-2 focus:ring-blue-500/30
   self-start
 "
               >
