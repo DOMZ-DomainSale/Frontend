@@ -127,7 +127,7 @@ const DomainStatus = ({ data, onDeleteSuccess }: DomainTableProps) => {
           </select>
         </div>
       </div>
-      {bulkMode && selectedDomains.length > 0 && (
+      {bulkMode && selectedDomains && (
         <div className="px-4 py-3 border-b bg-red-50 flex items-center justify-between">
           <span className="text-sm text-red-700">
             {selectedDomains.length} selected

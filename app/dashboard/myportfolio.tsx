@@ -25,6 +25,7 @@ export interface DomainType {
   isHidden: boolean;
   isChatActive: boolean;
   isMessageNotificationEnabled: boolean;
+  isUserNameVisible: boolean;
   clicks: number;
   finalUrl?: string;
   createdAt: string;
@@ -242,6 +243,28 @@ const Myportfolio = () => {
       toast.error("Failed to update notification setting");
     }
   };
+  const toggleUserName = async (id: string, value: boolean) => {
+    const prev = [...userDomains];
+
+    setUserDomains((d) =>
+      d.map((x) =>
+        x.id === id ? { ...x, isUserNameVisible: value } : x
+      )
+    );
+
+    try {
+      const res = await axios.patch(
+        `${API}/${id}/toggle-username`, // ✅ your backend route
+        {},
+        { withCredentials: true }
+      );
+
+      toast.success(res?.data?.message);
+    } catch {
+      setUserDomains(prev); // rollback
+      toast.error("Failed to update username visibility");
+    }
+  };
 
   const fetchDomains = async () => {
     const res = await axios.get(`${API}/getdomainbyuser`, {
@@ -400,31 +423,29 @@ const Myportfolio = () => {
     <div className="lg:px-[10%] lg:pt-10">
       <div className="max-w-6xl mx-auto">
         <div className="mb-6 flex items-center gap-4">
+          {/* Left Toggle */}
           <button
             onClick={() => setDomainStatus(false)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition
-      border cursor-pointer
-      ${!domainStatus
-                ? 'bg-white border-slate-300 text-slate-900 shadow-sm'
-                : 'bg-slate-100 border-transparent text-slate-500 hover:text-slate-700'
+            className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200
+    border cursor-pointer
+    ${!domainStatus
+                ? 'bg-slate-900 border-slate-900 text-white shadow-md'
+                : 'bg-white border-slate-300 text-slate-600 hover:border-slate-400 hover:text-slate-900'
               }`}
           >
             My Domains
           </button>
-
           <div className="flex-1 flex justify-center">
-            <SearchBox
-              value={searchQuery}
-              onChange={setSearchQuery}
-            />
+            <SearchBox value={searchQuery} onChange={setSearchQuery} />
           </div>
-          <div className="inline-flex bg-slate-100 rounded-full p-1 gap-1">
+
+          <div className="inline-flex items-center bg-slate-100 rounded-full p-1.5 gap-1.5 shadow-sm">
             <button
               onClick={() => setDomainStatus(true)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition cursor-pointer
-        ${domainStatus
-                  ? 'bg-white shadow text-slate-900'
-                  : 'text-slate-500 hover:text-slate-700'
+              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 cursor-pointer
+      ${domainStatus
+                  ? 'bg-white shadow-md text-slate-900'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/70'
                 }`}
             >
               Upload Status
@@ -432,14 +453,15 @@ const Myportfolio = () => {
 
             <button
               onClick={() => setOpen(true)}
-              className="px-4 py-1.5 rounded-full text-sm font-medium
-        text-blue-600 hover:bg-blue-50 transition cursor-pointer"
+              className="px-5 py-2 rounded-full text-sm font-semibold
+      bg-blue-600 text-white hover:bg-blue-700
+      shadow-md hover:shadow-lg
+      transition-all duration-200 cursor-pointer"
             >
               + Add Domain
             </button>
           </div>
         </div>
-
         <Modal isOpen={open} onClose={() => setOpen(false)} title="Add Domains">
           <AddDomainsCard
             onClose={() => {
@@ -483,62 +505,63 @@ const Myportfolio = () => {
                 </button>
               </div>
             </div>
-            {bulkMode&& (
-              <div className="mb-3 flex items-center justify-between rounded-md border bg-slate-50 px-3 py-2">
-                <span className="text-sm text-slate-600">
-                  {selectedDomains.length} selected
-                </span>
+            {bulkMode && (
+              <div className="sticky top-0 z-30 mb-3">
+                <div className="flex items-center justify-between rounded-md border border-slate-200 bg-white px-3 py-2 shadow-sm">
+                  <span className="text-sm font-medium text-slate-700">
+                    {selectedDomains.length} selected
+                  </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      onClick={() => {
+                        setBulkAction({ type: 'hide', value: true });
+                        setConfirmOpen(true);
+                      }}
+                      className="px-3 py-1.5 text-xs rounded-md bg-slate-700 text-white hover:bg-slate-800 cursor-pointer"
+                    >
+                      Hide
+                    </button>
 
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {
-                      setBulkAction({ type: 'hide', value: true });
-                      setConfirmOpen(true);
-                    }}
-                    className="px-3 py-1.5 text-xs rounded-md bg-slate-700 text-white hover:bg-slate-800"
-                  >
-                    Hide
-                  </button>
+                    <button
+                      onClick={() => {
+                        setBulkAction({ type: 'hide', value: false });
+                        setConfirmOpen(true);
+                      }}
+                      className="px-3 py-1.5 text-xs rounded-md bg-slate-200 hover:bg-slate-300 cursor-pointer"
+                    >
+                      Unhide
+                    </button>
 
-                  <button
-                    onClick={() => {
-                      setBulkAction({ type: 'hide', value: false });
-                      setConfirmOpen(true);
-                    }}
-                    className="px-3 py-1.5 text-xs rounded-md bg-slate-200 hover:bg-slate-300"
-                  >
-                    Unhide
-                  </button>
+                    <button
+                      onClick={() => {
+                        setBulkAction({ type: 'chat', value: true });
+                        setConfirmOpen(true);
+                      }}
+                      className="px-3 py-1.5 text-xs rounded-md bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+                    >
+                      Enable Chat
+                    </button>
 
-                  <button
-                    onClick={() => {
-                      setBulkAction({ type: 'chat', value: true });
-                      setConfirmOpen(true);
-                    }}
-                    className="px-3 py-1.5 text-xs rounded-md bg-blue-600 text-white hover:bg-blue-700"
-                  >
-                    Enable Chat
-                  </button>
+                    <button
+                      onClick={() => {
+                        setBulkAction({ type: 'chat', value: false });
+                        setConfirmOpen(true);
+                      }}
+                      className="px-3 py-1.5 text-xs rounded-md bg-blue-100 hover:bg-blue-200 cursor-pointer"
+                    >
+                      Disable Chat
+                    </button>
 
-                  <button
-                    onClick={() => {
-                      setBulkAction({ type: 'chat', value: false });
-                      setConfirmOpen(true);
-                    }}
-                    className="px-3 py-1.5 text-xs rounded-md bg-blue-100 hover:bg-blue-200"
-                  >
-                    Disable Chat
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setBulkAction({ type: 'delete' });
-                      setConfirmOpen(true);
-                    }}
-                    className="px-3 py-1.5 text-xs rounded-md bg-red-600 text-white hover:bg-red-700"
-                  >
-                    Delete
-                  </button>
+                    <button
+                      onClick={() => {
+                        setBulkAction({ type: 'delete' });
+                        setConfirmOpen(true);
+                      }}
+                      className="px-3 py-1.5 text-xs rounded-md bg-red-600 text-white hover:bg-red-700 cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -559,6 +582,7 @@ const Myportfolio = () => {
                   <th className="px-4 py-3 text-center">Visibility</th>
                   <th className="px-4 py-3 text-center">Chat</th>
                   <th className="px-4 py-3 text-center">Notification</th>
+                  <th className="px-4 py-3 text-center">Username</th>
                   <th className="px-4 py-3 text-center">Delete</th>
                   <th className="px-4 py-3 text-center">Added On</th>
                 </tr>
@@ -608,6 +632,13 @@ const Myportfolio = () => {
                           id={`notify-${d.id}`}
                           checked={d.isMessageNotificationEnabled}
                           onChange={(val) => toggleNotification(d.id, val)}
+                        />
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        <Toggle
+                          id={`username-${d.id}`}
+                          checked={d.isUserNameVisible}
+                          onChange={(val) => toggleUserName(d.id, val)}
                         />
                       </td>
                       <td className="px-4 py-2 text-center">

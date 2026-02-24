@@ -87,9 +87,9 @@ const Subscribe = () => {
         <>
             <div className="mx-auto my-20 max-w-6xl px-4 text-center">
                 <div className="rounded-4xl bg-blue-600 px-10 py-20 text-white shadow-2xl">
-                    <h2 className="text-[2.6rem] font-bold mb-4">Stay Updated</h2>
+                    <h2 className="text-[2.6rem] font-bold mb-4">List With Domz</h2>
                     <p className="mb-8">
-                        Get news and announcements when our newsletter launches.
+                        Partner with us and showcase your portfolio.
                     </p>
 
                     <button
@@ -97,7 +97,7 @@ const Subscribe = () => {
                         onClick={handleSubscribeClick}
                         className="px-8 py-3 rounded-full bg-white text-blue-600 font-semibold hover:bg-gray-100"
                     >
-                        Subscribe Now
+                        Get Started
                     </button>
                 </div>
             </div>

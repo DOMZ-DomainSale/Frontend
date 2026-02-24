@@ -15,7 +15,7 @@ interface Domain {
   domain: string;
   isChatActive: boolean;
   createdAt: string;
-  user: { name: string; email: string };
+  user: { userName: string; email: string };
 }
 
 interface Props {
@@ -125,7 +125,7 @@ const DomainTable = ({ searchQuery }: Props) => {
 
       if (
         filters.sellerName &&
-        !d.user?.name?.toLowerCase().includes(filters.sellerName.toLowerCase())
+        !d.user?.userName?.toLowerCase().includes(filters.sellerName.toLowerCase())
       ) return false;
 
       return true;
@@ -241,7 +241,7 @@ border-b border-gray-200/70">
               <thead className="bg-gray-50/80 backdrop-blur text-gray-600 text-xs uppercase tracking-wide">
                 <tr>
                   <th className="px-6 py-4 text-left font-semibold">Domain</th>
-                  <th className="px-6 py-4 text-left font-semibold">Connect</th>
+                  <th className="px-6 py-4 text-left font-semibold">Message</th>
                   <th className="px-6 py-4 text-left font-semibold">Seller</th>
                 </tr>
               </thead>
@@ -269,8 +269,7 @@ border-b border-gray-200/70">
                           </Link>
                         ) : d.domain}
                       </td>
-
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-6 py-4 text-left">
                         <div className="relative group inline-flex justify-center">
                           <button
                             type="button"
@@ -311,19 +310,19 @@ border-b border-gray-200/70">
                       </td>
 
                       <td className="px-6 py-4">
-                        {d.user?.name ? (
+                        {d.user?.userName ? (
                           <button
                             onClick={() => {
                               setShowFilter(true);
                               setFilters(prev => ({
                                 ...prev,
-                                sellerName: d.user.name
+                                sellerName: d.user.userName
                               }));
                               setPage(1);
                             }}
                             className="text-blue-600 hover:underline font-medium"
                           >
-                            {d.user.name}
+                            {d.user.userName}
                           </button>
                         ) : 'Anonymous'}
                       </td>
