@@ -21,8 +21,8 @@ const page = () => {
     message: '',
     subject: 'New Submisson On the Contact Form',
   });
-const [loaderStatus, setLoaderStatus] = useState(false);
-  
+  const [loaderStatus, setLoaderStatus] = useState(false);
+
   const onChangeHandler = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -51,13 +51,19 @@ const [loaderStatus, setLoaderStatus] = useState(false);
       setLoaderStatus(false);
     }
   };
-if (loaderStatus) return <Loader />;
+  if (loaderStatus) return <Loader />;
   return (
     <div className="lg:pl-[10%] lg:pr-[10%] lg:pt-9">
       <NavbarComponenet
-      text="Let's Start the conversation"
+        text="Let's Start the conversation"
         IsParaText
-        ParaText="As a user-centric platform, we value your feedback."
+        ParaText={
+          <>
+            As a user-centric platform, your feedback matters.
+            <br />
+            Reach out via the contact form or email info@domz.com
+          </>
+        }
         searchbarStatus={false}
       />
       <form
@@ -104,7 +110,7 @@ if (loaderStatus) return <Loader />;
           </button>
         </div>
       </form>
-      <Subscribe/>
+      <Subscribe />
       <Footer />
     </div>
   );

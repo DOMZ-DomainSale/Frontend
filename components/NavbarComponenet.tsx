@@ -10,10 +10,10 @@ import { useRouter } from "next/navigation";
 export type NavbarTextProp = {
   text: string;
   IsParaText: boolean;
-  ParaText?: string;
+ ParaText?: React.ReactNode;
   searchbarStatus?: boolean;
   onSearch?: (value: string) => void;
-  searchValue?: string; // ✅ ADD THIS
+  searchValue?: string; 
 };
 
 const NavbarComponenet = (props: NavbarTextProp) => {
