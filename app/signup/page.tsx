@@ -140,17 +140,26 @@ const Page = () => {
               </div>
 
               {/* TERMS */}
-              <div className="flex items-center">
-                <input
-                  name="terms"
-                  type="checkbox"
-                  className="h-4 w-4"
-                  onChange={onChangeHandler}
-                />
-                <label className="ml-2 text-sm">
-                  I agree to the Terms & Privacy Policy
-                </label>
-              </div>
+              <div className="flex items-start gap-2 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                name="terms"
+                checked={userData.terms}
+                onChange={onChangeHandler}
+                className="mt-1 h-4 w-4 rounded"
+                required
+              />
+              <p>
+                I agree to the{" "}
+                <Link href={'/terms'} className="text-blue-600 cursor-pointer">
+                  Terms of Service
+                </Link>{" "}
+                and{" "}
+                <Link href={'/privacy'} className="text-blue-600 cursor-pointer">
+                  Privacy Policy
+                </Link>
+              </p>
+            </div>
 
               {/* SUBMIT */}
               <button

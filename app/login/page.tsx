@@ -203,7 +203,7 @@ const Page = () => {
                   Terms of Service
                 </Link>{" "}
                 and{" "}
-                <Link href={'/terms'} className="text-blue-600 cursor-pointer">
+                <Link href={'/privacy'} className="text-blue-600 cursor-pointer">
                   Privacy Policy
                 </Link>
               </p>

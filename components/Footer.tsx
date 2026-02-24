@@ -71,8 +71,8 @@ const Footer = () => {
               <div>
                 <p className="font-medium text-gray-900">Legal</p>
                 <ul className="mt-4 space-y-3 text-sm">
-                  <li><Link href="/termsandprivacy" className="hover:opacity-75">Terms</Link></li>
-                  <li><Link href="/termsandprivacy" className="hover:opacity-75">Privacy</Link></li>
+                  <li><Link href="/terms" className="hover:opacity-75">Terms</Link></li>
+                  <li><Link href="/privacy" className="hover:opacity-75">Privacy</Link></li>
                 </ul>
               </div>
 
@@ -88,8 +88,6 @@ const Footer = () => {
                     >
                      Advertise
                     </a>
-
-                    {/* tooltip */}
                     <div
                       className="
         pointer-events-none
