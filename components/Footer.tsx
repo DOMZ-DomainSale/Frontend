@@ -26,8 +26,6 @@ const Footer = () => {
       <footer className="bg-white">
         <div className="mx-auto max-w-7xl space-y-8 px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-
-            {/* Brand */}
             <div className="flex flex-col items-start pt-1">
               <Link href="/" className="flex items-center gap-2">
                 <Image
@@ -43,7 +41,7 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="
-     mt-6
+     mt-10
   inline-flex items-center justify-center
   px-6 py-3
   rounded-full
