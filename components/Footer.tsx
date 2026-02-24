@@ -79,13 +79,14 @@ const Footer = () => {
               <div>
                 <p className="font-medium text-gray-900">Support</p>
                 <ul className="mt-4 space-y-3 text-sm">
+                   <li><Link href="/contact" className="hover:opacity-75">Contact</Link></li>
                   <li className="group relative inline-block">
                     <a
                       href="mailto:media@domz.com"
                       onClick={(e) => e.stopPropagation()}
                       className="hover:opacity-75 transition"
                     >
-                      Help Center
+                     Advertise
                     </a>
 
                     {/* tooltip */}
@@ -103,6 +104,7 @@ const Footer = () => {
                       </div>
                     </div>
                   </li>
+                   
                 </ul>
               </div>
             </div>
