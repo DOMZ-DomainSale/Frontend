@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
 import ExcelDropZone from "./ExcelDropZone";
 import { downloadDomainTemplate } from "../../utils/downloadDomainTemplate";
+import Link from "next/link";
 
 const AddDomainsCard = ({ onClose }: { onClose: () => void }) => {
   const [domainText, setDomainText] = useState("");
@@ -39,7 +40,7 @@ const AddDomainsCard = ({ onClose }: { onClose: () => void }) => {
         return;
       }
 
-      const res =await axios.post(
+      const res = await axios.post(
         `${process.env.NEXT_PUBLIC_apiLink}domain/adddomain`,
         { domains: uniqueDomains },
         { withCredentials: true }
@@ -85,62 +86,99 @@ const AddDomainsCard = ({ onClose }: { onClose: () => void }) => {
         </div>
       )}
 
-      <form onSubmit={onSubmitHandler}>
-        <p className="text-center text-sm text-slate-600 mb-4">
-          Upload an Excel file or manually enter domains below.
+      <form onSubmit={onSubmitHandler} className="relative">
+
+        {/* Header helper */}
+        <p className="text-center text-sm text-slate-600 mb-6">
+          Add domains by uploading a spreadsheet or entering them below.
         </p>
 
-        {/* Excel Upload */}
-        <ExcelDropZone
-          onTextExtracted={(text) => {
-            setDomainText((prev) =>
-              prev ? `${prev}\n${text}` : text
-            );
-            toast.success("Excel domains added to textarea");
-          }}
-        />
+        {/* Content container (KEY FIX) */}
+        <div className="max-w-2xl mx-auto space-y-6">
 
-        {/* Textarea */}
-        <textarea
-          value={domainText}
-          onChange={(e) => setDomainText(e.target.value)}
-          placeholder={`example.com\nexample.org, https://example.org`}
-          className="mt-6 w-full max-w-2xl mx-auto block border border-gray-300 rounded-lg p-4 text-blue-600 italic focus:outline-none"
-          rows={6}
-        />
-
-        {/* Confirmations */}
-        <div className="mt-8 space-y-4 max-w-2xl mx-auto text-sm">
-          <label className="flex items-center gap-3">
-            <input type="checkbox" required className="w-5 h-5" />
-            I confirm that I own these domains.
-          </label>
-
-          <label className="flex items-center gap-3">
-            <input type="checkbox" required className="w-5 h-5" />
-            I agree to the listing requirements.
-          </label>
-
-          <label className="flex items-start gap-3">
+          {/* Excel Upload */}
+          <ExcelDropZone
+            onTextExtracted={(text) => {
+              setDomainText(prev => (prev ? `${prev}\n${text}` : text));
+              toast.success("Excel domains added to textarea");
+            }}
+          />
+          <div className="text-left">
             <button
               type="button"
               onClick={downloadDomainTemplate}
-              className="text-blue-600 underline hover:text-blue-700 cursor-pointer"
+              className="text-sm font-medium text-blue-600 hover:text-blue-700 underline underline-offset-2 transition"
             >
               Download template
             </button>
-          </label>
-        </div>
+          </div>
 
-        {/* Submit */}
-        <div className="flex justify-center mt-8">
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded-full bg-blue-600 text-white px-6 py-2 hover:bg-blue-700 disabled:opacity-50"
-          >
-            {loading ? "Adding..." : "Add Domains"}
-          </button>
+          {/* Textarea */}
+          <textarea
+            value={domainText}
+            onChange={(e) => setDomainText(e.target.value)}
+            placeholder={`Enter the root domain as it should appear in the Buy section — one per line.
+To redirect the link to a different URL, enter the domain followed by a comma and the redirect URL.
+
+Sample:
+example.com
+example.com, https://www.LanderHost.com/parked/example.com`}
+            rows={7}
+            className="
+        w-full
+        border border-gray-300
+        rounded-xl
+        p-4
+        text-slate-700
+        placeholder:text-slate-400
+        focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500
+        transition
+      "
+          />
+
+          {/* Confirmations */}
+          <div className="space-y-4 text-sm">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" required className="mt-0.5 w-5 h-5 rounded" />
+              <span className="text-slate-700">
+                I confirm that I own these domains.
+              </span>
+            </label>
+
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" required className="mt-0.5 w-5 h-5 rounded" />
+              <span className="text-slate-700">
+                I agree to the listing{" "}
+                <Link href="/terms" className="text-blue-600 hover:underline font-medium">
+                  terms
+                </Link>
+              </span>
+            </label>
+          </div>
+
+          {/* Submit */}
+          <div className="flex justify-center pt-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="
+          inline-flex items-center justify-center
+          min-w-45
+          rounded-full
+          bg-blue-600 text-white
+          px-8 py-3
+          font-semibold
+          shadow-sm hover:shadow-md
+          hover:bg-blue-700
+          active:scale-[0.98]
+          disabled:opacity-50
+          transition-all duration-200
+        "
+            >
+              {loading ? "Adding..." : "Add Domains"}
+            </button>
+          </div>
+
         </div>
       </form>
     </>
