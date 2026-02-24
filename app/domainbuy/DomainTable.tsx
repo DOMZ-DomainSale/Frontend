@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Send, X, SlidersHorizontal } from 'lucide-react';
+import { Send, X, SlidersHorizontal, RotateCcw } from 'lucide-react';
 import Modal from '../../components/model';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
@@ -35,15 +35,12 @@ const DomainTable = ({ searchQuery }: Props) => {
   const [filters, setFilters] = useState<DomainFilters>(DEFAULT_FILTERS);
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState<number | 'all'>(10);
+  const [limit, setLimit] = useState<number>(10);
   const [total, setTotal] = useState(0);
   const [authPopupOpen, setAuthPopupOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
-  const numericLimit = limit === 'all' ? total : limit;
-  const totalPages =
-    limit === 'all' ? 1 : Math.ceil(total / numericLimit);
-
+  const totalPages = Math.ceil(total / limit);
   const hasActiveFilters =
     filters.extensions.length ||
     filters.startsWith ||
@@ -62,7 +59,7 @@ const DomainTable = ({ searchQuery }: Props) => {
 
   useEffect(() => {
     if (searchQuery) {
-      setLimit('all');
+      setLimit(500);
       setPage(1);
     }
   }, [searchQuery]);
@@ -83,8 +80,7 @@ const DomainTable = ({ searchQuery }: Props) => {
             }
           );
         } else {
-          const params: any = { page };
-          limit === 'all' ? (params.all = true) : (params.limit = limit);
+          const params: any = { page, limit };
           res = await axios.get(
             `${process.env.NEXT_PUBLIC_apiLink}domain/public`,
             { params }
@@ -185,12 +181,16 @@ border-b border-gray-200/70">
                 setFilters(DEFAULT_FILTERS);
                 setPage(1);
               }}
-              className={`px-4 py-2 border border-gray-200 rounded-lg text-sm hover:bg-gray-50 transition
-              ${hasActiveFilters
-                  ? 'hover:bg-gray-100 text-gray-700'
-                  : 'opacity-40 cursor-not-allowed'}
-            `}
+              className={`
+    inline-flex items-center gap-2
+    px-4 py-2 rounded-xl text-sm font-medium
+    border transition-all duration-200
+    ${hasActiveFilters
+                  ? 'border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 shadow-sm hover:shadow-md'
+                  : 'border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50'}
+  `}
             >
+              <RotateCcw size={16} />
               Clear Filters
             </button>
           </div>
@@ -200,17 +200,18 @@ border-b border-gray-200/70">
               <select
                 value={limit}
                 onChange={e => {
-                  const val = e.target.value;
-                  setLimit(val === 'all' ? 'all' : Number(val));
+                  setLimit(Number(e.target.value));
                   setPage(1);
                 }}
-                className="border rounded-md px-2 py-1"
+                className="border border-gray-300 rounded-lg px-2.5 py-1.5 bg-white
+               focus:outline-none focus:ring-2 focus:ring-blue-500/30
+               hover:border-gray-400 transition"
               >
                 <option value={10}>10</option>
                 <option value={20}>20</option>
                 <option value={50}>50</option>
                 <option value={100}>100</option>
-                <option value="all">All</option>
+                <option value={500}>500</option>
               </select>
             </div>
             <div className="flex items-center gap-2">
@@ -333,8 +334,8 @@ border-b border-gray-200/70">
             </table>
           </div>
         </div>
-        {limit !== 'all' && totalPages > 1 && (
-          <div className="flex justify-center gap-3 mt-6 text-sm">
+        {totalPages > 1 && (
+          <div className="flex justify-center gap-6 mt-6 text-sm">
             <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>‹</button>
             {[...Array(totalPages)].map((_, i) => (
               <button
